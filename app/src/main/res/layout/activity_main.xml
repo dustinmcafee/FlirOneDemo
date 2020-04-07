@@ -27,48 +27,6 @@
             android:background="#00aaaa00">
 
             <TextView
-                android:id="@+id/connect_flir_one"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#000"
-                android:onClick="connectFlirOne"
-                android:text="@string/connect_f1_text"
-                android:textColor="#fff"
-                android:gravity="center_vertical"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="5dp"
-                android:paddingHorizontal="10dp"
-                android:textSize="4pt" />
-
-            <TextView
-                android:id="@+id/connect_s1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#000"
-                android:onClick="connectSimulatorOne"
-                android:text="@string/connect_sim1_text"
-                android:textColor="#fff"
-                android:gravity="center_vertical"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="5dp"
-                android:paddingHorizontal="10dp"
-                android:textSize="4pt" />
-
-            <TextView
-                android:id="@+id/connect_s2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#000"
-                android:onClick="connectSimulatorTwo"
-                android:text="@string/connect_sim2_text"
-                android:textColor="#fff"
-                android:gravity="center_vertical"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="5dp"
-                android:paddingHorizontal="10dp"
-                android:textSize="4pt" />
-
-            <TextView
                 android:id="@+id/disconnect_any"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -114,6 +72,57 @@
         android:text="@string/discover_text"
         android:textColor="#fff"
         android:textSize="4pt" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarButtonStyle" >
+
+        <Button
+            android:id="@+id/connect_flir_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="5dp"
+            android:background="#000"
+            android:onClick="connectFlirOne"
+            android:paddingHorizontal="10dp"
+            android:text="@string/connect_f1_text"
+            android:textColor="#fff"
+            android:visibility="gone"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textSize="4pt" />
+
+        <Button
+            android:id="@+id/connect_s1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="5dp"
+            android:background="#000"
+            android:onClick="connectSimulatorOne"
+            android:paddingHorizontal="10dp"
+            android:text="@string/connect_sim1_text"
+            android:textColor="#fff"
+            android:visibility="gone"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textSize="4pt" />
+
+        <Button
+            android:id="@+id/connect_s2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="5dp"
+            android:background="#000"
+            android:onClick="connectSimulatorTwo"
+            android:paddingHorizontal="10dp"
+            android:text="@string/connect_sim2_text"
+            android:textColor="#fff"
+            android:visibility="gone"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textSize="4pt" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

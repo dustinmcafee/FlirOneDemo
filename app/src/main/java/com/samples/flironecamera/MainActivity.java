@@ -281,6 +281,13 @@ public class MainActivity extends AppCompatActivity {
         public void onCameraFound(Identity identity) {
             Log.d(TAG, "onCameraFound identity:" + identity);
             runOnUiThread(() -> {
+                if(identity.deviceId.contains("EMULATED FLIR ONE")){
+                    findViewById(R.id.connect_s2).setVisibility(View.VISIBLE);
+                } else if (identity.deviceId.contains("C++ Emulator")){
+                    findViewById(R.id.connect_s1).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.connect_flir_one).setVisibility(View.VISIBLE);
+                }
                 cameraHandler.add(identity);
                 MainActivity.this.showMessage.show("Camera Found: " + identity);
                 stopDiscovery(null);
