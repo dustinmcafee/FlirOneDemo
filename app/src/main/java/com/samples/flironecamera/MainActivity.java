@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView msxImage;
     private ImageView photoImage;
 
-    private LinkedBlockingQueue<FrameDataHolder> framesBuffer = new LinkedBlockingQueue(21);
+    private LinkedBlockingQueue<FrameDataHolder> framesBuffer = new LinkedBlockingQueue<>(21);
     private UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
 
     /**
@@ -74,12 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // ThermalLog will show log from the Thermal SDK in standards android log framework
-        ThermalLog.LogLevel enableLoggingInDebug = BuildConfig.DEBUG ? ThermalLog.LogLevel.DEBUG : ThermalLog.LogLevel.NONE;
-
-        // ThermalSdkAndroid has to be initiated from an Activity with the Application Context to prevent leaking Context,
-        // and before ANY using any ThermalSdkAndroid functions
-        ThermalSdkAndroid.init(getApplicationContext(), enableLoggingInDebug);
+        ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
 
         permissionHandler = new PermissionHandler(showMessage, MainActivity.this);
         cameraHandler = new CameraHandler();
