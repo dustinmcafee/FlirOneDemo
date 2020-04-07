@@ -208,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
      * Update the UI text for connection status
      */
     private void updateConnectionText(Identity identity, String status) {
-        String deviceId = identity != null ? identity.deviceId : "";
-        connectionStatus.setText(getString(R.string.connection_status_text, deviceId + " " + status));
+        String deviceId = identity != null ? " " + identity.deviceId : "";
+        connectionStatus.setText("Connection Status:" + deviceId + " " + status);
     }
 
     /**
@@ -218,12 +218,12 @@ public class MainActivity extends AppCompatActivity {
     private CameraHandler.DiscoveryStatus discoveryStatusListener = new CameraHandler.DiscoveryStatus() {
         @Override
         public void started() {
-            discoveryStatus.setText(getString(R.string.connection_status_text, "discovering"));
+            discoveryStatus.setText(R.string.discovery_status_discovering);
         }
 
         @Override
         public void stopped() {
-            discoveryStatus.setText(getString(R.string.connection_status_text, "not discovering"));
+            discoveryStatus.setText(R.string.discovery_status_text);
         }
     };
 

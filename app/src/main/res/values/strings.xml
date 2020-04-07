@@ -5,8 +5,9 @@
     <string name="connect_f1_text">Connect\nFLIR ONE</string>
     <string name="connect_sim1_text">Connect\nSimulator 1</string>
     <string name="connect_sim2_text">Connect\nSimulator 2</string>
-    <string name="connection_status_text">Status %1$s</string>
-    <string name="discovery_status_text">Discovery status %1$s</string>
+    <string name="connection_status_text">Connection Status: DISCONNECTED</string>
+    <string name="discovery_status_text">Discovery Status: Not Discovering</string>
+    <string name="discovery_status_discovering">Discovery Status: Discovering</string>
     <string name="discover_text">Discover</string>
     <string name="disconnect_text">Disconnect</string>
     <string name="msx_image_desc">image with IR and visual data mixed</string>
