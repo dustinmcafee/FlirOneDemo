@@ -1,11 +1,33 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="LightTheme" parent="AppTheme">
+        <item name="colorPrimary">#00B0FF</item>
+        <item name="colorPrimaryDark">#005090</item>
+        <item name="colorAccent">#0000FF</item>
+        <item name="textColor">#000000</item>
+        <item name="metaTextColor">#606060</item>
+        <item name="bgColor">#ffffff</item>
+        <item name="btnColor">#00B0FF</item>
+        <item name="actionbarColor">#ffffff</item>
+    </style>
+
+    <style name="DarkTheme" parent="AppTheme">
+        <item name="colorPrimary">#005090</item>
+        <item name="colorPrimaryDark">#0000A6</item>
+        <item name="colorAccent">#0000FF</item>
+        <item name="textColor">#ffffff</item>
+        <item name="metaTextColor">#aeaeae</item>
+        <item name="bgColor">#000000</item>
+        <item name="btnColor">#005090</item>
+        <item name="actionbarColor">#1E1E1E</item>
     </style>
 
 </resources>

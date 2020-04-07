@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:forceDarkAllowed="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/bgColor"
     tools:context=".MainActivity"
     android:orientation="vertical" >
 
@@ -18,6 +19,7 @@
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         android:minHeight="?attr/actionBarSize"
+        android:background="?attr/actionbarColor"
         style="?android:attr/actionBarStyle"
         app:popupTheme="@style/Widget.AppCompat.ActionBar.Solid">
 
@@ -25,7 +27,7 @@
             android:id="@+id/disconnect_any"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="#000"
+            android:background="?attr/btnColor"
             android:onClick="disconnect"
             android:text="@string/disconnect_text"
             android:textColor="#fff"
@@ -40,12 +42,14 @@
         android:id="@+id/discovery_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="?attr/textColor"
         android:text="@string/discovery_status_text"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/connection_status_text"
         android:layout_width="wrap_content"
+        android:textColor="?attr/textColor"
         android:layout_height="wrap_content"
         android:text="@string/connection_status_text"/>
 
@@ -57,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:layout_marginVertical="5dp"
-        android:background="#000"
+        android:background="?attr/btnColor"
         android:layout_gravity="center_horizontal"
         android:onClick="startDiscovery"
         android:paddingHorizontal="10dp"
@@ -76,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_marginVertical="5dp"
-            android:background="#000"
+            android:background="?attr/btnColor"
             android:onClick="connectFlirOne"
             android:paddingHorizontal="10dp"
             android:text="@string/connect_f1_text"
@@ -91,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_marginVertical="5dp"
-            android:background="#000"
+            android:background="?attr/btnColor"
             android:onClick="connectSimulatorOne"
             android:paddingHorizontal="10dp"
             android:text="@string/connect_sim1_text"
@@ -106,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_marginVertical="5dp"
-            android:background="#000"
+            android:background="?attr/btnColor"
             android:onClick="connectSimulatorTwo"
             android:paddingHorizontal="10dp"
             android:text="@string/connect_sim2_text"
