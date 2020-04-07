@@ -12,67 +12,86 @@
     <Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="#03A9F4"
         android:minHeight="?attr/actionBarSize">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
             android:background="#00aaaa00">
 
-            <Button
+            <TextView
                 android:id="@+id/discover"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="#000"
                 android:onClick="startDiscovery"
                 android:text="@string/discover_text"
                 android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:paddingHorizontal="10dp"
                 android:textSize="4pt" />
 
-            <Button
+            <TextView
                 android:id="@+id/connect_flir_one"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="#000"
                 android:onClick="connectFlirOne"
                 android:text="@string/connect_f1_text"
                 android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:paddingHorizontal="10dp"
                 android:textSize="4pt" />
 
-            <Button
+            <TextView
                 android:id="@+id/connect_s1"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="#000"
                 android:onClick="connectSimulatorOne"
                 android:text="@string/connect_sim1_text"
                 android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:paddingHorizontal="10dp"
                 android:textSize="4pt" />
 
-            <Button
+            <TextView
                 android:id="@+id/connect_s2"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="#000"
                 android:onClick="connectSimulatorTwo"
                 android:text="@string/connect_sim2_text"
                 android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:paddingHorizontal="10dp"
                 android:textSize="4pt" />
 
-            <Button
+            <TextView
                 android:id="@+id/disconnect_any"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="#000"
                 android:onClick="disconnect"
                 android:text="@string/disconnect_text"
                 android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:paddingHorizontal="10dp"
                 android:textSize="4pt" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </LinearLayout>
 
     </Toolbar>
 
