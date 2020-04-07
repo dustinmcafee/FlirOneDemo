@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:forceDarkAllowed="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
     android:orientation="vertical" >
@@ -17,30 +18,21 @@
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         android:minHeight="?attr/actionBarSize"
+        style="?android:attr/actionBarStyle"
         app:popupTheme="@style/Widget.AppCompat.ActionBar.Solid">
 
-        <LinearLayout
+         <Button
+            android:id="@+id/disconnect_any"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:divider="@drawable/divider"
-            android:dividerPadding="8dp"
-            android:background="#00aaaa00">
-
-            <TextView
-                android:id="@+id/disconnect_any"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#000"
-                android:onClick="disconnect"
-                android:text="@string/disconnect_text"
-                android:textColor="#fff"
-                android:gravity="center_vertical"
-                android:layout_marginVertical="5dp"
-                android:layout_marginHorizontal="5dp"
-                android:paddingHorizontal="10dp"
-                android:textSize="4pt" />
-
-        </LinearLayout>
+            android:background="#000"
+            android:onClick="disconnect"
+            android:text="@string/disconnect_text"
+            android:textColor="#fff"
+            android:layout_marginVertical="5dp"
+            android:layout_marginHorizontal="5dp"
+            android:paddingHorizontal="10dp"
+            android:textSize="4pt" />
 
     </Toolbar>
 
