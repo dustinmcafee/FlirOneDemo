@@ -62,6 +62,7 @@ class CameraHandler {
         void images(Bitmap msxBitmap, Bitmap dcBitmap);
     }
 
+
     //Discovered FLIR cameras
     LinkedList<Identity> foundCameraIdentities = new LinkedList<>();
 
@@ -179,7 +180,6 @@ class CameraHandler {
                 return foundCameraIdentity;
             }
         }
-
         return null;
     }
 
@@ -211,11 +211,13 @@ class CameraHandler {
             // extract information on the background thread and send the specific information to the UI thread
 
             //Get a bitmap with only IR data
+
             Bitmap msxBitmap;
             {
-                thermalImage.getFusion().setFusionMode(FusionMode.THERMAL_ONLY);
+                thermalImage.getFusion().setFusionMode(FlirEmulator.curr_fusion_mode);
                 msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
             }
+
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
             Bitmap dcBitmap = BitmapAndroid.createBitmap(thermalImage.getFusion().getPhoto()).getBitMap();

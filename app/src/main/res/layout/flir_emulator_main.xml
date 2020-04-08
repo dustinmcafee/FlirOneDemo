@@ -32,8 +32,6 @@
             android:maxWidth="50dp"
             android:contentDescription="@string/photo_image_desc" />
 
-
-
     </RelativeLayout>
 
     <LinearLayout

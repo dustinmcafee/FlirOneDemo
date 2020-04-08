@@ -7,9 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/bgColor"
     tools:context=".MainActivity"
-    android:orientation="vertical" >
-
-    <!-- Title  -->
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -50,7 +48,8 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:background="?attr/btnColor"
-            android:onClick="disconnect"
+            android:onClick="connectFlirOne"
+            android:contentDescription="@string/connect_f1_text_desc"
             android:text="@string/connect_f1_text"
             android:textColor="?attr/textColor"
             android:textSize="18sp"
@@ -65,6 +64,7 @@
             android:layout_height="60dp"
             android:background="?attr/btnColor"
             android:onClick="connectSimulatorOne"
+            android:contentDescription="@string/connect_sim1_text_desc"
             android:text="@string/connect_sim1_text"
             android:textColor="?attr/textColor"
             android:textSize="18sp"
@@ -79,6 +79,7 @@
             android:layout_height="60dp"
             android:background="?attr/btnColor"
             android:onClick="connectSimulatorTwo"
+            android:contentDescription="@string/connect_sim2_text_desc"
             android:text="@string/connect_sim2_text"
             android:textColor="?attr/textColor"
             android:textSize="18sp"

@@ -1,35 +1,15 @@
 [
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_action_name.xml.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-anydpi/ic_action_name.xml"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
-    },
-    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_toolbar_back.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xhdpi/ic_toolbar_back.png"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/layout/activity_main.xml"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_toolbar_switch.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-hdpi/ic_toolbar_switch.png"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_action_name.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xxhdpi/ic_action_name.png"
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/layout/activity_main.xml"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_toolbar_back.xml.flat",
@@ -40,20 +20,16 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xxxhdpi/ic_icon_elo_foreground.png"
     },
     {
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_toolbar_shuffle.png.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xhdpi/ic_toolbar_shuffle.png"
+    },
+    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_discover.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xhdpi/ic_action_discover.png"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-mdpi/ic_launcher.png"
-    },
-    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_icon_elo_round.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-mdpi/ic_icon_elo_round.png"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_icon_elo_round.png.flat",
@@ -76,12 +52,16 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-mdpi/ic_action_discover.png"
     },
     {
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_toolbar_shuffle.png.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-hdpi/ic_toolbar_shuffle.png"
+    },
+    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_icon_elo.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xhdpi/ic_icon_elo.png"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_toolbar_shuffle.png.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xxhdpi/ic_toolbar_shuffle.png"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_icon_elo_round.png.flat",
@@ -108,10 +88,6 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xxxhdpi/ic_icon_elo.png"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"
-    },
-    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_icon_elo_foreground.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-hdpi/ic_icon_elo_foreground.png"
     },
@@ -128,12 +104,8 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/menu/toolbar.xml"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_toolbar_shuffle.xml.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-anydpi/ic_toolbar_shuffle.xml"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xhdpi_ic_icon_elo_foreground.png.flat",
@@ -160,24 +132,12 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xxhdpi/ic_toolbar_back.png"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_action_name.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-mdpi/ic_action_name.png"
-    },
-    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xxhdpi_ic_toolbar_switch.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xxhdpi/ic_toolbar_switch.png"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_icon_elo.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xhdpi/ic_icon_elo.png"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_toolbar_switch.png.flat",
@@ -196,24 +156,16 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-mdpi/ic_toolbar_back.png"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-xhdpi_ic_action_name.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-xhdpi/ic_action_name.png"
-    },
-    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_icon_elo.png.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-mdpi/ic_icon_elo.png"
-    },
-    {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-hdpi_ic_action_name.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-hdpi/ic_action_name.png"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-anydpi_ic_toolbar_switch.xml.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-anydpi/ic_toolbar_switch.xml"
     },
     {
-        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable-mdpi_ic_toolbar_shuffle.png.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable-mdpi/ic_toolbar_shuffle.png"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable_divider.xml.flat",

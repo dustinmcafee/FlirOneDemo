@@ -2,9 +2,7 @@
     <string name="app_name">FlirOneCamera</string>
     <string name="title_text">FLIR ONE Sample application</string>
     <string name="sdk_version_text">Thermal SDK version %1$s</string>
-    <string name="connect_f1_text">Connect\nFLIR ONE</string>
-    <string name="connect_sim1_text">Connect\nSimulator 1</string>
-    <string name="connect_sim2_text">Connect\nSimulator 2</string>
+
     <string name="connection_status_text">Connection Status: DISCONNECTED</string>
     <string name="discovery_status_text">Discovery Status: Not Discovering</string>
     <string name="discovery_status_discovering">Discovery Status: Discovering</string>
@@ -12,5 +10,13 @@
     <string name="disconnect_text">Disconnect</string>
     <string name="msx_image_desc">image with IR and visual data mixed</string>
     <string name="photo_image_desc">image with only visual image</string>
+
     <string name="switch_filter">Switch Filter</string>
+
+    <string name="connect_f1_text">Connect\nFLIR ONE</string>
+    <string name="connect_sim1_text">Connect\nSimulator 1</string>
+    <string name="connect_sim2_text">Connect\nSimulator 2</string>
+    <string name="connect_f1_text_desc">Connect to a physical FlirOne Camera</string>
+    <string name="connect_sim1_text_desc">Connect to a the FlirOne C++ Emulator</string>
+    <string name="connect_sim2_text_desc">Connect to the FlirOne Emulator</string>
 </resources>

@@ -14,10 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
+import com.flir.thermalsdk.image.ThermalImage;
+import com.flir.thermalsdk.image.fusion.FusionMode;
+import com.flir.thermalsdk.live.Camera;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 
@@ -31,14 +33,15 @@ import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
 
 public class FlirEmulator extends AppCompatActivity {
     private static final String TAG = "FlirEmulator";
-    private MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirEmulator.this, message, Toast.LENGTH_SHORT).show();
+
+    public MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirEmulator.this, message, Toast.LENGTH_SHORT).show();
+
     public UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
     public LinkedBlockingQueue<FrameDataHolder> framesBuffer = new LinkedBlockingQueue<>(21);
 
-
+    public static FusionMode curr_fusion_mode = FusionMode.THERMAL_ONLY;
 
     private TextView connectionStatus;
-    private TextView discoveryStatus;
 
     private ImageView msxImage;
     private ImageView photoImage;
@@ -52,21 +55,29 @@ public class FlirEmulator extends AppCompatActivity {
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
-        discoveryStatus = findViewById(R.id.discovery_status);
         // Show Thermal Android SDK version
 
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
 
-        connectSimulatorTwo();
-//        ((MainActivity) getApplicationContext()).connectedIdentity
 
+        switch (getIntent().getAction()) {
+            case MainActivity.ACTION_START_FLIR_ONE:
+                connect(cameraHandler.getFlirOne());
+                break;
+            case MainActivity.ACTION_START_SIMULATOR_ONE:
+                connect(cameraHandler.getCppEmulator());
+                break;
+            case MainActivity.ACTION_START_SIMULATOR_TWO:
+                connect(cameraHandler.getFlirOneEmulator());
+                break;
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar1,menu);
+        getMenuInflater().inflate(R.menu.toolbar1, menu);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
@@ -77,10 +88,17 @@ public class FlirEmulator extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.toolbar_switch:
-                switchFilter();
+                switchCamera();
                 break;
+            case R.id.toolbar_shuffle:
+                if(msxImage.getVisibility() == View.VISIBLE){
+                    switchFilter();
+                } else{
+                    Toast.makeText(getApplicationContext(),"In normal camera mode! Switch camera mode first.",Toast.LENGTH_SHORT).show();
+                }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -91,22 +109,51 @@ public class FlirEmulator extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-    public void connectSimulatorTwo() {
-        connect(cameraHandler.getFlirOneEmulator());
-    }
-
-    public void onClickDisconnectFlirEmulator(){
+    public void onClickDisconnectFlirEmulator() {
         disconnect();
         finish();
     }
 
-    public void switchFilter(){
-        if(findViewById(R.id.msx_image).getVisibility() == View.VISIBLE){
+    public void switchCamera() {
+        if (findViewById(R.id.msx_image).getVisibility() == View.VISIBLE) {
             findViewById(R.id.msx_image).setVisibility(View.INVISIBLE);
             findViewById(R.id.photo_image).setVisibility(View.VISIBLE);
         } else {
             findViewById(R.id.msx_image).setVisibility(View.VISIBLE);
             findViewById(R.id.photo_image).setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void switchFilter() {
+        switch (curr_fusion_mode) {
+            case THERMAL_ONLY:
+                curr_fusion_mode = FusionMode.VISUAL_ONLY;
+                Toast.makeText(getApplicationContext(),"Mode: VISUAL_ONLY",Toast.LENGTH_SHORT).show();
+                break;
+            case VISUAL_ONLY:
+                curr_fusion_mode = FusionMode.BLENDING;
+                Toast.makeText(getApplicationContext(),"Mode: BLENDING",Toast.LENGTH_SHORT).show();
+                break;
+            case BLENDING:
+                curr_fusion_mode = FusionMode.MSX;
+                Toast.makeText(getApplicationContext(),"Mode: MSX",Toast.LENGTH_SHORT).show();
+                break;
+            case MSX:
+                curr_fusion_mode = FusionMode.THERMAL_FUSION;
+                Toast.makeText(getApplicationContext(),"Mode: THERMAL_FUSION",Toast.LENGTH_SHORT).show();
+                break;
+            case THERMAL_FUSION:
+                curr_fusion_mode = FusionMode.PICTURE_IN_PICTURE;
+                Toast.makeText(getApplicationContext(),"Mode: PICTURE_IN_PICTURE",Toast.LENGTH_SHORT).show();
+                break;
+            case PICTURE_IN_PICTURE:
+                curr_fusion_mode = FusionMode.COLOR_NIGHT_VISION;
+                Toast.makeText(getApplicationContext(),"Mode: COLOR_NIGHT_VISION",Toast.LENGTH_SHORT).show();
+                break;
+            case COLOR_NIGHT_VISION:
+                curr_fusion_mode = FusionMode.THERMAL_ONLY;
+                Toast.makeText(getApplicationContext(),"Mode: THERMAL_ONLY",Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -149,7 +196,6 @@ public class FlirEmulator extends AppCompatActivity {
         } else {
             doConnect(identity);
         }
-
     }
 
     private void doConnect(Identity identity) {
@@ -203,16 +249,16 @@ public class FlirEmulator extends AppCompatActivity {
         public void images(Bitmap msxBitmap, Bitmap dcBitmap) {
 
             try {
-                framesBuffer.put(new FrameDataHolder(msxBitmap,dcBitmap));
+                framesBuffer.put(new FrameDataHolder(msxBitmap, dcBitmap));
             } catch (InterruptedException e) {
                 //if interrupted while waiting for adding a new item in the queue
-                Log.e(TAG,"images(), unable to add incoming images to frames buffer, exception:"+e);
+                Log.e(TAG, "images(), unable to add incoming images to frames buffer, exception:" + e);
             }
 
             runOnUiThread(() -> {
-                Log.d(TAG,"framebuffer size:"+framesBuffer.size());
+                Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                 FrameDataHolder poll = (FrameDataHolder) framesBuffer.poll();
-                if(poll != null) {
+                if (poll != null) {
                     msxImage.setImageBitmap(poll.msxBitmap);
                     photoImage.setImageBitmap(poll.dcBitmap);
                 }
@@ -220,6 +266,7 @@ public class FlirEmulator extends AppCompatActivity {
 
         }
     };
+
 
     public UsbPermissionHandler.UsbPermissionListener permissionListener = new UsbPermissionHandler.UsbPermissionListener() {
         @Override
@@ -234,7 +281,7 @@ public class FlirEmulator extends AppCompatActivity {
 
         @Override
         public void error(UsbPermissionHandler.UsbPermissionListener.ErrorType errorType, final Identity identity) {
-            FlirEmulator.this.showMessage.show("Error when asking for permission for FLIR ONE, error:"+errorType+ " identity:" +identity);
+            FlirEmulator.this.showMessage.show("Error when asking for permission for FLIR ONE, error:" + errorType + " identity:" + identity);
         }
     };
 }

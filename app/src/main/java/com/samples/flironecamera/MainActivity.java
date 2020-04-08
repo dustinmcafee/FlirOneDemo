@@ -50,6 +50,9 @@ import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    public static final String ACTION_START_FLIR_ONE = "ACTION_START_FLIR_ONE";
+    public static final String ACTION_START_SIMULATOR_ONE = "ACTION_START_SIMULATOR_ONE";
+    public static final String ACTION_START_SIMULATOR_TWO = "ACTION_START_SIMULATOR_TWO";
 
     //Handles Android permission for eg Network
     public PermissionHandler permissionHandler;
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public interface ShowMessage {
         void show(String message);
     }
-    private ShowMessage showMessage = message -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+    public ShowMessage showMessage = message -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,17 +100,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void connectFlirOne(View view) {
-//        connect(cameraHandler.getFlirOne());
+        Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+        intent.setAction(ACTION_START_FLIR_ONE);
+        startActivity(intent);
     }
 
     public void connectSimulatorOne(View view) {
-//        connect(cameraHandler.getCppEmulator());
+        Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+        intent.setAction(ACTION_START_SIMULATOR_ONE);
+        startActivity(intent);
     }
 
     public void connectSimulatorTwo(View view) {
         Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+        intent.setAction(ACTION_START_SIMULATOR_TWO);
         startActivity(intent);
-//        connect(cameraHandler.getFlirOneEmulator());
     }
 
     public void disconnect(View view) {
