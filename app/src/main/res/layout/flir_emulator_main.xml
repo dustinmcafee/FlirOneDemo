@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,64 +10,6 @@
     android:orientation="vertical" >
 
     <!-- Title  -->
-
-    <Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/actionbarColor"
-        style="?android:attr/actionBarStyle"
-        app:popupTheme="@style/Widget.AppCompat.ActionBar.Solid">
-
-         <Button
-            android:id="@+id/disconnect_any"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?attr/btnColor"
-            android:onClick="onClickDisconnectFlirEmulator"
-            android:text="@string/disconnect_text"
-            android:textColor="#fff"
-            android:layout_marginVertical="5dp"
-            android:layout_marginHorizontal="5dp"
-            android:paddingHorizontal="10dp"
-            android:textSize="4pt" />
-
-        <Button
-            android:id="@+id/switch_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="5dp"
-            android:background="?attr/btnColor"
-            android:layout_gravity="left"
-            android:onClick="switchFilter"
-            android:paddingHorizontal="10dp"
-            android:text="@string/switch_filter"
-            android:textColor="#fff"
-            android:textSize="4pt" />
-
-    </Toolbar>
-
-    <TextView
-        android:id="@+id/discovery_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/textColor"
-        android:text="@string/discovery_status_text"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/connection_status_text"
-        android:layout_width="wrap_content"
-        android:textColor="?attr/textColor"
-        android:layout_height="wrap_content"
-        android:text="@string/connection_status_text"/>
-
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -90,18 +32,34 @@
             android:maxWidth="50dp"
             android:contentDescription="@string/photo_image_desc" />
 
-        <!-- Show SDK version  -->
-        <TextView
-            android:id="@+id/sdk_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:text="@string/sdk_version_text"
-            android:textSize="12sp" />
+
 
     </RelativeLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <!-- Show SDK version  -->
+        <TextView
+            android:id="@+id/sdk_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="?attr/textColor"
+            android:text="@string/sdk_version_text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/connection_status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/textColor"
+            android:text="@string/connection_status_text"
+            android:gravity="center"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+</RelativeLayout>

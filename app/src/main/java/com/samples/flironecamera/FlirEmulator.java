@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
@@ -24,7 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static com.samples.flironecamera.FlirCameraContext.cameraHandler;
 import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
 
-public class FlirEmulator extends Activity {
+public class FlirEmulator extends AppCompatActivity {
     private static final String TAG = "FlirEmulator";
     private MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirEmulator.this, message, Toast.LENGTH_SHORT).show();
     public UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
@@ -39,7 +44,6 @@ public class FlirEmulator extends Activity {
     private ImageView photoImage;
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,7 @@ public class FlirEmulator extends Activity {
         connectionStatus = findViewById(R.id.connection_status_text);
         discoveryStatus = findViewById(R.id.discovery_status);
         // Show Thermal Android SDK version
+
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
@@ -58,16 +63,44 @@ public class FlirEmulator extends Activity {
 //        ((MainActivity) getApplicationContext()).connectedIdentity
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar1,menu);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.toolbar_switch:
+                switchFilter();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onClickDisconnectFlirEmulator();
+        return super.onSupportNavigateUp();
+    }
+
     public void connectSimulatorTwo() {
         connect(cameraHandler.getFlirOneEmulator());
     }
 
-    public void onClickDisconnectFlirEmulator(View view){
+    public void onClickDisconnectFlirEmulator(){
         disconnect();
         finish();
     }
 
-    public void switchFilter(View view){
+    public void switchFilter(){
         if(findViewById(R.id.msx_image).getVisibility() == View.VISIBLE){
             findViewById(R.id.msx_image).setVisibility(View.INVISIBLE);
             findViewById(R.id.photo_image).setVisibility(View.VISIBLE);

@@ -10,9 +10,12 @@
  * ******************************************************************/
 package com.samples.flironecamera;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +29,11 @@ import com.flir.thermalsdk.log.ThermalLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import static com.samples.flironecamera.FlirCameraContext.cameraHandler;
 import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
@@ -80,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void startDiscovery(View view) {
+    public void startDiscovery() {
         cameraHandler.startDiscovery(cameraDiscoveryListener, discoveryStatusListener);
     }
 
-    public void stopDiscovery(View view) {
+    public void stopDiscovery() {
         cameraHandler.stopDiscovery(discoveryStatusListener);
     }
 
@@ -105,6 +112,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void disconnect(View view) {
         disconnect();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar,menu);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_icon_elo_round);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.toolbar_discover:
+                startDiscovery();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -182,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 cameraHandler.add(identity);
                 MainActivity.this.showMessage.show("Camera Found: " + identity);
-                stopDiscovery(null);
+                stopDiscovery();
             });
         }
 
@@ -191,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onDiscoveryError communicationInterface:" + communicationInterface + " errorCode:" + errorCode);
 
             runOnUiThread(() -> {
-                stopDiscovery(null);
+                stopDiscovery();
                 MainActivity.this.showMessage.show("onDiscoveryError communicationInterface:" + communicationInterface + " errorCode:" + errorCode);
             });
         }

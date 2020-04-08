@@ -417,6 +417,7 @@ color foreground_material_dark
 color foreground_material_light
 color highlighted_text_material_dark
 color highlighted_text_material_light
+color ic_icon_elo_background
 color material_blue_grey_800
 color material_blue_grey_900
 color material_blue_grey_950
@@ -665,8 +666,13 @@ drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
 drawable divider
+drawable ic_action_discover
+drawable ic_action_name
+drawable ic_icon_elo
 drawable ic_launcher_background
 drawable ic_launcher_foreground
+drawable ic_toolbar_back
+drawable ic_toolbar_switch
 drawable notification_action_background
 drawable notification_bg
 drawable notification_bg_low
@@ -768,8 +774,6 @@ id dialog_button
 id dimensions
 id direct
 id disableHome
-id disconnect_any
-id discover
 id discovery_status
 id edit_query
 id end
@@ -847,7 +851,6 @@ id standard
 id start
 id submenuarrow
 id submit_area
-id switch_filter
 id tabMode
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
@@ -865,7 +868,8 @@ id time
 id title
 id titleDividerNoCustom
 id title_template
-id toolbar
+id toolbar_discover
+id toolbar_switch
 id top
 id topPanel
 id unchecked
@@ -929,6 +933,10 @@ layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
 menu toolbar
+menu toolbar1
+mipmap ic_icon_elo
+mipmap ic_icon_elo_foreground
+mipmap ic_icon_elo_round
 mipmap ic_launcher
 mipmap ic_launcher_round
 string abc_action_bar_home_description
