@@ -6,7 +6,7 @@
     android:forceDarkAllowed="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/bgColor"
-    tools:context=".MainActivity"
+    tools:context=".FlirEmulator"
     android:orientation="vertical" >
 
     <!-- Title  -->
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?attr/btnColor"
-            android:onClick="disconnect"
+            android:onClick="onClickDisconnectFlirEmulator"
             android:text="@string/disconnect_text"
             android:textColor="#fff"
             android:layout_marginVertical="5dp"
@@ -54,71 +54,6 @@
         android:text="@string/connection_status_text"/>
 
 
-    <!-- Connect to FLIR ONE / Emulators buttons  -->
-    <Button
-        android:id="@+id/discover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:layout_marginVertical="5dp"
-        android:background="?attr/btnColor"
-        android:layout_gravity="center_horizontal"
-        android:onClick="startDiscovery"
-        android:paddingHorizontal="10dp"
-        android:text="@string/discover_text"
-        android:textColor="#fff"
-        android:textSize="4pt" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/buttonBarButtonStyle" >
-
-        <Button
-            android:id="@+id/connect_flir_one"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="5dp"
-            android:background="?attr/btnColor"
-            android:onClick="disconnect"
-            android:paddingHorizontal="10dp"
-            android:text="@string/connect_f1_text"
-            android:textColor="#fff"
-            android:visibility="gone"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textSize="4pt" />
-
-        <Button
-            android:id="@+id/connect_s1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="5dp"
-            android:background="?attr/btnColor"
-            android:onClick="connectSimulatorOne"
-            android:paddingHorizontal="10dp"
-            android:text="@string/connect_sim1_text"
-            android:textColor="#fff"
-            android:visibility="gone"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textSize="4pt" />
-
-        <Button
-            android:id="@+id/connect_s2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="5dp"
-            android:background="?attr/btnColor"
-            android:onClick="connectSimulatorTwo"
-            android:paddingHorizontal="10dp"
-            android:text="@string/connect_sim2_text"
-            android:textColor="#fff"
-            android:visibility="gone"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textSize="4pt" />
-    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

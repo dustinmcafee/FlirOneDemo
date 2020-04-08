@@ -10,16 +10,14 @@
  * ******************************************************************/
 package com.samples.flironecamera;
 
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.flir.thermalsdk.ErrorCode;
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
-import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
 import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
@@ -27,10 +25,11 @@ import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;
 import com.flir.thermalsdk.log.ThermalLog;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.LinkedBlockingQueue;
 import androidx.appcompat.app.AppCompatActivity;
+
+import static com.samples.flironecamera.FlirCameraContext.cameraHandler;
+import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
 
 /**
  * Sample application for scanning a FLIR ONE or a built in emulator
@@ -46,20 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     //Handles Android permission for eg Network
-    private PermissionHandler permissionHandler;
+    public PermissionHandler permissionHandler;
 
-    //Handles network camera operations
-    private CameraHandler cameraHandler;
-
-    private Identity connectedIdentity = null;
+//    public Identity connectedIdentity = null;
     private TextView connectionStatus;
     private TextView discoveryStatus;
-
-    private ImageView msxImage;
-    private ImageView photoImage;
-
-    private LinkedBlockingQueue<FrameDataHolder> framesBuffer = new LinkedBlockingQueue<>(21);
-    private UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
 
     /**
      * Show message on the screen
@@ -82,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         connectionStatus = findViewById(R.id.connection_status_text);
         discoveryStatus = findViewById(R.id.discovery_status);
-        msxImage = findViewById(R.id.msx_image);
-        photoImage = findViewById(R.id.photo_image);
 
         // Show Thermal Android SDK version
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
@@ -102,15 +90,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void connectFlirOne(View view) {
-        connect(cameraHandler.getFlirOne());
+//        connect(cameraHandler.getFlirOne());
     }
 
     public void connectSimulatorOne(View view) {
-        connect(cameraHandler.getCppEmulator());
+//        connect(cameraHandler.getCppEmulator());
     }
 
     public void connectSimulatorTwo(View view) {
-        connect(cameraHandler.getFlirOneEmulator());
+        Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+        startActivity(intent);
+//        connect(cameraHandler.getFlirOneEmulator());
     }
 
     public void disconnect(View view) {
@@ -124,72 +114,6 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
         permissionHandler.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * Connect to a Camera
-     */
-    private void connect(Identity identity) {
-        //We don't have to stop a discovery but it's nice to do if we have found the camera that we are looking for
-        cameraHandler.stopDiscovery(discoveryStatusListener);
-
-        if (connectedIdentity != null) {
-            Log.d(TAG, "connect(), in *this* code sample we only support one camera connection at the time");
-            showMessage.show("connect(), in *this* code sample we only support one camera connection at the time");
-            return;
-        }
-
-        if (identity == null) {
-            Log.d(TAG, "connect(), can't connect, no camera available");
-            showMessage.show("connect(), can't connect, no camera available");
-            return;
-        }
-
-        connectedIdentity = identity;
-
-        updateConnectionText(identity, "CONNECTING");
-        //IF your using "USB_DEVICE_ATTACHED" and "usb-device vendor-id" in the Android Manifest
-        // you don't need to request permission, see documentation for more information
-        if (UsbPermissionHandler.isFlirOne(identity)) {
-            usbPermissionHandler.requestFlirOnePermisson(identity, this, permissionListener);
-        } else {
-            doConnect(identity);
-        }
-
-    }
-
-    private UsbPermissionHandler.UsbPermissionListener permissionListener = new UsbPermissionHandler.UsbPermissionListener() {
-        @Override
-        public void permissionGranted(@NotNull Identity identity) {
-            doConnect(identity);
-        }
-
-        @Override
-        public void permissionDenied(@NotNull Identity identity) {
-            MainActivity.this.showMessage.show("Permission was denied for identity ");
-        }
-
-        @Override
-        public void error(UsbPermissionHandler.UsbPermissionListener.ErrorType errorType, final Identity identity) {
-            MainActivity.this.showMessage.show("Error when asking for permission for FLIR ONE, error:"+errorType+ " identity:" +identity);
-        }
-    };
-
-    private void doConnect(Identity identity) {
-        new Thread(() -> {
-            try {
-                cameraHandler.connect(identity, connectionStatusListener);
-                runOnUiThread(() -> {
-                    updateConnectionText(identity, "CONNECTED");
-                    cameraHandler.startStream(streamDataListener);
-                });
-            } catch (IOException e) {
-                runOnUiThread(() -> {
-                    Log.d(TAG, "Could not connect: " + e);
-                    updateConnectionText(identity, "DISCONNECTED");
-                });
-            }
-        }).start();
     }
 
     /**
@@ -216,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Callback for discovery status, using it to update UI
      */
-    private CameraHandler.DiscoveryStatus discoveryStatusListener = new CameraHandler.DiscoveryStatus() {
+    public CameraHandler.DiscoveryStatus discoveryStatusListener = new CameraHandler.DiscoveryStatus() {
         @Override
         public void started() {
             discoveryStatus.setText(R.string.discovery_status_discovering);
@@ -233,43 +157,10 @@ public class MainActivity extends AppCompatActivity {
      * <p>
      * Note that callbacks are received on a non-ui thread so have to eg use {@link #runOnUiThread(Runnable)} to interact view UI components
      */
-    private ConnectionStatusListener connectionStatusListener = errorCode -> {
+    public ConnectionStatusListener connectionStatusListener = errorCode -> {
         Log.d(TAG, "onDisconnected errorCode:" + errorCode);
 
         runOnUiThread(() -> updateConnectionText(connectedIdentity, "DISCONNECTED"));
-    };
-
-    private final CameraHandler.StreamDataListener streamDataListener = new CameraHandler.StreamDataListener() {
-
-        @Override
-        public void images(FrameDataHolder dataHolder) {
-
-            runOnUiThread(() -> {
-                msxImage.setImageBitmap(dataHolder.msxBitmap);
-                photoImage.setImageBitmap(dataHolder.dcBitmap);
-            });
-        }
-
-        @Override
-        public void images(Bitmap msxBitmap, Bitmap dcBitmap) {
-
-            try {
-                framesBuffer.put(new FrameDataHolder(msxBitmap,dcBitmap));
-            } catch (InterruptedException e) {
-                //if interrupted while waiting for adding a new item in the queue
-                Log.e(TAG,"images(), unable to add incoming images to frames buffer, exception:"+e);
-            }
-
-            runOnUiThread(() -> {
-                Log.d(TAG,"framebuffer size:"+framesBuffer.size());
-                FrameDataHolder poll = (FrameDataHolder) framesBuffer.poll();
-                if(poll != null) {
-                    msxImage.setImageBitmap(poll.msxBitmap);
-                    photoImage.setImageBitmap(poll.dcBitmap);
-                }
-            });
-
-        }
     };
 
     /**
