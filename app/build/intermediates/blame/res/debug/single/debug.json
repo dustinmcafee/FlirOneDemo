@@ -16,6 +16,10 @@
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
     },
     {
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/menu_toolbar.xml.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/menu/toolbar.xml"
+    },
+    {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
     },
@@ -46,6 +50,10 @@
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/layout_flir_emulator_main.xml.flat",
         "source": "/home/acozma/ELO/apk/flir/app/src/main/res/layout/flir_emulator_main.xml"
+    },
+    {
+        "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/home/acozma/ELO/apk/flir/app/src/main/res/drawable/ic_launcher_foreground.xml"
     },
     {
         "merged": "/home/acozma/ELO/apk/flir/app/build/intermediates/res/merged/debug/mipmap-mdpi_ic_launcher.png.flat",
