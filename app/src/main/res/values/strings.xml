@@ -12,4 +12,5 @@
     <string name="disconnect_text">Disconnect</string>
     <string name="msx_image_desc">image with IR and visual data mixed</string>
     <string name="photo_image_desc">image with only visual image</string>
+    <string name="switch_filter">Switch Filter</string>
 </resources>

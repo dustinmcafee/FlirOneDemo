@@ -36,6 +36,20 @@
             android:paddingHorizontal="10dp"
             android:textSize="4pt" />
 
+        <Button
+            android:id="@+id/switch_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="5dp"
+            android:background="?attr/btnColor"
+            android:layout_gravity="left"
+            android:onClick="switchFilter"
+            android:paddingHorizontal="10dp"
+            android:text="@string/switch_filter"
+            android:textColor="#fff"
+            android:textSize="4pt" />
+
     </Toolbar>
 
     <TextView
@@ -61,18 +75,17 @@
 
         <ImageView
             android:id="@+id/msx_image"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:minWidth="50dp"
             android:maxWidth="50dp"
             android:contentDescription="@string/msx_image_desc" />
 
         <ImageView
             android:id="@+id/photo_image"
-            android:layout_width="125dp"
-            android:layout_height="125dp"
-            android:layout_below="@+id/msx_image"
-            android:layout_marginTop="15dp"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:visibility="invisible"
             android:minWidth="50dp"
             android:maxWidth="50dp"
             android:contentDescription="@string/photo_image_desc" />

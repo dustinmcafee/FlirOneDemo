@@ -67,6 +67,16 @@ public class FlirEmulator extends Activity {
         finish();
     }
 
+    public void switchFilter(View view){
+        if(findViewById(R.id.msx_image).getVisibility() == View.VISIBLE){
+            findViewById(R.id.msx_image).setVisibility(View.INVISIBLE);
+            findViewById(R.id.photo_image).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.msx_image).setVisibility(View.VISIBLE);
+            findViewById(R.id.photo_image).setVisibility(View.INVISIBLE);
+        }
+    }
+
     /**
      * Disconnect to a camera
      */
