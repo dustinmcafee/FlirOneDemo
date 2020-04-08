@@ -23,17 +23,19 @@
         style="?android:attr/actionBarStyle"
         app:popupTheme="@style/Widget.AppCompat.ActionBar.Solid">
 
-         <Button
-            android:id="@+id/disconnect_any"
+        <!-- Connect to FLIR ONE / Emulators buttons  -->
+        <Button
+            android:id="@+id/discover"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?attr/btnColor"
-            android:onClick="disconnect"
-            android:text="@string/disconnect_text"
-            android:textColor="#fff"
-            android:layout_marginVertical="5dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
+            android:layout_marginVertical="5dp"
+            android:background="?attr/btnColor"
+            android:layout_gravity="left"
+            android:onClick="startDiscovery"
             android:paddingHorizontal="10dp"
+            android:text="@string/discover_text"
+            android:textColor="#fff"
             android:textSize="4pt" />
 
     </Toolbar>
@@ -52,22 +54,6 @@
         android:textColor="?attr/textColor"
         android:layout_height="wrap_content"
         android:text="@string/connection_status_text"/>
-
-
-    <!-- Connect to FLIR ONE / Emulators buttons  -->
-    <Button
-        android:id="@+id/discover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:layout_marginVertical="5dp"
-        android:background="?attr/btnColor"
-        android:layout_gravity="center_horizontal"
-        android:onClick="startDiscovery"
-        android:paddingHorizontal="10dp"
-        android:text="@string/discover_text"
-        android:textColor="#fff"
-        android:textSize="4pt" />
 
     <LinearLayout
         android:layout_width="match_parent"
