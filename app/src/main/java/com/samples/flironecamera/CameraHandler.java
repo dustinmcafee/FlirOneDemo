@@ -10,6 +10,9 @@
 package com.samples.flironecamera;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
@@ -218,9 +221,19 @@ class CameraHandler {
                 msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
             }
 
+            Canvas canvas = new Canvas(msxBitmap);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.RED);
+            canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,10,paint);
+            canvas.drawText("Max: " + thermalImage.getStatistics().max.value + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
+            paint.setColor(Color.BLUE);
+            canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,10,paint);
+            canvas.drawText("Min: " + thermalImage.getStatistics().min.value + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
+
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
             Bitmap dcBitmap = BitmapAndroid.createBitmap(thermalImage.getFusion().getPhoto()).getBitMap();
+
 
             Log.d(TAG,"adding images to cache");
             streamDataListener.images(msxBitmap,dcBitmap);

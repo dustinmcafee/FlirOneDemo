@@ -134,6 +134,14 @@ public class FlirEmulator extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Mode: MSX",Toast.LENGTH_SHORT).show();
                 break;
             case MSX:
+                curr_fusion_mode = FusionMode.THERMAL_FUSION;
+                Toast.makeText(getApplicationContext(),"Mode: THERMAL_FUSION",Toast.LENGTH_SHORT).show();
+                break;
+            case THERMAL_FUSION:
+                curr_fusion_mode = FusionMode.PICTURE_IN_PICTURE;
+                Toast.makeText(getApplicationContext(),"Mode: PICTURE_IN_PICTURE",Toast.LENGTH_SHORT).show();
+                break;
+            case PICTURE_IN_PICTURE:
                 curr_fusion_mode = FusionMode.COLOR_NIGHT_VISION;
                 Toast.makeText(getApplicationContext(),"Mode: COLOR_NIGHT_VISION",Toast.LENGTH_SHORT).show();
                 break;
