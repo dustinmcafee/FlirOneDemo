@@ -98,7 +98,6 @@ public class FlirEmulator extends AppCompatActivity {
                 } else{
                     Toast.makeText(getApplicationContext(),"In normal camera mode! Switch camera mode first.",Toast.LENGTH_SHORT).show();
                 }
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -126,11 +125,7 @@ public class FlirEmulator extends AppCompatActivity {
 
     public void switchFilter() {
         switch (curr_fusion_mode) {
-            case THERMAL_ONLY:
-                curr_fusion_mode = FusionMode.VISUAL_ONLY;
-                Toast.makeText(getApplicationContext(),"Mode: VISUAL_ONLY",Toast.LENGTH_SHORT).show();
-                break;
-            case VISUAL_ONLY:
+            case THERMAL_ONLY: ;
                 curr_fusion_mode = FusionMode.BLENDING;
                 Toast.makeText(getApplicationContext(),"Mode: BLENDING",Toast.LENGTH_SHORT).show();
                 break;
@@ -139,14 +134,6 @@ public class FlirEmulator extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Mode: MSX",Toast.LENGTH_SHORT).show();
                 break;
             case MSX:
-                curr_fusion_mode = FusionMode.THERMAL_FUSION;
-                Toast.makeText(getApplicationContext(),"Mode: THERMAL_FUSION",Toast.LENGTH_SHORT).show();
-                break;
-            case THERMAL_FUSION:
-                curr_fusion_mode = FusionMode.PICTURE_IN_PICTURE;
-                Toast.makeText(getApplicationContext(),"Mode: PICTURE_IN_PICTURE",Toast.LENGTH_SHORT).show();
-                break;
-            case PICTURE_IN_PICTURE:
                 curr_fusion_mode = FusionMode.COLOR_NIGHT_VISION;
                 Toast.makeText(getApplicationContext(),"Mode: COLOR_NIGHT_VISION",Toast.LENGTH_SHORT).show();
                 break;
