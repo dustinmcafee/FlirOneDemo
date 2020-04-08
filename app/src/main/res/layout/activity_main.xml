@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
             android:text="FlirOne Camera"
-            android:textSize="50sp"
+            android:textSize="40sp"
             android:gravity="center"
             android:textStyle="bold"
             android:padding="20sp"
