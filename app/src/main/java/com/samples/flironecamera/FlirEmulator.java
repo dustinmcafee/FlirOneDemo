@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -48,7 +49,8 @@ public class FlirEmulator extends AppCompatActivity {
 
     private CustomImageView msxImage;
     private ImageView photoImage;
-
+    private static Rect rectangle = new Rect(0, 0, 0, 0);
+    private static Rect baseRectangle = new Rect(0, 0, 0, 0);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +78,18 @@ public class FlirEmulator extends AppCompatActivity {
                 connect(cameraHandler.getFlirOneEmulator());
                 break;
         }
+    }
+
+    private static Rect setRectangle(int left, int top, int right, int bottom){
+        rectangle.set(left, top, right, bottom);
+        cameraHandler.setRectangle(rectangle);
+        return rectangle;
+    }
+
+    private static Rect setBaseRectangle(int left, int top, int right, int bottom){
+        baseRectangle.set(left, top, right, bottom);
+        cameraHandler.setBaseRectangle(baseRectangle);
+        return baseRectangle;
     }
 
     @Override
@@ -113,11 +127,15 @@ public class FlirEmulator extends AppCompatActivity {
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            canvas.drawRect(
-                    (float) (getLeft()+(getRight()-getLeft())/3.0),
-                    (float) (getTop()+(getBottom()-getTop())/1.2),
-                    (float) (getRight()-(getRight()-getLeft())/3.0),
-                    (float) (getBottom()-(getBottom()-getTop())/1.2),paint);
+//            Log.e("ASDFASDFASDF - draw", "left: " + String.valueOf(getLeft()+(getRight()-getLeft())/3) + " top: " + String.valueOf(getBottom()-(getBottom()-getTop())/1.2) + " right: " + String.valueOf(getRight()-(getRight()-getLeft())/3) + " bottom: " + String.valueOf(getTop()+(getBottom()-getTop())/1.2));
+//            Log.e("ASDFASDFASDF - base", "left: " + String.valueOf(getLeft()) + " top: " + String.valueOf(getTop()) + " right: " + String.valueOf(getRight()) + " bottom: " + String.valueOf(getBottom()));
+//            Log.e("ASDFASDFASDF-otherbase", "left: " + String.valueOf(getRight()-(getRight()-getLeft())/1) + " top: " + String.valueOf(getBottom()-(getBottom()-getTop())/1) + " right: " + String.valueOf(getLeft()+(getRight()-getLeft())/1) + " bottom: " + String.valueOf(getTop()+(getBottom()-getTop())/1));
+            Rect rectangle = setRectangle(getLeft()+(getRight()-getLeft())/3,
+                    (int) (getBottom()-(getBottom()-getTop())/1.2),
+                    getRight()-(getRight()-getLeft())/3,
+                    (int) (getTop()+(getBottom()-getTop())/1.2));
+            setBaseRectangle(getLeft(),getTop(),getRight(),getBottom());
+            canvas.drawRect(rectangle, paint);
         }
     }
 

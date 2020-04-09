@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
+import com.flir.thermalsdk.image.Rectangle;
 import com.flir.thermalsdk.image.TemperatureUnit;
 import com.flir.thermalsdk.image.ThermalImage;
 import com.flir.thermalsdk.live.Camera;
@@ -32,6 +33,7 @@ import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,6 +65,9 @@ class CameraHandler {
 
     private StreamDataListener streamDataListener;
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
+    private Rectangle rectangle;
+    private Rect baseRectangle;
+    private int[] rectangleCoords;
 
     public interface StreamDataListener {
         void images(FrameDataHolder dataHolder);
@@ -114,6 +119,16 @@ class CameraHandler {
             camera.unsubscribeAllStreams();
         }
         camera.disconnect();
+    }
+
+
+    public void setRectangle(Rect rectangle){
+        this.rectangle = new Rectangle(rectangle.left, rectangle.top, Math.abs(rectangle.width()), Math.abs(rectangle.height()));
+        this.rectangleCoords = new int[] {rectangle.left, rectangle.top, rectangle.right, rectangle.bottom};
+    }
+
+    public void setBaseRectangle(Rect rectangle){
+        this.baseRectangle = rectangle;
     }
 
     /**
@@ -210,6 +225,56 @@ class CameraHandler {
         return temperatureUnit;
     }
 
+    private class StatisticPoint {
+        int minX;
+        int minY;
+        int maxX;
+        int maxY;
+        double min;
+        double max;
+        double average;
+        StatisticPoint(int minX, int minY, int maxX, int maxY, double min, double max, double average){
+            this.minX = minX;
+            this.minY = minY;
+            this.maxX = maxX;
+            this.maxY = maxY;
+            this.min = min;
+            this.max = max;
+            this.average = average;
+        }
+    }
+
+    private StatisticPoint getStats(double[] vals, int width){
+        if(vals.length == 0){
+            return null;
+        }
+        int height = vals.length/width;
+        double min = Double.MAX_VALUE;
+        int minI = -1;
+        int maxI = -1;
+        double max = Double.MIN_VALUE;
+        double average = 0;
+        int i = 0;
+        for (double val : vals){
+            if (val < min){
+                min = val;
+                minI = i;
+            }
+            if (val > max){
+                max = val;
+                maxI = i;
+            }
+            average += val;
+            i++;
+        }
+        average /= vals.length;
+        int minX = minI%width;
+        int minY = minI/width;
+        int maxX = maxI%width;
+        int maxY = maxI/width;
+        return new StatisticPoint(minX, minY, maxX, maxY, min, max, average);
+    }
+
     /**
      * Function to process a Thermal Image and update UI
      */
@@ -217,27 +282,71 @@ class CameraHandler {
         @Override
         public void accept(ThermalImage thermalImage) {
             Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
-            //Will be called on a non-ui thread,
+            // Will be called on a non-ui thread,
             // extract information on the background thread and send the specific information to the UI thread
 
             //Get a bitmap with only IR data
-
             Bitmap msxBitmap;
             {
                 thermalImage.getFusion().setFusionMode(FlirEmulator.curr_fusion_mode);
                 msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
             }
 
+            // Set Temperature Unit
             thermalImage.setTemperatureUnit(temperatureUnit);
 
+            // Set up Canvas
             Canvas canvas = new Canvas(msxBitmap);
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.RED);
-            canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
-            canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
-            paint.setColor(Color.BLUE);
-            canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
-            canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
+            Rect clipBounds = canvas.getClipBounds();
+            int scaleX = (baseRectangle.right - baseRectangle.left)/(clipBounds.right - clipBounds.left);
+            int scaleY = (baseRectangle.bottom - baseRectangle.top)/(clipBounds.bottom - clipBounds.top);
+
+            Log.e("ASDFASDFASDF-clipBounds", "left: " + clipBounds.left + " top: " + clipBounds.top + " right: " + clipBounds.right + " bottom: " + clipBounds.bottom);
+
+            // Set Rectangle, get statistics
+            int width = rectangle.width / scaleX;
+            int height = rectangle.height / scaleY;
+            int left = rectangleCoords[0] / scaleX;
+//            int left = rectangleCoords[0];
+            int top = rectangleCoords[1] / scaleY;
+            int right = rectangleCoords[2] / scaleX;
+            int bottom = rectangleCoords[3] / scaleY;
+            Log.e("ASDFASDFASDF-rect", "left: " + left + " top: " + top + " right: " + right + " bottom: " + bottom + " width: " + width + " height: " + height);
+            Rectangle rect = new Rectangle(left, top, width, height);
+            Rect rect1 = new Rect(left, top, right, bottom);
+            double[] vals = thermalImage.getValues(rect);
+            StatisticPoint rectStats = getStats(vals, width);
+
+            if(rectStats != null) {
+                Log.e("ASDF Dustin", rectStats.toString());
+                Point hotSpot = new Point();
+                hotSpot.x = rectStats.maxX;
+                hotSpot.y = rectStats.maxY;
+                double max = rectStats.max;
+                Point coldSpot = new Point();
+                coldSpot.x = rectStats.minX;
+                coldSpot.y = rectStats.minY;
+                double min = rectStats.min;
+
+
+                // Draw min/max temperature points
+                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                paint.setColor(Color.RED);
+//            canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
+//            canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
+                canvas.drawCircle(hotSpot.x, hotSpot.y, 5, paint);
+                canvas.drawText("Max: " + (Math.round(max * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit, hotSpot.x, hotSpot.y + 15, paint);
+                paint.setColor(Color.BLUE);
+//            canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
+//            canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
+                canvas.drawCircle(coldSpot.x, coldSpot.y, 5, paint);
+                canvas.drawText("Min: " + (Math.round(min * 100.0) / 100.0) + " " + thermalImage.getStatistics().min.unit, coldSpot.x, coldSpot.y + 15, paint);
+
+
+                paint.setColor(Color.GREEN);
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawRect(rect1, paint);
+            }
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
             Bitmap dcBitmap = BitmapAndroid.createBitmap(thermalImage.getFusion().getPhoto()).getBitMap();
