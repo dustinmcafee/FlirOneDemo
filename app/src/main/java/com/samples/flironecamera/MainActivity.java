@@ -10,7 +10,6 @@
  * ******************************************************************/
 package com.samples.flironecamera;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +22,6 @@ import com.flir.thermalsdk.ErrorCode;
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
-import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;
 import com.flir.thermalsdk.log.ThermalLog;
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +29,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import static com.samples.flironecamera.FlirCameraApplication.cameraHandler;
-import static com.samples.flironecamera.FlirCameraApplication.connectedIdentity;
 
 /**
  * Sample application for scanning a FLIR ONE or a built in emulator
@@ -57,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
     //Handles Android permission for eg Network
     public PermissionHandler permissionHandler;
 
-//    public Identity connectedIdentity = null;
-    private TextView connectionStatus;
     private TextView discoveryStatus;
 
     /**
@@ -80,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         permissionHandler = new PermissionHandler(showMessage, MainActivity.this);
         cameraHandler = new CameraHandler();
 
-        connectionStatus = findViewById(R.id.connection_status_text);
         discoveryStatus = findViewById(R.id.discovery_status);
 
         // Show Thermal Android SDK version
@@ -117,17 +109,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void disconnect(View view) {
-        disconnect();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar,menu);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_icon_elo_round);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_icon_elo_round);
+        } else {
+            Log.e(TAG, "onCreateOptionsMenu: getSupportActionBar returned null");
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -152,27 +144,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Disconnect to a camera
-     */
-    private void disconnect() {
-        updateConnectionText(connectedIdentity, "DISCONNECTING");
-        connectedIdentity = null;
-        Log.d(TAG, "disconnect() called with: connectedIdentity = [" + connectedIdentity + "]");
-        new Thread(() -> {
-            cameraHandler.disconnect();
-            runOnUiThread(() -> updateConnectionText(null, "DISCONNECTED"));
-        }).start();
-    }
-
-    /**
-     * Update the UI text for connection status
-     */
-    private void updateConnectionText(Identity identity, String status) {
-        String deviceId = identity != null ? " " + identity.deviceId : "";
-        connectionStatus.setText("Connection Status:" + deviceId + " " + status);
-    }
-
-    /**
      * Callback for discovery status, using it to update UI
      */
     public CameraHandler.DiscoveryStatus discoveryStatusListener = new CameraHandler.DiscoveryStatus() {
@@ -185,17 +156,6 @@ public class MainActivity extends AppCompatActivity {
         public void stopped() {
             discoveryStatus.setText(R.string.discovery_status_text);
         }
-    };
-
-    /**
-     * Camera connecting state thermalImageStreamListener, keeps track of if the camera is connected or not
-     * <p>
-     * Note that callbacks are received on a non-ui thread so have to eg use {@link #runOnUiThread(Runnable)} to interact view UI components
-     */
-    public ConnectionStatusListener connectionStatusListener = errorCode -> {
-        Log.d(TAG, "onDisconnected errorCode:" + errorCode);
-
-        runOnUiThread(() -> updateConnectionText(connectedIdentity, "DISCONNECTED"));
     };
 
     /**

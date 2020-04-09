@@ -1,6 +1,5 @@
 package com.samples.flironecamera;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
-import com.flir.thermalsdk.image.ThermalImage;
 import com.flir.thermalsdk.image.fusion.FusionMode;
-import com.flir.thermalsdk.live.Camera;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 
@@ -62,6 +59,7 @@ public class FlirEmulator extends AppCompatActivity {
         sdkVersionTextView.setText(sdkVersionText);
 
 
+        // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
         switch (getIntent().getAction()) {
             case MainActivity.ACTION_START_FLIR_ONE:
                 connect(cameraHandler.getFlirOne());
@@ -125,7 +123,7 @@ public class FlirEmulator extends AppCompatActivity {
 
     public void switchFilter() {
         switch (curr_fusion_mode) {
-            case THERMAL_ONLY: ;
+            case THERMAL_ONLY:
                 curr_fusion_mode = FusionMode.BLENDING;
                 Toast.makeText(getApplicationContext(),"Mode: BLENDING",Toast.LENGTH_SHORT).show();
                 break;
@@ -170,14 +168,15 @@ public class FlirEmulator extends AppCompatActivity {
      */
     private void connect(Identity identity) {
         if (connectedIdentity != null) {
-            Log.d(TAG, "connect(), in *this* code sample we only support one camera connection at the time");
-            showMessage.show("connect(), in *this* code sample we only support one camera connection at the time");
+            // Should we support more than one camera at a time? what would be the use case?
+            Log.d(TAG, "connect:, Support only one camera connection at the time");
+            showMessage.show("connect:, Support only one camera connection at the time");
             return;
         }
 
         if (identity == null) {
-            Log.d(TAG, "connect(), can't connect, no camera available");
-            showMessage.show("connect(), can't connect, no camera available");
+            Log.d(TAG, "connect:, No camera available");
+            showMessage.show("connect:, No camera available");
             return;
         }
 
@@ -189,11 +188,15 @@ public class FlirEmulator extends AppCompatActivity {
         if (UsbPermissionHandler.isFlirOne(identity)) {
             usbPermissionHandler.requestFlirOnePermisson(identity, this, permissionListener);
         } else {
-            doConnect(identity);
+            connectDevice(identity);
         }
     }
 
-    private void doConnect(Identity identity) {
+    /**
+     * Spawns a new thread to attempt connection to the given device identity
+     * @param identity the identity of the FLIR camera
+     */
+    private void connectDevice(Identity identity) {
         new Thread(() -> {
             try {
                 cameraHandler.connect(identity, connectionStatusListener);
@@ -266,7 +269,7 @@ public class FlirEmulator extends AppCompatActivity {
     public UsbPermissionHandler.UsbPermissionListener permissionListener = new UsbPermissionHandler.UsbPermissionListener() {
         @Override
         public void permissionGranted(@NotNull Identity identity) {
-            doConnect(identity);
+            connectDevice(identity);
         }
 
         @Override
