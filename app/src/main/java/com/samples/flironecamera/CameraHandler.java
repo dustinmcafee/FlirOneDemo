@@ -284,55 +284,65 @@ class CameraHandler {
             Canvas canvas = new Canvas(msxBitmap);
             Rect clipBounds = canvas.getClipBounds();
 
-            Rect rectangle = new Rect((int) (clipBounds.right - (clipBounds.right - clipBounds.left)/1.2),
-                    (int) (clipBounds.bottom - (clipBounds.bottom - clipBounds.top)/1.2),
-                    (int) (clipBounds.left + (clipBounds.right - clipBounds.left)/1.2),
-                    (int) (clipBounds.top + (clipBounds.bottom - clipBounds.top)/1.2));
+            try {
+                Rect rectangle = new Rect((int) (clipBounds.right - (clipBounds.right - clipBounds.left) / 1.2),
+                        (int) (clipBounds.bottom - (clipBounds.bottom - clipBounds.top) / 1.2),
+                        (int) (clipBounds.left + (clipBounds.right - clipBounds.left) / 1.2),
+                        (int) (clipBounds.top + (clipBounds.bottom - clipBounds.top) / 1.2));
 
-            Log.e("ASDFASDFASDF-clipBounds", "left: " + clipBounds.left + " top: " + clipBounds.top + " right: " + clipBounds.right + " bottom: " + clipBounds.bottom);
+                Log.e("ASDFASDFASDF-clipBounds", "left: " + clipBounds.left + " top: " + clipBounds.top + " right: " + clipBounds.right + " bottom: " + clipBounds.bottom);
 
-            // Set Rectangle, get statistics
-            int width = rectangle.width();
-            int height = rectangle.height();
-            int left = rectangle.left;
-            int top = rectangle.top;
-            int right = rectangle.right;
-            int bottom = rectangle.bottom;
+                // Set Rectangle, get statistics
+                int width = rectangle.width();
+                int height = rectangle.height();
+                int left = rectangle.left;
+                int top = rectangle.top;
+                int right = rectangle.right;
+                int bottom = rectangle.bottom;
 
-            Log.e("ASDFASDFASDF-rect", "left: " + left + " top: " + top + " right: " + right + " bottom: " + bottom + " width: " + width + " height: " + height);
-            Rectangle rect = new Rectangle(left, top, width, height);
-            double[] vals = thermalImage.getValues(rect);
-            StatisticPoint rectStats = getStats(vals, width, left, top);
+                Log.e("ASDFASDFASDF-rect", "left: " + left + " top: " + top + " right: " + right + " bottom: " + bottom + " width: " + width + " height: " + height);
+                Rectangle rect = new Rectangle(left, top, width, height);
+                double[] vals = thermalImage.getValues(rect);
+                StatisticPoint rectStats = getStats(vals, width, left, top);
 
-            if(rectStats != null) {
-                Log.e("ASDF Dustin", rectStats.toString());
-                Point hotSpot = new Point();
-                hotSpot.x = rectStats.maxX;
-                hotSpot.y = rectStats.maxY;
-                double max = rectStats.max;
-                Point coldSpot = new Point();
-                coldSpot.x = rectStats.minX;
-                coldSpot.y = rectStats.minY;
-                double min = rectStats.min;
+                if (rectStats != null) {
+                    Log.e("ASDF Dustin", rectStats.toString());
+                    Point hotSpot = new Point();
+                    hotSpot.x = rectStats.maxX;
+                    hotSpot.y = rectStats.maxY;
+                    double max = rectStats.max;
+                    Point coldSpot = new Point();
+                    coldSpot.x = rectStats.minX;
+                    coldSpot.y = rectStats.minY;
+                    double min = rectStats.min;
 
 
-                // Draw min/max temperature points
+                    // Draw min/max temperature points
+                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setColor(Color.RED);
+                    canvas.drawCircle(hotSpot.x, hotSpot.y, 5, paint);
+                    canvas.drawText("Max: " + (Math.round(max * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit, hotSpot.x, hotSpot.y + 15, paint);
+                    paint.setColor(Color.BLUE);
+                    canvas.drawCircle(coldSpot.x, coldSpot.y, 5, paint);
+                    canvas.drawText("Min: " + (Math.round(min * 100.0) / 100.0) + " " + thermalImage.getStatistics().min.unit, coldSpot.x, coldSpot.y + 15, paint);
+
+                    // Draw Rectangle
+                    paint.setColor(Color.GREEN);
+                    paint.setStyle(Paint.Style.STROKE);
+                    canvas.drawRect(rectangle, paint);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+                Log.e(TAG, "handleIncomingMessage: Can not draw rectangle to screen");
+
+                // Draw Min/Max points over entire boundary
                 Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 paint.setColor(Color.RED);
-//            canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
-//            canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
-                canvas.drawCircle(hotSpot.x, hotSpot.y, 5, paint);
-                canvas.drawText("Max: " + (Math.round(max * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit, hotSpot.x, hotSpot.y + 15, paint);
+                canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
+                canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
                 paint.setColor(Color.BLUE);
-//            canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
-//            canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
-                canvas.drawCircle(coldSpot.x, coldSpot.y, 5, paint);
-                canvas.drawText("Min: " + (Math.round(min * 100.0) / 100.0) + " " + thermalImage.getStatistics().min.unit, coldSpot.x, coldSpot.y + 15, paint);
-
-
-                paint.setColor(Color.GREEN);
-                paint.setStyle(Paint.Style.STROKE);
-                canvas.drawRect(rectangle, paint);
+                canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
+                canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
             }
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
