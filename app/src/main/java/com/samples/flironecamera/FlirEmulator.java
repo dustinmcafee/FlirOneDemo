@@ -1,13 +1,7 @@
 package com.samples.flironecamera;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,10 +41,8 @@ public class FlirEmulator extends AppCompatActivity {
 
     private TextView connectionStatus;
 
-    private CustomImageView msxImage;
+    private ImageView msxImage;
     private ImageView photoImage;
-    private static Rect rectangle = new Rect(0, 0, 0, 0);
-    private static Rect baseRectangle = new Rect(0, 0, 0, 0);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,18 +72,6 @@ public class FlirEmulator extends AppCompatActivity {
         }
     }
 
-    private static Rect setRectangle(int left, int top, int right, int bottom){
-        rectangle.set(left, top, right, bottom);
-        cameraHandler.setRectangle(rectangle);
-        return rectangle;
-    }
-
-    private static Rect setBaseRectangle(int left, int top, int right, int bottom){
-        baseRectangle.set(left, top, right, bottom);
-        cameraHandler.setBaseRectangle(baseRectangle);
-        return baseRectangle;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar1, menu);
@@ -100,43 +80,6 @@ public class FlirEmulator extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public static class CustomImageView extends androidx.appcompat.widget.AppCompatImageView {
-        private Paint paint;
-
-        public CustomImageView(Context context) {
-            super(context);
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.MAGENTA);
-            paint.setStyle(Paint.Style.STROKE);
-        }
-
-        public CustomImageView(Context context, AttributeSet attrs, Paint paint) {
-            super(context, attrs);
-            this.paint = paint;
-        }
-
-        public CustomImageView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.MAGENTA);
-            paint.setStyle(Paint.Style.STROKE);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-//            Log.e("ASDFASDFASDF - draw", "left: " + String.valueOf(getLeft()+(getRight()-getLeft())/3) + " top: " + String.valueOf(getBottom()-(getBottom()-getTop())/1.2) + " right: " + String.valueOf(getRight()-(getRight()-getLeft())/3) + " bottom: " + String.valueOf(getTop()+(getBottom()-getTop())/1.2));
-//            Log.e("ASDFASDFASDF - base", "left: " + String.valueOf(getLeft()) + " top: " + String.valueOf(getTop()) + " right: " + String.valueOf(getRight()) + " bottom: " + String.valueOf(getBottom()));
-//            Log.e("ASDFASDFASDF-otherbase", "left: " + String.valueOf(getRight()-(getRight()-getLeft())/1) + " top: " + String.valueOf(getBottom()-(getBottom()-getTop())/1) + " right: " + String.valueOf(getLeft()+(getRight()-getLeft())/1) + " bottom: " + String.valueOf(getTop()+(getBottom()-getTop())/1));
-            Rect rectangle = setRectangle(getLeft()+(getRight()-getLeft())/3,
-                    (int) (getBottom()-(getBottom()-getTop())/1.2),
-                    getRight()-(getRight()-getLeft())/3,
-                    (int) (getTop()+(getBottom()-getTop())/1.2));
-            setBaseRectangle(getLeft(),getTop(),getRight(),getBottom());
-            canvas.drawRect(rectangle, paint);
-        }
     }
 
     @Override

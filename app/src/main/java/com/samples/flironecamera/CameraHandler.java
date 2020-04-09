@@ -9,7 +9,6 @@
  ********************************************************************/
 package com.samples.flironecamera;
 
-import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,7 +32,6 @@ import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,9 +63,6 @@ class CameraHandler {
 
     private StreamDataListener streamDataListener;
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
-    private Rectangle rectangle;
-    private Rect baseRectangle;
-    private int[] rectangleCoords;
 
     public interface StreamDataListener {
         void images(FrameDataHolder dataHolder);
@@ -119,16 +114,6 @@ class CameraHandler {
             camera.unsubscribeAllStreams();
         }
         camera.disconnect();
-    }
-
-
-    public void setRectangle(Rect rectangle){
-        this.rectangle = new Rectangle(rectangle.left, rectangle.top, Math.abs(rectangle.width()), Math.abs(rectangle.height()));
-        this.rectangleCoords = new int[] {rectangle.left, rectangle.top, rectangle.right, rectangle.bottom};
-    }
-
-    public void setBaseRectangle(Rect rectangle){
-        this.baseRectangle = rectangle;
     }
 
     /**
@@ -248,7 +233,7 @@ class CameraHandler {
         if(vals.length == 0){
             return null;
         }
-        int height = vals.length/width;
+//        int height = vals.length/width;
         double min = Double.MAX_VALUE;
         int minI = -1;
         int maxI = -1;
@@ -298,22 +283,24 @@ class CameraHandler {
             // Set up Canvas
             Canvas canvas = new Canvas(msxBitmap);
             Rect clipBounds = canvas.getClipBounds();
-            int scaleX = (baseRectangle.right - baseRectangle.left)/(clipBounds.right - clipBounds.left);
-            int scaleY = (baseRectangle.bottom - baseRectangle.top)/(clipBounds.bottom - clipBounds.top);
+
+            Rect rectangle = new Rect((int) (clipBounds.right - (clipBounds.right - clipBounds.left)/1.2),
+                    (int) (clipBounds.bottom - (clipBounds.bottom - clipBounds.top)/1.2),
+                    (int) (clipBounds.left + (clipBounds.right - clipBounds.left)/1.2),
+                    (int) (clipBounds.top + (clipBounds.bottom - clipBounds.top)/1.2));
 
             Log.e("ASDFASDFASDF-clipBounds", "left: " + clipBounds.left + " top: " + clipBounds.top + " right: " + clipBounds.right + " bottom: " + clipBounds.bottom);
 
             // Set Rectangle, get statistics
-            int width = rectangle.width / scaleX;
-            int height = rectangle.height / scaleY;
-            int left = rectangleCoords[0] / scaleX;
-//            int left = rectangleCoords[0];
-            int top = rectangleCoords[1] / scaleY;
-            int right = rectangleCoords[2] / scaleX;
-            int bottom = rectangleCoords[3] / scaleY;
+            int width = rectangle.width();
+            int height = rectangle.height();
+            int left = rectangle.left;
+            int top = rectangle.top;
+            int right = rectangle.right;
+            int bottom = rectangle.bottom;
+
             Log.e("ASDFASDFASDF-rect", "left: " + left + " top: " + top + " right: " + right + " bottom: " + bottom + " width: " + width + " height: " + height);
             Rectangle rect = new Rectangle(left, top, width, height);
-            Rect rect1 = new Rect(left, top, right, bottom);
             double[] vals = thermalImage.getValues(rect);
             StatisticPoint rectStats = getStats(vals, width, left, top);
 
@@ -345,7 +332,7 @@ class CameraHandler {
 
                 paint.setColor(Color.GREEN);
                 paint.setStyle(Paint.Style.STROKE);
-                canvas.drawRect(rect1, paint);
+                canvas.drawRect(rectangle, paint);
             }
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
