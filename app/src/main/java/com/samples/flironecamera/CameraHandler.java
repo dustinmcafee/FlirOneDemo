@@ -185,11 +185,6 @@ class CameraHandler {
         return null;
     }
 
-    private void withImage(Camera.Consumer<ThermalImage> functionToRun) {
-        camera.withImage(functionToRun);
-    }
-
-
     /**
      * Called whenever there is a new Thermal Image available, should be used in conjunction with {@link Camera.Consumer}
      */
@@ -198,7 +193,7 @@ class CameraHandler {
         public void onImageReceived() {
             //Will be called on a non-ui thread
             Log.d(TAG, "onImageReceived(), we got another ThermalImage");
-            withImage(handleIncomingImage);
+            camera.withImage(handleIncomingImage);
         }
     };
 
