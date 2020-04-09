@@ -1,7 +1,12 @@
 package com.samples.flironecamera;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +46,7 @@ public class FlirEmulator extends AppCompatActivity {
 
     private TextView connectionStatus;
 
-    private ImageView msxImage;
+    private CustomImageView msxImage;
     private ImageView photoImage;
 
 
@@ -53,12 +58,11 @@ public class FlirEmulator extends AppCompatActivity {
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
-        // Show Thermal Android SDK version
 
+        // Show Thermal Android SDK version
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
-
 
         // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
         switch (getIntent().getAction()) {
@@ -84,6 +88,38 @@ public class FlirEmulator extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public static class CustomImageView extends androidx.appcompat.widget.AppCompatImageView {
+        private Paint paint;
+
+        public CustomImageView(Context context) {
+            super(context);
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.MAGENTA);
+            paint.setStyle(Paint.Style.STROKE);
+        }
+
+        public CustomImageView(Context context, AttributeSet attrs, Paint paint) {
+            super(context, attrs);
+            this.paint = paint;
+        }
+
+        public CustomImageView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.MAGENTA);
+            paint.setStyle(Paint.Style.STROKE);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            canvas.drawRect(
+                    (float) (getLeft()+(getRight()-getLeft())/3.0),
+                    (float) (getTop()+(getBottom()-getTop())/1.2),
+                    (float) (getRight()-(getRight()-getLeft())/3.0),
+                    (float) (getBottom()-(getBottom()-getTop())/1.2),paint);
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

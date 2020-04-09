@@ -9,10 +9,13 @@
  ********************************************************************/
 package com.samples.flironecamera;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
@@ -235,7 +238,6 @@ class CameraHandler {
             paint.setColor(Color.BLUE);
             canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
             canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
-
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
             Bitmap dcBitmap = BitmapAndroid.createBitmap(thermalImage.getFusion().getPhoto()).getBitMap();

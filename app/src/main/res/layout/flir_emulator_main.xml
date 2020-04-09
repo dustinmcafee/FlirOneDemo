@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <view class="com.samples.flironecamera.FlirEmulator$CustomImageView"
             android:id="@+id/msx_image"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
