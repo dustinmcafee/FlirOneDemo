@@ -265,6 +265,9 @@ class CameraHandler {
      * Function to process a Thermal Image and update UI
      */
     private final Camera.Consumer<ThermalImage> handleIncomingImage = new Camera.Consumer<ThermalImage>() {
+        final double widthRatio = 1.2;
+        final double heightRatio = 1.3;
+        final double multiplier = 2.25; // TODO: Make this work dynamically
 
         private Rect drawRectangle(ThermalImage thermalImage){
             Bitmap msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
@@ -275,8 +278,6 @@ class CameraHandler {
             // Set up Canvas
             Canvas canvas = new Canvas(msxBitmap);
             Rect clipBounds = canvas.getClipBounds();
-            final double widthRatio = 1.2;
-            final double heightRatio = 1.3;
 //            Log.e("ASDF", "left: " + (clipBounds.right - (clipBounds.width() / widthRatio)));
 //            Log.e("ASDF", "right: " + (clipBounds.left + (clipBounds.width() / widthRatio)));
 //            Log.e("ASDF", "top: " + (clipBounds.bottom - (clipBounds.height() / heightRatio)));
@@ -319,6 +320,15 @@ class CameraHandler {
             canvas.drawRect(rect, paint);
 
             try {
+
+                if(!thermalImage.getFusion().getCurrentFusionMode().equals(FusionMode.THERMAL_ONLY)){
+                    int height = (int) (rectangle.height / multiplier);
+                    int width = (int) (rectangle.width / multiplier);
+                    int x = (int) (rectangle.x / multiplier);
+                    int y = (int) (rectangle.y / multiplier);
+                    rectangle = new Rectangle(x, y, width, height);
+                }
+
                 double[] vals = thermalImage.getValues(rectangle);
                 StatisticPoint rectStats = getStats(vals, rect.width(), rect.left, rect.top);
 
@@ -344,13 +354,12 @@ class CameraHandler {
                 e.printStackTrace();
                 Log.e(TAG, "handleIncomingMessage: Can not draw rectangle to screen");
 
-                // Draw Min/Max points over entire boundary
-                paint.setColor(Color.RED);
-                canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
-                canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
-                paint.setColor(Color.BLUE);
-                canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
-                canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
+//                paint.setColor(Color.RED);
+//                canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
+//                canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
+//                paint.setColor(Color.BLUE);
+//                canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
+//                canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
             }
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
