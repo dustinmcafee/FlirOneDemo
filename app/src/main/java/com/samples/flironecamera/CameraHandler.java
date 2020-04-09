@@ -244,7 +244,7 @@ class CameraHandler {
         }
     }
 
-    private StatisticPoint getStats(double[] vals, int width){
+    private StatisticPoint getStats(double[] vals, int width, int left, int top){
         if(vals.length == 0){
             return null;
         }
@@ -268,10 +268,10 @@ class CameraHandler {
             i++;
         }
         average /= vals.length;
-        int minX = minI%width;
-        int minY = minI/width;
-        int maxX = maxI%width;
-        int maxY = maxI/width;
+        int minX = (minI%width) + left;
+        int minY = (minI/width) + top;
+        int maxX = (maxI%width) + left;
+        int maxY = (maxI/width) + top;
         return new StatisticPoint(minX, minY, maxX, maxY, min, max, average);
     }
 
@@ -315,7 +315,7 @@ class CameraHandler {
             Rectangle rect = new Rectangle(left, top, width, height);
             Rect rect1 = new Rect(left, top, right, bottom);
             double[] vals = thermalImage.getValues(rect);
-            StatisticPoint rectStats = getStats(vals, width);
+            StatisticPoint rectStats = getStats(vals, width, left, top);
 
             if(rectStats != null) {
                 Log.e("ASDF Dustin", rectStats.toString());
