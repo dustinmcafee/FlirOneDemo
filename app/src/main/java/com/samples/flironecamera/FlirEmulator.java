@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
+import com.flir.thermalsdk.image.TemperatureUnit;
 import com.flir.thermalsdk.image.fusion.FusionMode;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
@@ -95,6 +96,14 @@ public class FlirEmulator extends AppCompatActivity {
                     switchFilter();
                 } else{
                     Toast.makeText(getApplicationContext(),"In normal camera mode! Switch camera mode first.",Toast.LENGTH_SHORT).show();
+                }
+            case R.id.toolbar_temperature:
+                if(CameraHandler.getTemperatureUnit() == TemperatureUnit.KELVIN) {
+                    CameraHandler.setTemperatureUnit(TemperatureUnit.CELSIUS);
+                } else if(CameraHandler.getTemperatureUnit() == TemperatureUnit.CELSIUS){
+                    CameraHandler.setTemperatureUnit(TemperatureUnit.FAHRENHEIT);
+                } else if(CameraHandler.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT){
+                    CameraHandler.setTemperatureUnit(TemperatureUnit.KELVIN);
                 }
         }
         return super.onOptionsItemSelected(item);

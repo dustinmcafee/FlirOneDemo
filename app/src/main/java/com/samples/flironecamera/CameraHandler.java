@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
+import com.flir.thermalsdk.image.TemperatureUnit;
 import com.flir.thermalsdk.image.ThermalImage;
 import com.flir.thermalsdk.live.Camera;
 import com.flir.thermalsdk.live.CommunicationInterface;
@@ -58,6 +59,7 @@ class CameraHandler {
     private static final String TAG = "CameraHandler";
 
     private StreamDataListener streamDataListener;
+    private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
 
     public interface StreamDataListener {
         void images(FrameDataHolder dataHolder);
@@ -197,6 +199,14 @@ class CameraHandler {
         }
     };
 
+    public static void setTemperatureUnit(TemperatureUnit unit){
+        temperatureUnit = unit;
+    }
+
+    public static TemperatureUnit getTemperatureUnit(){
+        return temperatureUnit;
+    }
+
     /**
      * Function to process a Thermal Image and update UI
      */
@@ -214,6 +224,8 @@ class CameraHandler {
                 thermalImage.getFusion().setFusionMode(FlirEmulator.curr_fusion_mode);
                 msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
             }
+
+            thermalImage.setTemperatureUnit(temperatureUnit);
 
             Canvas canvas = new Canvas(msxBitmap);
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -233,6 +245,4 @@ class CameraHandler {
             streamDataListener.images(msxBitmap,dcBitmap);
         }
     };
-
-
 }
