@@ -28,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.samples.flironecamera.FlirCameraContext.cameraHandler;
-import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
+import static com.samples.flironecamera.FlirCameraApplication.cameraHandler;
+import static com.samples.flironecamera.FlirCameraApplication.connectedIdentity;
 
 public class FlirEmulator extends AppCompatActivity {
     private static final String TAG = "FlirEmulator";

@@ -35,8 +35,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import static com.samples.flironecamera.FlirCameraContext.cameraHandler;
-import static com.samples.flironecamera.FlirCameraContext.connectedIdentity;
+import static com.samples.flironecamera.FlirCameraApplication.cameraHandler;
+import static com.samples.flironecamera.FlirCameraApplication.connectedIdentity;
 
 /**
  * Sample application for scanning a FLIR ONE or a built in emulator
