@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -107,6 +108,45 @@ public class FlirCameraActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public static int left = 0;
+    public static int top = 0;
+    public static int width = 200;
+    public static int height = 200;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+
+        if(event.getAction() == MotionEvent.ACTION_MOVE){
+            int[] viewCoords = new int[2];
+            msxImage.getLocationInWindow(viewCoords);
+            int imageX = (int)(event.getX() - viewCoords[0]);
+            int imageY = (int)(event.getY() - viewCoords[1]);
+
+            if(event.getX() > viewCoords[0]){
+                if(event.getX() + width < viewCoords[0] + msxImage.getWidth()){
+                    left = imageX;
+                } else{
+                    left = msxImage.getWidth() - width;
+                }
+            } else{
+                left = 0;
+            }
+            if(event.getY()>viewCoords[1]){
+                if(event.getY() + height < viewCoords[1] + msxImage.getHeight()){
+                    top = imageY;
+                } else{
+                    top = msxImage.getHeight() - height;
+                }
+            } else{
+                top = 0;
+            }
+        }
+
+        return super.onTouchEvent(event);
     }
 
     @Override

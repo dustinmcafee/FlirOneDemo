@@ -17,7 +17,8 @@
         <ImageView
             android:id="@+id/msx_image"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
             android:minWidth="50dp"
             android:maxWidth="50dp"
             android:contentDescription="@string/msx_image_desc" />
@@ -25,7 +26,8 @@
         <ImageView
             android:id="@+id/photo_image"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
             android:visibility="invisible"
             android:minWidth="50dp"
             android:maxWidth="50dp"
