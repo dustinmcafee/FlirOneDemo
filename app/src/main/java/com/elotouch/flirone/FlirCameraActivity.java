@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,7 +45,10 @@ public class FlirCameraActivity extends AppCompatActivity {
     private TextView connectionStatus;
 
     private ImageView msxImage;
+    Bitmap msBitmap;
     private ImageView photoImage;
+
+    ScaleGestureDetector mScaleGestureDetector;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +58,8 @@ public class FlirCameraActivity extends AppCompatActivity {
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
+
+        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         // Show Thermal Android SDK version
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
@@ -106,47 +112,93 @@ public class FlirCameraActivity extends AppCompatActivity {
                     CameraHandler.setTemperatureUnit(TemperatureUnit.KELVIN);
                 }
                 break;
+            case R.id.toolbar_reset:
+                if(msxImage != null && photoImage != null){
+                    width = msBitmap.getWidth()/2.0;
+                    height = width;
+                    left = msBitmap.getWidth()/2.0 - width/2;
+                    top = msBitmap.getHeight()/2.0 - height/2;
+                }
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
 
 
-    public static int left = 0;
-    public static int top = 0;
-    public static int width = 200;
-    public static int height = 200;
+    public static double left = 0;
+    public static double top = 0;
+    public static double width = 200;
+    public static double height = 200;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-
-        if(event.getAction() == MotionEvent.ACTION_MOVE){
+        ImageView img = msxImage;
+        if(msxImage.getVisibility() == View.INVISIBLE){
+            img = photoImage;
+        }
+        if(msxImage != null && photoImage != null){
             int[] viewCoords = new int[2];
             msxImage.getLocationInWindow(viewCoords);
             int imageX = (int)(event.getX() - viewCoords[0]);
             int imageY = (int)(event.getY() - viewCoords[1]);
 
-            if(event.getX() > viewCoords[0]){
-                if(event.getX() + width < viewCoords[0] + msxImage.getWidth()){
-                    left = imageX;
+            float ratiow = (float) msBitmap.getWidth() / msxImage.getWidth();
+            float ratioh = (float) msBitmap.getHeight() / msxImage.getHeight();
+
+            Log.e("ANDREI", imageX + "  " + imageY);
+            Log.e("ANDREI", ratiow + "  " + ratioh);
+
+            if(event.getX() - (width / 2)/ratiow > viewCoords[0]){
+                if(event.getX() + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
+                    Log.e("ANDREI", "HERE 1");
+
+                    left = imageX * ratiow - width/2;
                 } else{
-                    left = msxImage.getWidth() - width;
+                    Log.e("ANDREI", "HERE 2");
+
+                    left = msBitmap.getWidth() - width;
                 }
             } else{
+                Log.e("ANDREI", "HERE 3");
+
                 left = 0;
             }
-            if(event.getY()>viewCoords[1]){
-                if(event.getY() + height < viewCoords[1] + msxImage.getHeight()){
-                    top = imageY;
+            if(event.getY() - (height / 2)/ratioh >viewCoords[1]){
+                if(event.getY() + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
+                    Log.e("ANDREI", "HERE 4");
+
+                    top = imageY * ratioh - height/2;
                 } else{
-                    top = msxImage.getHeight() - height;
+                    Log.e("ANDREI", "HERE 5");
+
+                    top = msBitmap.getHeight() - height;
                 }
             } else{
+                Log.e("ANDREI", "HERE 6");
+
                 top = 0;
             }
         }
 
+        mScaleGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector){
+            if(msxImage != null && photoImage!=null){
+                double pos_w = width * scaleGestureDetector.getScaleFactor();
+                double pos_h = height * scaleGestureDetector.getScaleFactor();
+
+                if(pos_w > 0 && pos_h > 0 && left+pos_w < msBitmap.getWidth() && top + pos_h < msBitmap.getHeight()){
+                    width = pos_w;
+                    height = pos_h;
+                }
+            }
+            return true;
+        }
     }
 
     @Override
@@ -162,11 +214,11 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     public void switchCamera() {
         if (findViewById(R.id.msx_image).getVisibility() == View.VISIBLE) {
-            findViewById(R.id.msx_image).setVisibility(View.INVISIBLE);
-            findViewById(R.id.photo_image).setVisibility(View.VISIBLE);
+            photoImage.setVisibility(View.VISIBLE);
+            msxImage.setVisibility(View.INVISIBLE);
         } else {
-            findViewById(R.id.msx_image).setVisibility(View.VISIBLE);
-            findViewById(R.id.photo_image).setVisibility(View.INVISIBLE);
+            photoImage.setVisibility(View.INVISIBLE);
+            msxImage.setVisibility(View.VISIBLE);
         }
     }
 
@@ -280,6 +332,7 @@ public class FlirCameraActivity extends AppCompatActivity {
         runOnUiThread(() -> updateConnectionText(connectedCameraIdentity, "DISCONNECTED"));
     };
 
+
     public final CameraHandler.StreamDataListener streamDataListener = new CameraHandler.StreamDataListener() {
         @Override
         public void images(BitmapFrameBuffer dataHolder) {
@@ -305,6 +358,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 BitmapFrameBuffer poll = framesBuffer.poll();
                 if (poll != null) {
                     msxImage.setImageBitmap(poll.msxBitmap);
+                    msBitmap = msxBitmap;
                     photoImage.setImageBitmap(poll.dcBitmap);
                 }
             });

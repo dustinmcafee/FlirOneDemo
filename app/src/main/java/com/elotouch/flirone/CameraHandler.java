@@ -232,15 +232,15 @@ class CameraHandler {
             float ratioh = (float) msxBitmap.getHeight() / thermalImage.getHeight() ;
 
             // define a width and a height for the rectangle we are about to draw based on the ThermalImage sizes
-            int width = FlirCameraActivity.width;
-            int height = FlirCameraActivity.height;
+            int width = (int)FlirCameraActivity.width;
+            int height = (int)FlirCameraActivity.height;
 
             try {
                 // calculate left and top positioning coordinates to display the rectangle in the middle
 //                float left = (float) (thermalImage.getWidth() / 2.0 - (width) / 2);
 //                float top = (float) (thermalImage.getHeight() / 2.0 - (height) / 2);
-                float left = FlirCameraActivity.left;
-                float top = FlirCameraActivity.top;
+                float left = (float)FlirCameraActivity.left;
+                float top = (float)FlirCameraActivity.top;
                 // Create a rectangle based off those measurements in order to poll the data for statistics
                 Rectangle rect = new Rectangle((int) left, (int) top, width, height);
                 if (left + width > thermalImage.getWidth() || top + height > thermalImage.getHeight()) {
