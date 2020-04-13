@@ -188,7 +188,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 double pos_w = width * scaleGestureDetector.getScaleFactor();
                 double pos_h = height * scaleGestureDetector.getScaleFactor();
 
-                if(pos_w > 0 && pos_h > 0 && left+pos_w < msBitmap.getWidth() && top + pos_h < msBitmap.getHeight()){
+                if(pos_w > 0 && pos_h > 0 && left+pos_w < CameraHandler.thermal_width && top + pos_h < CameraHandler.thermal_height){
                     width = pos_w;
                     height = pos_h;
                 }
@@ -353,7 +353,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                 BitmapFrameBuffer poll = framesBuffer.poll();
                 if (poll != null) {
-                    msxImage.setImageBitmap(poll.msxBitmap);ap;
+                    msxImage.setImageBitmap(poll.msxBitmap);
                     photoImage.setImageBitmap(poll.dcBitmap);
                 }
             });
