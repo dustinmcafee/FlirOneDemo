@@ -274,20 +274,16 @@ class CameraHandler {
                 MeasurementRectangle mRect = thermalImage.getMeasurements().getRectangles().get(0);
                 mRect.setColdSpotMarkerVisible(true);
                 mRect.setHotSpotMarkerVisible(true);
-                Rectangle asdf = mRect.getRectangle();
-                Rect asdfasdf = new Rect(asdf.x, asdf.y, asdf.width, asdf.height);
-                paint.setColor(Color.CYAN);
-                paint.setStyle(Paint.Style.STROKE);
-                canvas.drawRect(asdfasdf, paint);
 
                 Log.e("ASDFASDFASDF", thermalImage.getMeasurements().getRectangles().get(0).toString());
 
                 paint.setColor(Color.RED);
+                paint.setTextSize(20 * (int)yMultiplier);
                 canvas.drawCircle((int)(mRect.getHotSpot().x*xMultiplier), (int)(mRect.getHotSpot().y*yMultiplier), radius, paint);
-                canvas.drawText("Max: " + (Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit, (int)(mRect.getHotSpot().x*xMultiplier), (int)(mRect.getHotSpot().y*yMultiplier) + 15, paint);
+                canvas.drawText("Max: " + (Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), (int)(mRect.getHotSpot().x*xMultiplier), (int)(mRect.getHotSpot().y*yMultiplier) + 25, paint);
                 paint.setColor(Color.BLUE);
                 canvas.drawCircle((int)(mRect.getColdSpot().x*xMultiplier), (int)(mRect.getColdSpot().y*yMultiplier), radius, paint);
-                canvas.drawText("Min: " + (Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getStatistics().min.unit, (int)(mRect.getColdSpot().x*xMultiplier), (int)(mRect.getColdSpot().y*yMultiplier) + 15, paint);
+                canvas.drawText("Min: " + (Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), (int)(mRect.getColdSpot().x*xMultiplier), (int)(mRect.getColdSpot().y*yMultiplier) + 25, paint);
             } catch (Exception e){
                 e.printStackTrace();
                 Log.e(TAG, "handleIncomingMessage: Can not draw rectangle to screen");
