@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CalibrationHandler {
-    public static final String[] palettes = {"iron", "Arctic", "blackhot", "bw", "Coldest", "ColorWheel_Redhot", "ColorWheel6", "ColorWheel12", "DoubleRainbow2", "lava", "rainbow", "rainHC", "whitehot", "Hottest"};
+    private static final String[] palettes = {"iron", "Arctic", "blackhot", "bw", "Coldest", "ColorWheel_Redhot", "ColorWheel6", "ColorWheel12", "DoubleRainbow2", "lava", "rainbow", "rainHC", "whitehot", "Hottest"};
     public CalibrationHandler(){}
     public static void setAtmosphericTemperature(ThermalImage img, double temp){
         img.getImageParameters().setAtmosphericTemperature(temp);
@@ -37,13 +37,13 @@ public class CalibrationHandler {
     public static void setDistanceUnit (ThermalImage img, DistanceUnit unit){
         img.setDistanceUnit(unit);
     }
-    public static void setPalette (ThermalImage img, int i){
+    static void setPalette(ThermalImage img, int i){
         img.setPalette(PaletteManager.getDefaultPalettes().get(i));
     }
-    public static void setPalette (ThermalImage img, String name){
+    static void setPalette(ThermalImage img, String name){
         List<String> arr = Arrays.asList(palettes);
         if(arr.contains(name)){
-            img.setPalette(PaletteManager.getDefaultPalettes().get(arr.indexOf(name)));
+            setPalette(img, arr.indexOf(name));
         }
     }
 }
