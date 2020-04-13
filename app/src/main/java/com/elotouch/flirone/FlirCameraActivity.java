@@ -95,6 +95,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 } else{
                     Toast.makeText(getApplicationContext(),"In normal camera mode! Switch camera mode first.",Toast.LENGTH_SHORT).show();
                 }
+                break;
             case R.id.toolbar_temperature:
                 if(CameraHandler.getTemperatureUnit() == TemperatureUnit.KELVIN) {
                     CameraHandler.setTemperatureUnit(TemperatureUnit.CELSIUS);
@@ -103,6 +104,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 } else if(CameraHandler.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT){
                     CameraHandler.setTemperatureUnit(TemperatureUnit.KELVIN);
                 }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
