@@ -14,6 +14,8 @@ import com.flir.thermalsdk.image.TemperatureUnit;
 import com.flir.thermalsdk.image.ThermalImage;
 import com.flir.thermalsdk.image.measurements.MeasurementException;
 import com.flir.thermalsdk.image.measurements.MeasurementRectangle;
+import com.flir.thermalsdk.image.palettes.Palette;
+import com.flir.thermalsdk.image.palettes.PaletteManager;
 import com.flir.thermalsdk.live.Camera;
 import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
@@ -212,6 +214,7 @@ class CameraHandler {
         @Override
         public void accept(ThermalImage thermalImage) {
             Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
+            CalibrationHandler.setPalette(thermalImage, "rainbow");
 
             // Will be called on a non-ui thread,
             // extract information on the background thread and send the specific information to the UI thread
