@@ -273,10 +273,10 @@ class CameraHandler {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.RED);
                 canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * ratiow, paint);
-                canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 15)*ratioh, paint);
+                canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
                 paint.setColor(Color.BLUE);
                 canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
-                canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 15)*ratioh, paint);
+                canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
 
             } catch (IndexOutOfBoundsException e){
                 e.printStackTrace();
