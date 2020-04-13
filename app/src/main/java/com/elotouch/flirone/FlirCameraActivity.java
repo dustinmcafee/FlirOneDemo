@@ -1,5 +1,6 @@
 package com.elotouch.flirone;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,6 +106,10 @@ public class FlirCameraActivity extends AppCompatActivity {
                     CameraHandler.setTemperatureUnit(TemperatureUnit.KELVIN);
                 }
                 break;
+            case R.id.calibrate:
+                Intent intent = new Intent(getApplicationContext(), CalibrateActivity.class);
+                intent.setAction(MainActivity.ACTION_START_CALIBRATION);
+                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

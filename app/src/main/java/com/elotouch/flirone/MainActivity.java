@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_START_FLIR_ONE = "ACTION_START_FLIR_ONE";
     public static final String ACTION_START_SIMULATOR_ONE = "ACTION_START_SIMULATOR_ONE";
     public static final String ACTION_START_SIMULATOR_TWO = "ACTION_START_SIMULATOR_TWO";
+    public static final String ACTION_START_CALIBRATION = "ACTION_START_CALIBRATION";
 
     //Handles Android permission for eg Network
 //    public PermissionHandler permissionHandler;
