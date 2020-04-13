@@ -130,6 +130,7 @@ public class FlirCameraActivity extends AppCompatActivity {
     public static double width = 200;
     public static double height = 200;
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
