@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_START_SIMULATOR_TWO = "ACTION_START_SIMULATOR_TWO";
 
     //Handles Android permission for eg Network
-    public PermissionHandler permissionHandler;
+//    public PermissionHandler permissionHandler;
 
     private TextView discoveryStatus;
 
@@ -52,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Thermal SDK
         ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
-
-        // Initialize Permission Handler
-        permissionHandler = new PermissionHandler(showMessage, MainActivity.this);
 
         // Initialize Camera Handler
         cameraHandler = new CameraHandler();
@@ -130,15 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Handle Android permission request response for Bluetooth permissions
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
-        permissionHandler.onRequestPermissionsResult(requestCode, grantResults);
     }
 
     /**
