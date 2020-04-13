@@ -202,6 +202,9 @@ class CameraHandler {
         return temperatureUnit;
     }
 
+    public static double thermal_width;
+    public static double thermal_height;
+
     /**
      * Function to process a Thermal Image and update UI
      */
@@ -211,6 +214,9 @@ class CameraHandler {
         public void accept(ThermalImage thermalImage) {
             Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
             CalibrationHandler.setPalette(thermalImage, "rainbow");
+
+            thermal_width = thermalImage.getWidth();
+            thermal_height = thermalImage.getHeight();
 
             // Will be called on a non-ui thread,
             // extract information on the background thread and send the specific information to the UI thread
@@ -231,13 +237,15 @@ class CameraHandler {
             float ratioh = (float) msxBitmap.getHeight() / thermalImage.getHeight() ;
 
             // define a width and a height for the rectangle we are about to draw based on the ThermalImage sizes
-            int width = 400;
-            int height = 400;
+            int width = (int)FlirCameraActivity.width;
+            int height = (int)FlirCameraActivity.height;
 
             try {
                 // calculate left and top positioning coordinates to display the rectangle in the middle
-                float left = (float) (thermalImage.getWidth() / 2.0 - (width) / 2);
-                float top = (float) (thermalImage.getHeight() / 2.0 - (height) / 2);
+//                float left = (float) (thermalImage.getWidth() / 2.0 - (width) / 2);
+//                float top = (float) (thermalImage.getHeight() / 2.0 - (height) / 2);
+                float left = (float)FlirCameraActivity.left;
+                float top = (float)FlirCameraActivity.top;
                 // Create a rectangle based off those measurements in order to poll the data for statistics
                 Rectangle rect = new Rectangle((int) left, (int) top, width, height);
                 if (left + width > thermalImage.getWidth() || top + height > thermalImage.getHeight()) {
@@ -249,7 +257,7 @@ class CameraHandler {
                 Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 paint.setColor(Color.GREEN);
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(paint.getStrokeWidth() * ratiow);
+                paint.setStrokeWidth(2 * ratiow);
                 canvas.drawRect(left * ratiow, top * ratioh, (left+rect.width)*ratiow, (top+rect.height)*ratioh, paint);
 
                 // Get statistic points and calculate them.
@@ -263,11 +271,11 @@ class CameraHandler {
                 paint.setTextSize(20 * ratiow);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.RED);
-                canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 10 * ratiow, paint);
-                canvas.drawText("Max: " + (Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 15)*ratioh, paint);
+                canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * ratiow, paint);
+                canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
                 paint.setColor(Color.BLUE);
-                canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 10 * ratiow, paint);
-                canvas.drawText("Min: " + (Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 15)*ratioh, paint);
+                canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
+                canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
 
             } catch (IndexOutOfBoundsException e){
                 e.printStackTrace();

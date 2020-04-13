@@ -17,18 +17,20 @@
         <ImageView
             android:id="@+id/msx_image"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:minWidth="50dp"
-            android:maxWidth="50dp"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/msx_image_desc" />
 
         <ImageView
             android:id="@+id/photo_image"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
             android:visibility="invisible"
-            android:minWidth="50dp"
-            android:maxWidth="50dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/photo_image_desc" />
 
     </RelativeLayout>
