@@ -45,9 +45,7 @@ public class FlirCameraActivity extends AppCompatActivity {
     private TextView connectionStatus;
 
     private ImageView msxImage;
-    Bitmap msBitmap;
     private ImageView photoImage;
-    Bitmap photoBitmap;
 
     ScaleGestureDetector mScaleGestureDetector;
 
@@ -135,13 +133,12 @@ public class FlirCameraActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(msBitmap != null){
+        if(msxImage != null){
             int[] viewCoords = new int[2];
             msxImage.getLocationInWindow(viewCoords);
             int imageX = (int)(event.getX() - viewCoords[0]);
             int imageY = (int)(event.getY() - viewCoords[1]);
 
-            Log.e("ANDREI", "WIDTH : " + msBitmap.getWidth());
             float ratiow = (float) CameraHandler.thermal_width / msxImage.getWidth();
             float ratioh = (float) CameraHandler.thermal_height / msxImage.getHeight();
 
@@ -356,10 +353,8 @@ public class FlirCameraActivity extends AppCompatActivity {
                 Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                 BitmapFrameBuffer poll = framesBuffer.poll();
                 if (poll != null) {
-                    msxImage.setImageBitmap(poll.msxBitmap);
-                    msBitmap = msxBitmap;
+                    msxImage.setImageBitmap(poll.msxBitmap);ap;
                     photoImage.setImageBitmap(poll.dcBitmap);
-                    photoBitmap = dcBitmap;
                 }
             });
 
