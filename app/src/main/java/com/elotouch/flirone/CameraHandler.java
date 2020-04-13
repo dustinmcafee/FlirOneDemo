@@ -12,7 +12,7 @@ import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
 import com.flir.thermalsdk.image.Rectangle;
 import com.flir.thermalsdk.image.TemperatureUnit;
 import com.flir.thermalsdk.image.ThermalImage;
-import com.flir.thermalsdk.image.fusion.FusionMode;
+import com.flir.thermalsdk.image.measurements.MeasurementException;
 import com.flir.thermalsdk.image.measurements.MeasurementRectangle;
 import com.flir.thermalsdk.live.Camera;
 import com.flir.thermalsdk.live.CommunicationInterface;
@@ -31,7 +31,7 @@ import java.util.Objects;
 /**
  * EHandle a FLIR ONE camera or built in emulator: Discovery, connecting and start receiving images.
  * Call all Thermal SDK listeners on a non-ui thread
- *
+ * <p>
  * You don't *have* to specify your application to listen or USB intents but it might be beneficial for you application,
  * we are enumerating the USB devices during the discovery process which eliminates the need to listen for USB intents.
  * See the Android documentation about USB Host mode for more information
@@ -45,6 +45,7 @@ class CameraHandler {
 
     public interface StreamDataListener {
         void images(BitmapFrameBuffer dataHolder);
+
         void images(Bitmap msxBitmap, Bitmap dcBitmap);
     }
 
@@ -56,6 +57,7 @@ class CameraHandler {
 
     public interface DiscoveryStatus {
         void started();
+
         void stopped();
     }
 
@@ -122,6 +124,7 @@ class CameraHandler {
 
     /**
      * A getter for the cameraIdentities Linked List
+     *
      * @param i the ith element to get
      * @return the ith element of the Linked List 'cameraIdentities'
      */
@@ -139,6 +142,7 @@ class CameraHandler {
 
     /**
      * get the C++ FLIR ONE Emulation if already found
+     *
      * @return the C++ FLIR ONE Emulation if already found, else null
      */
     @Nullable Identity getCppEmulator() {
@@ -152,6 +156,7 @@ class CameraHandler {
 
     /**
      * get the FLIR ONE Emulation if already found
+     *
      * @return the FLIR ONE Emulation if already found, else null
      */
     @Nullable Identity getFlirOneEmulator() {
@@ -165,6 +170,7 @@ class CameraHandler {
 
     /**
      * get the FLIR ONE Camera that is not an emulation if already found
+     *
      * @return the FLIR ONE Camera if already found, else null
      */
     @Nullable Identity getFlirOne() {
@@ -190,11 +196,11 @@ class CameraHandler {
         }
     };
 
-    static void setTemperatureUnit(TemperatureUnit unit){
+    static void setTemperatureUnit(TemperatureUnit unit) {
         temperatureUnit = unit;
     }
 
-    static TemperatureUnit getTemperatureUnit(){
+    static TemperatureUnit getTemperatureUnit() {
         return temperatureUnit;
     }
 
@@ -202,26 +208,6 @@ class CameraHandler {
      * Function to process a Thermal Image and update UI
      */
     private final Camera.Consumer<ThermalImage> receiveCameraImage = new Camera.Consumer<ThermalImage>() {
-        final double widthRatio = 1.2;
-        final double heightRatio = 1.3;
-
-        /**
-         * Create the Rectangle to draw to the canvas. Will need to be translated based on Resolution ratio between different camera filters.
-         * @param thermalImage the ThermalImage dataset to use as a base canvas.
-         * @return the Rectangle to draw to the canvas
-         */
-        private Rect drawRectangle(ThermalImage thermalImage){
-            Bitmap msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
-
-            // Set up Canvas
-            Canvas canvas = new Canvas(msxBitmap);
-            Rect clipBounds = canvas.getClipBounds();
-
-            return new Rect((int) (clipBounds.right - (clipBounds.width() / widthRatio)),
-                    (int) (clipBounds.bottom - (clipBounds.height() / heightRatio)),
-                    (int) (clipBounds.left + (clipBounds.width() / widthRatio)),
-                    (int) (clipBounds.top + (clipBounds.height() / heightRatio)));
-        }
 
         @Override
         public void accept(ThermalImage thermalImage) {
@@ -231,69 +217,67 @@ class CameraHandler {
             // extract information on the background thread and send the specific information to the UI thread
 
             //Get a bitmap with only IR data
-            if(thermalImage.getFusion() != null) {
+            if (thermalImage.getFusion() != null) {
                 thermalImage.getFusion().setFusionMode(FlirCameraActivity.curr_fusion_mode);
             }
             Bitmap msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
-
-            // Set up Canvas
-            Canvas canvas = new Canvas(msxBitmap);
+            //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
+            Bitmap dcBitmap = BitmapAndroid.createBitmap(Objects.requireNonNull(thermalImage.getFusion().getPhoto())).getBitMap();
 
             // Set Temperature Unit
             thermalImage.setTemperatureUnit(temperatureUnit);
 
-            // Get the rectangles
-            Rect rect = drawRectangle(thermalImage);
-            Rectangle rectangle = new Rectangle(rect.left, rect.top, rect.width(), rect.height());
+            // calculate ratios for width and height based off the output image (which can be higher resolution) compared to the thermal image (which is lower resolutioN)
+            float ratiow = (float) msxBitmap.getWidth() / thermalImage.getWidth();
+            float ratioh = (float) msxBitmap.getHeight() / thermalImage.getHeight() ;
 
-            // Set the resolution multipliers
-            double xMultiplier = 1;
-            double yMultiplier = 1;
-            if(!thermalImage.getFusion().getCurrentFusionMode().equals(FusionMode.THERMAL_ONLY)){
-                xMultiplier = (double) msxBitmap.getWidth() / thermalImage.getWidth();
-                yMultiplier = (double) msxBitmap.getHeight() / thermalImage.getHeight();
-            }
-
-            // Draw Rectangle
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.GREEN);
-            paint.setStyle(Paint.Style.STROKE);
-            canvas.drawRect(rect, paint);
+            // define a width and a height for the rectangle we are about to draw based on the ThermalImage sizes
+            int width = 400;
+            int height = 400;
 
             try {
-                // Scale Rectangle based on Resolution difference between THERMAL_ONLY and others
-                int height = (int) (rectangle.height / yMultiplier);
-                int width = (int) (rectangle.width / xMultiplier);
-                int x = (int) (rectangle.x / xMultiplier);
-                int y = (int) (rectangle.y / yMultiplier);
-                rectangle = new Rectangle(x, y, width, height);
-                int radius = (int) (5 * Math.min(xMultiplier, yMultiplier));
+                // calculate left and top positioning coordinates to display the rectangle in the middle
+                float left = (float) (thermalImage.getWidth() / 2.0 - (width) / 2);
+                float top = (float) (thermalImage.getHeight() / 2.0 - (height) / 2);
+                // Create a rectangle based off those measurements in order to poll the data for statistics
+                Rectangle rect = new Rectangle((int) left, (int) top, width, height);
+                if (left + width > thermalImage.getWidth() || top + height > thermalImage.getHeight()) {
+                    throw new IndexOutOfBoundsException();
+                }
+                // Set up Canvas
+                Canvas canvas = new Canvas(msxBitmap);
+                // Draw Rectangle to the high resolution image
+                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                paint.setColor(Color.GREEN);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(paint.getStrokeWidth() * ratiow);
+                canvas.drawRect(left * ratiow, top * ratioh, (left+rect.width)*ratiow, (top+rect.height)*ratioh, paint);
 
+                // Get statistic points and calculate them.
                 thermalImage.getMeasurements().clear();
-                thermalImage.getMeasurements().addRectangle(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+                thermalImage.getMeasurements().addRectangle(rect.x, rect.y, rect.width, rect.height);
                 MeasurementRectangle mRect = thermalImage.getMeasurements().getRectangles().get(0);
                 mRect.setColdSpotMarkerVisible(true);
                 mRect.setHotSpotMarkerVisible(true);
 
-                Log.e("ASDFASDFASDF", thermalImage.getMeasurements().getRectangles().get(0).toString());
-
+                // Draw min/max temperature points
+                paint.setTextSize(20 * ratiow);
+                paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.RED);
-                paint.setTextSize(20 * (int)yMultiplier);
-                canvas.drawCircle((int)(mRect.getHotSpot().x*xMultiplier), (int)(mRect.getHotSpot().y*yMultiplier), radius, paint);
-                canvas.drawText("Max: " + (Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), (int)(mRect.getHotSpot().x*xMultiplier), (int)(mRect.getHotSpot().y*yMultiplier) + 25, paint);
+                canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 10 * ratiow, paint);
+                canvas.drawText("Max: " + (Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 15)*ratioh, paint);
                 paint.setColor(Color.BLUE);
-                canvas.drawCircle((int)(mRect.getColdSpot().x*xMultiplier), (int)(mRect.getColdSpot().y*yMultiplier), radius, paint);
-                canvas.drawText("Min: " + (Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), (int)(mRect.getColdSpot().x*xMultiplier), (int)(mRect.getColdSpot().y*yMultiplier) + 25, paint);
-            } catch (Exception e){
+                canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 10 * ratiow, paint);
+                canvas.drawText("Min: " + (Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit(), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 15)*ratioh, paint);
+
+            } catch (IndexOutOfBoundsException e){
                 e.printStackTrace();
-                Log.e(TAG, "handleIncomingMessage: Can not draw rectangle to screen");
+            } catch (MeasurementException e){
+                e.printStackTrace();
             }
 
-            //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
-            Bitmap dcBitmap = BitmapAndroid.createBitmap(Objects.requireNonNull(thermalImage.getFusion().getPhoto())).getBitMap();
-
-            Log.d(TAG,"adding images to cache");
-            streamDataListener.images(msxBitmap,dcBitmap);
+            Log.d(TAG, "adding images to cache");
+            streamDataListener.images(msxBitmap, dcBitmap);
         }
     };
 }
