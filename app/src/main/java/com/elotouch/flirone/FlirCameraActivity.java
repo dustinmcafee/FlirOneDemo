@@ -115,8 +115,8 @@ public class FlirCameraActivity extends AppCompatActivity {
                 if(msxImage != null && photoImage != null){
                     width = CameraHandler.thermal_width/2.0;
                     height = width;
-                    left = CameraHandler.thermal_width - width/2;
-                    top = CameraHandler.thermal_height - height/2;
+                    left = CameraHandler.thermal_width/2 - width/2;
+                    top = CameraHandler.thermal_height/2 - height/2;
                 }
                 break;
 
