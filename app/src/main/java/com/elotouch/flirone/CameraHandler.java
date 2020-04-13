@@ -204,6 +204,9 @@ class CameraHandler {
         return temperatureUnit;
     }
 
+    public static double thermal_width;
+    public static double thermal_height;
+
     /**
      * Function to process a Thermal Image and update UI
      */
@@ -212,6 +215,9 @@ class CameraHandler {
         @Override
         public void accept(ThermalImage thermalImage) {
             Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
+
+            thermal_width = thermalImage.getWidth();
+            thermal_height = thermalImage.getHeight();
 
             // Will be called on a non-ui thread,
             // extract information on the background thread and send the specific information to the UI thread

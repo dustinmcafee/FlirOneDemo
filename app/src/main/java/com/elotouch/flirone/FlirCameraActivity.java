@@ -47,6 +47,7 @@ public class FlirCameraActivity extends AppCompatActivity {
     private ImageView msxImage;
     Bitmap msBitmap;
     private ImageView photoImage;
+    Bitmap photoBitmap;
 
     ScaleGestureDetector mScaleGestureDetector;
 
@@ -133,18 +134,16 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        ImageView img = msxImage;
-        if(msxImage.getVisibility() == View.INVISIBLE){
-            img = photoImage;
-        }
-        if(msxImage != null && photoImage != null){
+
+        if(msBitmap != null){
             int[] viewCoords = new int[2];
             msxImage.getLocationInWindow(viewCoords);
             int imageX = (int)(event.getX() - viewCoords[0]);
             int imageY = (int)(event.getY() - viewCoords[1]);
 
-            float ratiow = (float) msBitmap.getWidth() / msxImage.getWidth();
-            float ratioh = (float) msBitmap.getHeight() / msxImage.getHeight();
+            Log.e("ANDREI", "WIDTH : " + msBitmap.getWidth());
+            float ratiow = (float) CameraHandler.thermal_width / msxImage.getWidth();
+            float ratioh = (float) CameraHandler.thermal_height / msxImage.getHeight();
 
             Log.e("ANDREI", imageX + "  " + imageY);
             Log.e("ANDREI", ratiow + "  " + ratioh);
@@ -157,7 +156,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 } else{
                     Log.e("ANDREI", "HERE 2");
 
-                    left = msBitmap.getWidth() - width;
+                    left = CameraHandler.thermal_width - width;
                 }
             } else{
                 Log.e("ANDREI", "HERE 3");
@@ -172,7 +171,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 } else{
                     Log.e("ANDREI", "HERE 5");
 
-                    top = msBitmap.getHeight() - height;
+                    top = CameraHandler.thermal_height - height;
                 }
             } else{
                 Log.e("ANDREI", "HERE 6");
@@ -360,6 +359,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                     msxImage.setImageBitmap(poll.msxBitmap);
                     msBitmap = msxBitmap;
                     photoImage.setImageBitmap(poll.dcBitmap);
+                    photoBitmap = dcBitmap;
                 }
             });
 
