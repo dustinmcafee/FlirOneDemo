@@ -258,7 +258,7 @@ class CameraHandler {
                 Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 paint.setColor(Color.GREEN);
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(2 * (Math.min(ratiow, ratioh)));
+                paint.setStrokeWidth(2 * ratiow);
                 canvas.drawRect(left * ratiow, top * ratioh, (left+rect.width)*ratiow, (top+rect.height)*ratioh, paint);
 
                 // Get statistic points and calculate them.
@@ -272,10 +272,10 @@ class CameraHandler {
                 paint.setTextSize(20 * ratiow);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.RED);
-                canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * (Math.min(ratiow, ratioh)), paint);
+                canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * ratiow, paint);
                 canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
                 paint.setColor(Color.BLUE);
-                canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * (Math.min(ratiow, ratioh)), paint);
+                canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
                 canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
 
             } catch (IndexOutOfBoundsException e){
