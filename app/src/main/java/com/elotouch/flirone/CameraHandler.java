@@ -1,13 +1,4 @@
-/*******************************************************************
- * @title FLIR THERMAL SDK
- * @file CameraHandler.java
- * @Author FLIR Systems AB
- *
- * @brief Helper class that encapsulates *most* interactions with a FLIR ONE camera
- *
- * Copyright 2019:    FLIR Systems
- ********************************************************************/
-package com.samples.flironecamera;
+package com.elotouch.flirone;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -33,30 +24,16 @@ import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Objects;
 
 /**
- * Encapsulates the handling of a FLIR ONE camera or built in emulator, discovery, connecting and start receiving images.
- * All listeners are called from Thermal SDK on a non-ui thread
- * <p/>
- * Usage:
- * <pre>
- * Start discovery of FLIR FLIR ONE cameras or built in FLIR ONE cameras emulators
- * {@linkplain #startDiscovery(DiscoveryEventListener, DiscoveryStatus)}
- * Use a discovered Camera {@linkplain Identity} and connect to the Camera
- * (note that calling connect is blocking and it is mandatory to call this function from a background thread):
- * {@linkplain #connect(Identity, ConnectionStatusListener)}
- * Once connected to a camera
- * {@linkplain #startStream(StreamDataListener)}
- * </pre>
- * <p/>
+ * EHandle a FLIR ONE camera or built in emulator: Discovery, connecting and start receiving images.
+ * Call all Thermal SDK listeners on a non-ui thread
+ *
  * You don't *have* to specify your application to listen or USB intents but it might be beneficial for you application,
  * we are enumerating the USB devices during the discovery process which eliminates the need to listen for USB intents.
  * See the Android documentation about USB Host mode for more information
- * <p/>
- * Please note, this is <b>NOT</b> production quality code, error handling has been kept to a minimum to keep the code as clear and concise as possible
  */
 class CameraHandler {
 
@@ -66,15 +43,14 @@ class CameraHandler {
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
 
     public interface StreamDataListener {
-        void images(FrameDataHolder dataHolder);
+        void images(BitmapFrameBuffer dataHolder);
         void images(Bitmap msxBitmap, Bitmap dcBitmap);
     }
 
+    // Discovered FLIR cameras
+    private LinkedList<Identity> cameraIndentities = new LinkedList<>();
 
-    //Discovered FLIR cameras
-    LinkedList<Identity> foundCameraIdentities = new LinkedList<>();
-
-    //A FLIR Camera
+    // A FLIR Camera
     private Camera camera;
 
 
@@ -83,13 +59,13 @@ class CameraHandler {
         void stopped();
     }
 
-    public CameraHandler() {
+    CameraHandler() {
     }
 
     /**
      * Start discovery of USB and Emulators
      */
-    public void startDiscovery(DiscoveryEventListener cameraDiscoveryListener, DiscoveryStatus discoveryStatus) {
+    void startDiscovery(DiscoveryEventListener cameraDiscoveryListener, DiscoveryStatus discoveryStatus) {
         DiscoveryFactory.getInstance().scan(cameraDiscoveryListener, CommunicationInterface.EMULATOR, CommunicationInterface.USB);
         discoveryStatus.started();
     }
@@ -97,36 +73,39 @@ class CameraHandler {
     /**
      * Stop discovery of USB and Emulators
      */
-    public void stopDiscovery(DiscoveryStatus discoveryStatus) {
+    void stopDiscovery(DiscoveryStatus discoveryStatus) {
         DiscoveryFactory.getInstance().stop(CommunicationInterface.EMULATOR, CommunicationInterface.USB);
         discoveryStatus.stopped();
     }
 
-    public void connect(Identity identity, ConnectionStatusListener connectionStatusListener) throws IOException {
+    void connectCamera(Identity identity, ConnectionStatusListener connectionStatusListener) throws IOException {
         camera = new Camera();
         camera.connect(identity, connectionStatusListener);
     }
 
-    public void disconnect() {
-        if (camera == null) {
-            return;
+    void disconnectCamera() {
+        if (camera != null) {
+            if (camera.isGrabbing()) {
+                camera.unsubscribeAllStreams();
+            }
+            camera.disconnect();
         }
-        if (camera.isGrabbing()) {
-            camera.unsubscribeAllStreams();
-        }
-        camera.disconnect();
     }
 
     /**
-     * Start a stream of {@link ThermalImage}s images from a FLIR ONE or emulator
+     * Start a stream of ThermalImages from the Camera (or emulator)
+     *
+     * @param listener CameraHandler.StreamDataListener that adds the frames to the buffer
      */
-    public void startStream(StreamDataListener listener) {
+    void startStream(StreamDataListener listener) {
         this.streamDataListener = listener;
         camera.subscribeStream(thermalImageStreamListener);
     }
 
     /**
-     * Stop a stream of {@link ThermalImage}s images from a FLIR ONE or emulator
+     * Stop a stream of ThermalImages from the Camera (or emulator)
+     *
+     * @param listener CameraHandler.StreamDataListener to unsubscribe
      */
     public void stopStream(ThermalImageStreamListener listener) {
         camera.unsubscribeStream(listener);
@@ -134,34 +113,36 @@ class CameraHandler {
 
     /**
      * Add a found camera to the list of known cameras
+     *
+     * @param identity Camera Identity to add to list of found cameras
      */
-    public void add(Identity identity) {
-        foundCameraIdentities.add(identity);
-    }
-
-    @Nullable
-    public Identity get(int i) {
-        return foundCameraIdentities.get(i);
+    void addFoundCameraIdentity(Identity identity) {
+        cameraIndentities.add(identity);
     }
 
     /**
-     * Get a read only list of all found cameras
+     * A getter for the cameraIdentities Linked List
+     * @param i the ith element to get
+     * @return the ith element of the Linked List 'cameraIdentities'
      */
     @Nullable
-    public List<Identity> getCameraList() {
-        return Collections.unmodifiableList(foundCameraIdentities);
+    public Identity getFoundCameraIdentity(int i) {
+        return cameraIndentities.get(i);
     }
 
     /**
      * Clear all known network cameras
      */
-    public void clear() {
-        foundCameraIdentities.clear();
+    public void clearFoundCameraIdentities() {
+        cameraIndentities.clear();
     }
 
-    @Nullable
-    public Identity getCppEmulator() {
-        for (Identity foundCameraIdentity : foundCameraIdentities) {
+    /**
+     * get the C++ FLIR ONE Emulation if already found
+     * @return the C++ FLIR ONE Emulation if already found, else null
+     */
+    @Nullable Identity getCppEmulator() {
+        for (Identity foundCameraIdentity : cameraIndentities) {
             if (foundCameraIdentity.deviceId.contains("C++ Emulator")) {
                 return foundCameraIdentity;
             }
@@ -169,9 +150,12 @@ class CameraHandler {
         return null;
     }
 
-    @Nullable
-    public Identity getFlirOneEmulator() {
-        for (Identity foundCameraIdentity : foundCameraIdentities) {
+    /**
+     * get the FLIR ONE Emulation if already found
+     * @return the FLIR ONE Emulation if already found, else null
+     */
+    @Nullable Identity getFlirOneEmulator() {
+        for (Identity foundCameraIdentity : cameraIndentities) {
             if (foundCameraIdentity.deviceId.contains("EMULATED FLIR ONE")) {
                 return foundCameraIdentity;
             }
@@ -179,9 +163,12 @@ class CameraHandler {
         return null;
     }
 
-    @Nullable
-    public Identity getFlirOne() {
-        for (Identity foundCameraIdentity : foundCameraIdentities) {
+    /**
+     * get the FLIR ONE Camera that is not an emulation if already found
+     * @return the FLIR ONE Camera if already found, else null
+     */
+    @Nullable Identity getFlirOne() {
+        for (Identity foundCameraIdentity : cameraIndentities) {
             boolean isFlirOneEmulator = foundCameraIdentity.deviceId.contains("EMULATED FLIR ONE");
             boolean isCppEmulator = foundCameraIdentity.deviceId.contains("C++ Emulator");
             if (!isFlirOneEmulator && !isCppEmulator) {
@@ -199,37 +186,52 @@ class CameraHandler {
         public void onImageReceived() {
             //Will be called on a non-ui thread
             Log.d(TAG, "onImageReceived(), we got another ThermalImage");
-            camera.withImage(handleIncomingImage);
+            camera.withImage(receiveCameraImage);
         }
     };
 
-    public static void setTemperatureUnit(TemperatureUnit unit){
+    static void setTemperatureUnit(TemperatureUnit unit){
         temperatureUnit = unit;
     }
 
-    public static TemperatureUnit getTemperatureUnit(){
+    static TemperatureUnit getTemperatureUnit(){
         return temperatureUnit;
     }
 
-    private class StatisticPoint {
-        int minX;
-        int minY;
-        int maxX;
-        int maxY;
+    /**
+     * Represents simple statistics of a given dataset, and their respective (X,Y) Coordinates
+     */
+    private static class StatisticPoint {
         double min;
         double max;
         double average;
+        Point hotSpot;
+        Point coldSpot;
         StatisticPoint(int minX, int minY, int maxX, int maxY, double min, double max, double average){
-            this.minX = minX;
-            this.minY = minY;
-            this.maxX = maxX;
-            this.maxY = maxY;
+            this.hotSpot = new Point(maxX, maxY);
+            this.coldSpot = new Point(minX, minY);
+            this.min = min;
+            this.max = max;
+            this.average = average;
+        }
+        StatisticPoint(Point hotSpot, Point coldSpot, double min, double max, double average){
+            this.hotSpot = hotSpot;
+            this.coldSpot = coldSpot;
             this.min = min;
             this.max = max;
             this.average = average;
         }
     }
 
+    /**
+     * Return the {@link StatisticPoint} of a given set of values inside a given rectangle.
+     *      The rectangle is used to translate the (X,Y) Coordinates of the StatisticPoint
+     * @param vals the dataset
+     * @param width the width of the rectangle
+     * @param left the left of the rectangle
+     * @param top the top of the rectangle
+     * @return the StatisticPoint of the given input
+     */
     private StatisticPoint getStats(double[] vals, int width, int left, int top){
         if(vals.length == 0){
             return null;
@@ -264,30 +266,27 @@ class CameraHandler {
     /**
      * Function to process a Thermal Image and update UI
      */
-    private final Camera.Consumer<ThermalImage> handleIncomingImage = new Camera.Consumer<ThermalImage>() {
+    private final Camera.Consumer<ThermalImage> receiveCameraImage = new Camera.Consumer<ThermalImage>() {
         final double widthRatio = 1.2;
         final double heightRatio = 1.3;
         final double multiplier = 2.25; // TODO: Make this work dynamically
 
+        /**
+         * Create the Rectangle to draw to the canvas. Will need to be translated based on Resolution ratio between different camera filters.
+         * @param thermalImage the ThermalImage dataset to use as a base canvas.
+         * @return the Rectangle to draw to the canvas
+         */
         private Rect drawRectangle(ThermalImage thermalImage){
             Bitmap msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
-
-            // Set Temperature Unit
-            thermalImage.setTemperatureUnit(temperatureUnit);
 
             // Set up Canvas
             Canvas canvas = new Canvas(msxBitmap);
             Rect clipBounds = canvas.getClipBounds();
-//            Log.e("ASDF", "left: " + (clipBounds.right - (clipBounds.width() / widthRatio)));
-//            Log.e("ASDF", "right: " + (clipBounds.left + (clipBounds.width() / widthRatio)));
-//            Log.e("ASDF", "top: " + (clipBounds.bottom - (clipBounds.height() / heightRatio)));
-//            Log.e("ASDF", "bottom: " + (clipBounds.top + (clipBounds.height() / heightRatio)));
 
-            Rect rectangle = new Rect((int) (clipBounds.right - (clipBounds.width() / widthRatio)),
+            return new Rect((int) (clipBounds.right - (clipBounds.width() / widthRatio)),
                     (int) (clipBounds.bottom - (clipBounds.height() / heightRatio)),
                     (int) (clipBounds.left + (clipBounds.width() / widthRatio)),
                     (int) (clipBounds.top + (clipBounds.height() / heightRatio)));
-            return rectangle;
         }
 
         @Override
@@ -299,7 +298,7 @@ class CameraHandler {
 
             //Get a bitmap with only IR data
             if(thermalImage.getFusion() != null) {
-                thermalImage.getFusion().setFusionMode(FlirEmulator.curr_fusion_mode);
+                thermalImage.getFusion().setFusionMode(FlirCameraActivity.curr_fusion_mode);
             }
             Bitmap msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
 
@@ -320,7 +319,8 @@ class CameraHandler {
             canvas.drawRect(rect, paint);
 
             try {
-
+                // Scale Rectangle based on Resolution difference between THERMAL_ONLY and others
+                // TODO: Make this dynamic: 'multiplier' should be based on current filter mode.
                 if(!thermalImage.getFusion().getCurrentFusionMode().equals(FusionMode.THERMAL_ONLY)){
                     int height = (int) (rectangle.height / multiplier);
                     int width = (int) (rectangle.width / multiplier);
@@ -329,41 +329,26 @@ class CameraHandler {
                     rectangle = new Rectangle(x, y, width, height);
                 }
 
+                // Compute Statistics
                 double[] vals = thermalImage.getValues(rectangle);
                 StatisticPoint rectStats = getStats(vals, rect.width(), rect.left, rect.top);
 
                 if (rectStats != null) {
-                    Point hotSpot = new Point();
-                    hotSpot.x = rectStats.maxX;
-                    hotSpot.y = rectStats.maxY;
-                    double max = rectStats.max;
-                    Point coldSpot = new Point();
-                    coldSpot.x = rectStats.minX;
-                    coldSpot.y = rectStats.minY;
-                    double min = rectStats.min;
-
                     // Draw min/max temperature points
                     paint.setColor(Color.RED);
-                    canvas.drawCircle(hotSpot.x, hotSpot.y, 5, paint);
-                    canvas.drawText("Max: " + (Math.round(max * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit, hotSpot.x, hotSpot.y + 15, paint);
+                    canvas.drawCircle(rectStats.hotSpot.x, rectStats.hotSpot.y, 5, paint);
+                    canvas.drawText("Max: " + (Math.round(rectStats.max * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit, rectStats.hotSpot.x, rectStats.hotSpot.y + 15, paint);
                     paint.setColor(Color.BLUE);
-                    canvas.drawCircle(coldSpot.x, coldSpot.y, 5, paint);
-                    canvas.drawText("Min: " + (Math.round(min * 100.0) / 100.0) + " " + thermalImage.getStatistics().min.unit, coldSpot.x, coldSpot.y + 15, paint);
+                    canvas.drawCircle(rectStats.coldSpot.x, rectStats.coldSpot.y, 5, paint);
+                    canvas.drawText("Min: " + (Math.round(rectStats.min * 100.0) / 100.0) + " " + thermalImage.getStatistics().min.unit, rectStats.coldSpot.x, rectStats.coldSpot.y + 15, paint);
                 }
             } catch (Exception e){
                 e.printStackTrace();
                 Log.e(TAG, "handleIncomingMessage: Can not draw rectangle to screen");
-
-//                paint.setColor(Color.RED);
-//                canvas.drawCircle(thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y,5,paint);
-//                canvas.drawText("Max: " + (Math.round(thermalImage.getStatistics().max.value * 100.0) / 100.0) + " " + thermalImage.getStatistics().max.unit,thermalImage.getStatistics().hotSpot.x,thermalImage.getStatistics().hotSpot.y + 15,paint);
-//                paint.setColor(Color.BLUE);
-//                canvas.drawCircle(thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y,5,paint);
-//                canvas.drawText("Min: " + (Math.round(thermalImage.getStatistics().min.value * 100.0) / 100.0)  + " " + thermalImage.getStatistics().min.unit,thermalImage.getStatistics().coldSpot.x,thermalImage.getStatistics().coldSpot.y + 15,paint);
             }
 
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
-            Bitmap dcBitmap = BitmapAndroid.createBitmap(thermalImage.getFusion().getPhoto()).getBitMap();
+            Bitmap dcBitmap = BitmapAndroid.createBitmap(Objects.requireNonNull(thermalImage.getFusion().getPhoto())).getBitMap();
 
             Log.d(TAG,"adding images to cache");
             streamDataListener.images(msxBitmap,dcBitmap);

@@ -1,14 +1,4 @@
-/*
- * ******************************************************************
- * @title FLIR THERMAL SDK
- * @file MainActivity.java
- * @Author FLIR Systems AB
- *
- * @brief  Main UI of test application
- *
- * Copyright 2019:    FLIR Systems
- * ******************************************************************/
-package com.samples.flironecamera;
+package com.elotouch.flirone;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,19 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.samples.flironecamera.FlirCameraApplication.cameraHandler;
+import static com.elotouch.flirone.FlirCameraApplication.cameraHandler;
 
-/**
- * Sample application for scanning a FLIR ONE or a built in emulator
- * <p>
- * See the {@link CameraHandler} for how to preform discovery of a FLIR ONE camera, connecting to it and start streaming images
- * <p>
- * The MainActivity is primarily focused to "glue" different helper classes together and updating the UI components
- * <p/>
- * Please note, this is <b>NOT</b> production quality code, error handling has been kept to a minimum to keep the code as clear and concise as possible
- */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -68,15 +50,20 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.DarkTheme);
         setContentView(R.layout.activity_main);
 
+        // Initialize Thermal SDK
         ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
 
+        // Initialize Permission Handler
         permissionHandler = new PermissionHandler(showMessage, MainActivity.this);
+
+        // Initialize Camera Handler
         cameraHandler = new CameraHandler();
 
+        // Initialize TextViews
         discoveryStatus = findViewById(R.id.discovery_status);
+        TextView sdkVersionTextView = findViewById(R.id.sdk_version);
 
         // Show Thermal Android SDK version
-        TextView sdkVersionTextView = findViewById(R.id.sdk_version);
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
 
@@ -90,21 +77,32 @@ public class MainActivity extends AppCompatActivity {
         cameraHandler.stopDiscovery(discoveryStatusListener);
     }
 
-
-    public void connectFlirOne(View view) {
-        Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+    /**
+     * Connect to the Flir One Camera, starts the FlirCameraActivity
+     * @param view the button pressed
+     */
+    public void connectFlirOne(@Nullable View view) {
+        Intent intent = new Intent(getApplicationContext(), FlirCameraActivity.class);
         intent.setAction(ACTION_START_FLIR_ONE);
         startActivity(intent);
     }
 
-    public void connectSimulatorOne(View view) {
-        Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+    /**
+     * Connect to the Flir One C++ Emulator, starts the FlirCameraActivity
+     * @param view the button pressed
+     */
+    public void connectSimulatorOne(@Nullable View view) {
+        Intent intent = new Intent(getApplicationContext(), FlirCameraActivity.class);
         intent.setAction(ACTION_START_SIMULATOR_ONE);
         startActivity(intent);
     }
 
-    public void connectSimulatorTwo(View view) {
-        Intent intent = new Intent(getApplicationContext(), FlirEmulator.class);
+    /**
+     * Connect to the Flir One Emulator, starts the FlirCameraActivity
+     * @param view the button pressed
+     */
+    public void connectSimulatorTwo(@Nullable View view) {
+        Intent intent = new Intent(getApplicationContext(), FlirCameraActivity.class);
         intent.setAction(ACTION_START_SIMULATOR_TWO);
         startActivity(intent);
     }
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
-        permissionHandler.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionHandler.onRequestPermissionsResult(requestCode, grantResults);
     }
 
     /**
@@ -159,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /**
-     * Camera Discovery thermalImageStreamListener, is notified if a new camera was found during a active discovery phase
-     * <p>
+     * cameraDiscoveryListener is notified if a new camera was found during a active discovery phase
      * Note that callbacks are received on a non-ui thread so have to eg use {@link #runOnUiThread(Runnable)} to interact view UI components
      */
     private DiscoveryEventListener cameraDiscoveryListener = new DiscoveryEventListener() {
@@ -175,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     findViewById(R.id.connect_flir_one).setVisibility(View.VISIBLE);
                 }
-                cameraHandler.add(identity);
+                cameraHandler.addFoundCameraIdentity(identity);
                 MainActivity.this.showMessage.show("Camera Found: " + identity);
                 stopDiscovery();
             });
@@ -183,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDiscoveryError(CommunicationInterface communicationInterface, ErrorCode errorCode) {
-            Log.d(TAG, "onDiscoveryError communicationInterface:" + communicationInterface + " errorCode:" + errorCode);
+            Log.e(TAG, "onDiscoveryError communicationInterface:" + communicationInterface + " errorCode:" + errorCode);
 
             runOnUiThread(() -> {
                 stopDiscovery();

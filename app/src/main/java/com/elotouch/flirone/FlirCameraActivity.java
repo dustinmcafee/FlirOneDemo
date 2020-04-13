@@ -1,4 +1,4 @@
-package com.samples.flironecamera;
+package com.elotouch.flirone;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -24,18 +24,19 @@ import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.samples.flironecamera.FlirCameraApplication.cameraHandler;
-import static com.samples.flironecamera.FlirCameraApplication.connectedIdentity;
+import static com.elotouch.flirone.FlirCameraApplication.cameraHandler;
+import static com.elotouch.flirone.FlirCameraApplication.connectedCameraIdentity;
 
-public class FlirEmulator extends AppCompatActivity {
-    private static final String TAG = "FlirEmulator";
+public class FlirCameraActivity extends AppCompatActivity {
+    private static final String TAG = "FlirCameraActivity";
 
-    public MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirEmulator.this, message, Toast.LENGTH_SHORT).show();
+    public MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirCameraActivity.this, message, Toast.LENGTH_SHORT).show();
 
     public UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
-    public LinkedBlockingQueue<FrameDataHolder> framesBuffer = new LinkedBlockingQueue<>(21);
+    public LinkedBlockingQueue<BitmapFrameBuffer> framesBuffer = new LinkedBlockingQueue<>(21);
 
     public static FusionMode curr_fusion_mode = FusionMode.THERMAL_ONLY;
 
@@ -61,13 +62,13 @@ public class FlirEmulator extends AppCompatActivity {
         // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
         switch (getIntent().getAction()) {
             case MainActivity.ACTION_START_FLIR_ONE:
-                connect(cameraHandler.getFlirOne());
+                connectCamera(cameraHandler.getFlirOne());
                 break;
             case MainActivity.ACTION_START_SIMULATOR_ONE:
-                connect(cameraHandler.getCppEmulator());
+                connectCamera(cameraHandler.getCppEmulator());
                 break;
             case MainActivity.ACTION_START_SIMULATOR_TWO:
-                connect(cameraHandler.getFlirOneEmulator());
+                connectCamera(cameraHandler.getFlirOneEmulator());
                 break;
         }
     }
@@ -75,7 +76,7 @@ public class FlirEmulator extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar1, menu);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
 
@@ -113,7 +114,7 @@ public class FlirEmulator extends AppCompatActivity {
     }
 
     public void onClickDisconnectFlirEmulator() {
-        disconnect();
+        disconnectCamera();
         finish();
     }
 
@@ -159,41 +160,40 @@ public class FlirEmulator extends AppCompatActivity {
     /**
      * Disconnect to a camera
      */
-    private void disconnect() {
-        updateConnectionText(connectedIdentity, "DISCONNECTING");
-        connectedIdentity = null;
-        Log.d(TAG, "disconnect() called with: connectedIdentity = [" + connectedIdentity + "]");
+    private void disconnectCamera() {
+        updateConnectionText(connectedCameraIdentity, "DISCONNECTING");
+        connectedCameraIdentity = null;
+        Log.d(TAG, "disconnect: Called with: connectedCameraIdentity = [" + connectedCameraIdentity + "]");
         new Thread(() -> {
-            cameraHandler.disconnect();
+            cameraHandler.disconnectCamera();
             runOnUiThread(() -> updateConnectionText(null, "DISCONNECTED"));
         }).start();
     }
 
     /**
      * Connect to a Camera
+     * @param identity Camera Identity to connect to
      */
-    private void connect(Identity identity) {
-        if (connectedIdentity != null) {
-            // Should we support more than one camera at a time? what would be the use case?
-            Log.d(TAG, "connect:, Support only one camera connection at the time");
-            showMessage.show("connect:, Support only one camera connection at the time");
-            return;
+    private void connectCamera(Identity identity) {
+        if (connectedCameraIdentity != null) {
+            disconnectCamera();
         }
 
         if (identity == null) {
-            Log.d(TAG, "connect:, No camera available");
-            showMessage.show("connect:, No camera available");
+            Log.e(TAG, "connectCamera: No camera available");
+            showMessage.show("connectCamera: No camera available");
             return;
         }
 
-        connectedIdentity = identity;
+        connectedCameraIdentity = identity;
 
         updateConnectionText(identity, "CONNECTING");
-        //IF your using "USB_DEVICE_ATTACHED" and "usb-device vendor-id" in the Android Manifest
+        // IF your using "USB_DEVICE_ATTACHED" and "usb-device vendor-id" in the Android Manifest
         // you don't need to request permission, see documentation for more information
         if (UsbPermissionHandler.isFlirOne(identity)) {
             usbPermissionHandler.requestFlirOnePermisson(identity, this, permissionListener);
         } else {
+            // Spawn a new thread to connect to camera
             connectDevice(identity);
         }
     }
@@ -205,7 +205,7 @@ public class FlirEmulator extends AppCompatActivity {
     private void connectDevice(Identity identity) {
         new Thread(() -> {
             try {
-                cameraHandler.connect(identity, connectionStatusListener);
+                cameraHandler.connectCamera(identity, connectionStatusListener);
                 runOnUiThread(() -> {
                     updateConnectionText(identity, "CONNECTED");
                     cameraHandler.startStream(streamDataListener);
@@ -221,6 +221,8 @@ public class FlirEmulator extends AppCompatActivity {
 
     /**
      * Update the UI text for connection status
+     * @param identity the identity of the device that is [dis]connect(ed/ing).
+     * @param status the status string to update the UI text to.
      */
     private void updateConnectionText(Identity identity, String status) {
         String deviceId = identity != null ? " " + identity.deviceId : "";
@@ -229,19 +231,16 @@ public class FlirEmulator extends AppCompatActivity {
 
     /**
      * Camera connecting state thermalImageStreamListener, keeps track of if the camera is connected or not
-     * <p>
-     * Note that callbacks are received on a non-ui thread so have to eg use {@link #runOnUiThread(Runnable)} to interact view UI components
+     * Note that callbacks are received on a non-ui thread so use {@link #runOnUiThread(Runnable)} to interact view UI components
      */
     public ConnectionStatusListener connectionStatusListener = errorCode -> {
-        Log.d(TAG, "onDisconnected errorCode:" + errorCode);
-
-        runOnUiThread(() -> updateConnectionText(connectedIdentity, "DISCONNECTED"));
+        Log.d(TAG, "onDisconnected: errorCode:" + errorCode);
+        runOnUiThread(() -> updateConnectionText(connectedCameraIdentity, "DISCONNECTED"));
     };
 
     public final CameraHandler.StreamDataListener streamDataListener = new CameraHandler.StreamDataListener() {
-
         @Override
-        public void images(FrameDataHolder dataHolder) {
+        public void images(BitmapFrameBuffer dataHolder) {
 
             runOnUiThread(() -> {
                 msxImage.setImageBitmap(dataHolder.msxBitmap);
@@ -253,7 +252,7 @@ public class FlirEmulator extends AppCompatActivity {
         public void images(Bitmap msxBitmap, Bitmap dcBitmap) {
 
             try {
-                framesBuffer.put(new FrameDataHolder(msxBitmap, dcBitmap));
+                framesBuffer.put(new BitmapFrameBuffer(msxBitmap, dcBitmap));
             } catch (InterruptedException e) {
                 //if interrupted while waiting for adding a new item in the queue
                 Log.e(TAG, "images(), unable to add incoming images to frames buffer, exception:" + e);
@@ -261,7 +260,7 @@ public class FlirEmulator extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 Log.d(TAG, "framebuffer size:" + framesBuffer.size());
-                FrameDataHolder poll = (FrameDataHolder) framesBuffer.poll();
+                BitmapFrameBuffer poll = framesBuffer.poll();
                 if (poll != null) {
                     msxImage.setImageBitmap(poll.msxBitmap);
                     photoImage.setImageBitmap(poll.dcBitmap);
@@ -280,12 +279,12 @@ public class FlirEmulator extends AppCompatActivity {
 
         @Override
         public void permissionDenied(@NotNull Identity identity) {
-            FlirEmulator.this.showMessage.show("Permission was denied for identity ");
+            FlirCameraActivity.this.showMessage.show("Permission was denied for identity ");
         }
 
         @Override
         public void error(UsbPermissionHandler.UsbPermissionListener.ErrorType errorType, final Identity identity) {
-            FlirEmulator.this.showMessage.show("Error when asking for permission for FLIR ONE, error:" + errorType + " identity:" + identity);
+            FlirCameraActivity.this.showMessage.show("Error when asking for permission for FLIR ONE, error:" + errorType + " identity:" + identity);
         }
     };
 }

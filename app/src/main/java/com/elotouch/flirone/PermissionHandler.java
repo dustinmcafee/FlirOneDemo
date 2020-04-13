@@ -1,13 +1,4 @@
-/*******************************************************************
- * @title FLIR THERMAL SDK
- * @file PermissionHandler.java
- * @Author FLIR Systems AB
- *
- * @brief Helper class for handling Android permission requests
- *
- * Copyright 2019:    FLIR Systems
- *******************************************************************/
-package com.samples.flironecamera;
+package com.elotouch.flirone;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -17,7 +8,6 @@ import com.flir.thermalsdk.log.ThermalLog;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 /**
  * Encapsulated the asking of permission in Android, the class has to be used by an Activity.
@@ -49,10 +39,10 @@ public class PermissionHandler {
     private static final String TAG = "PermissionHandler";
     private final MainActivity mainActivity;
 
-    MainActivity.ShowMessage showMessage;
+    private MainActivity.ShowMessage showMessage;
 
     @VisibleForTesting
-    static String[] PERMISSIONS_FOR_NW_DISCOVERY = {
+    private static String[] PERMISSIONS_FOR_NW_DISCOVERY = {
             Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.CHANGE_WIFI_MULTICAST_STATE,
             Manifest.permission.CHANGE_WIFI_STATE,
@@ -63,19 +53,19 @@ public class PermissionHandler {
     };
 
     @VisibleForTesting
-    static String[] PERMISSIONS_FOR_STORAGE_DISCOVERY = {
+    private static String[] PERMISSIONS_FOR_STORAGE_DISCOVERY = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     @VisibleForTesting
-    static String[] PERMISSIONS_FOR_BLUETOOTH = {
+    private static String[] PERMISSIONS_FOR_BLUETOOTH = {
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
 
-    public PermissionHandler(MainActivity.ShowMessage showMessage, MainActivity mainActivity) {
+    PermissionHandler(MainActivity.ShowMessage showMessage, MainActivity mainActivity) {
         this.showMessage = showMessage;
         this.mainActivity = mainActivity;
     }
@@ -112,7 +102,7 @@ public class PermissionHandler {
      *
      * Activity:onRequestPermissionsResult(...) { permissionHandler.onRequestPermissionsResult(...); }
      */
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    void onRequestPermissionsResult(int requestCode, int[] grantResults) {
         if (grantResults.length <= 0) {
             showMessage.show("Permission request was canceled");
             return;
@@ -129,7 +119,6 @@ public class PermissionHandler {
             // permission denied
             showMessage.show(requestPermissionName + " permission was denied");
         }
-        return;
     }
 
     /**
@@ -172,7 +161,7 @@ public class PermissionHandler {
      * @return -1 if permission can't be found otherwise a unique nr for the permission
      * */
     @VisibleForTesting
-    int getRequestCode(String permission) {
+    private int getRequestCode(String permission) {
         int nwLength = PERMISSIONS_FOR_NW_DISCOVERY.length;
         int storageLength = PERMISSIONS_FOR_STORAGE_DISCOVERY.length;
         int btLength = PERMISSIONS_FOR_BLUETOOTH.length;
@@ -206,7 +195,7 @@ public class PermissionHandler {
      * @return null if permission can't be found otherwise the name of the permission is returned
      * */
     @VisibleForTesting
-    String getRequestPermissionName(int permissionCode) {
+    private String getRequestPermissionName(int permissionCode) {
         int nwLength = PERMISSIONS_FOR_NW_DISCOVERY.length;
         int storageLength = PERMISSIONS_FOR_STORAGE_DISCOVERY.length;
         int btLength = PERMISSIONS_FOR_BLUETOOTH.length;

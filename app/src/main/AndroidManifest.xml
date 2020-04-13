@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.samples.flironecamera" >
+    package="com.elotouch.flirone" >
 
     <!-- some hw might not support Usb Host mode so it's recommended to add this -->
     <uses-feature android:name="android.hardware.usb.host" />
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FlirEmulator" >
+        <activity android:name=".FlirCameraActivity" >
         </activity>
 
     </application>

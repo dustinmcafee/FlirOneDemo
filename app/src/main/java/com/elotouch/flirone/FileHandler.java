@@ -1,13 +1,4 @@
-/******************************************************************
- * @title FLIR THERMAL SDK
- * @file FileHandler.java
- * @Author FLIR Systems AB
- *
- * @brief Helper class to get a read / writeable file path
- *
- * Copyright 2019:    FLIR Systems
- * *******************************************************************/
-package com.samples.flironecamera;
+package com.elotouch.flirone;
 
 import android.content.Context;
 

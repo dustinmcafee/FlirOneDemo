@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:forceDarkAllowed="true"
     android:background="?attr/bgColor"
-    tools:context=".FlirEmulator"
+    tools:context=".FlirCameraActivity"
     android:orientation="vertical" >
 
     <!-- Title  -->
