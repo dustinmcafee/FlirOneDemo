@@ -19,4 +19,5 @@
     <string name="connect_f1_text_desc">Connect to a physical FlirOne Camera</string>
     <string name="connect_sim1_text_desc">Connect to a the FlirOne C++ Emulator</string>
     <string name="connect_sim2_text_desc">Connect to the FlirOne Emulator</string>
+    <string name="save_calibration">Save Calibration</string>
 </resources>

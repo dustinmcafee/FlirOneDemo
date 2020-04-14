@@ -213,7 +213,7 @@ class CameraHandler {
         @Override
         public void accept(ThermalImage thermalImage) {
             Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
-            CalibrationHandler.setPalette(thermalImage, "rainbow");
+            CalibrationHandler.calibrate(thermalImage);
 
             thermal_width = thermalImage.getWidth();
             thermal_height = thermalImage.getHeight();

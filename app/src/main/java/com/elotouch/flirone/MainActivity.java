@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.flir.thermalsdk.ErrorCode;
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
+import com.flir.thermalsdk.image.ThermalImage;
+import com.flir.thermalsdk.image.fusion.ThermalFusion;
 import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;

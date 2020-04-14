@@ -12,22 +12,64 @@ android:background="?attr/bgColor">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-    <TextView
-        android:id="@+id/atmospheric_temperature_text"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textColor="?attr/textColor"
-        android:text="Atmospheric Temperature" >
-    </TextView>
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:textColor="?attr/textColor"
-        android:background="?attr/textBgColor"
-        android:id="@+id/atmospheric_temperature_value"
-        android:hint="Atmospheric Temperature"
-        android:autofillHints="Atmospheric Temperature"
-        android:inputType="numberDecimal" />
+        <TextView
+            android:id="@+id/atmospheric_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Atmospheric Temperature (°C): " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/atmospheric_temperature_value"
+            android:hint="Degrees Celsius"
+            android:autofillHints="Degrees Celsius"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/reflective_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Reflective Temperature (°C): " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/reflective_temperature_value"
+            android:hint="Degrees Celsius"
+            android:autofillHints="Degrees Celsius"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/external_optics_temperature_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="External Optics Temperature (°C): " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/external_optics_temperature_value"
+            android:hint="Degrees Celsius"
+            android:autofillHints="Degrees Celsius"
+            android:inputType="numberDecimal" />
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
