@@ -151,31 +151,31 @@ public class FlirCameraActivity extends AppCompatActivity {
 
             if(event.getX() - (width / 2)/ratiow > viewCoords[0]){
                 if(event.getX() + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
-                    Log.e("ANDREI", "HERE 1");
+//                    Log.e("ANDREI", "HERE 1");
 
                     left = imageX * ratiow - width/2;
                 } else{
-                    Log.e("ANDREI", "HERE 2");
+//                    Log.e("ANDREI", "HERE 2");
 
                     left = CameraHandler.thermal_width - width;
                 }
             } else{
-                Log.e("ANDREI", "HERE 3");
+//                Log.e("ANDREI", "HERE 3");
 
                 left = 0;
             }
             if(event.getY() - (height / 2)/ratioh >viewCoords[1]){
                 if(event.getY() + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
-                    Log.e("ANDREI", "HERE 4");
+//                    Log.e("ANDREI", "HERE 4");
 
                     top = imageY * ratioh - height/2;
                 } else{
-                    Log.e("ANDREI", "HERE 5");
+//                    Log.e("ANDREI", "HERE 5");
 
                     top = CameraHandler.thermal_height - height;
                 }
             } else{
-                Log.e("ANDREI", "HERE 6");
+//                Log.e("ANDREI", "HERE 6");
 
                 top = 0;
             }

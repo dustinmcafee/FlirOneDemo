@@ -20,4 +20,9 @@
     <string name="connect_sim1_text_desc">Connect to a the FlirOne C++ Emulator</string>
     <string name="connect_sim2_text_desc">Connect to the FlirOne Emulator</string>
     <string name="save_calibration">Save Calibration</string>
+
+    <string-array name="distance_units">
+        <item>FEET</item>
+        <item>METER</item>
+    </string-array>
 </resources>

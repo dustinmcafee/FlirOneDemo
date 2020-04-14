@@ -5,15 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.flir.thermalsdk.image.DistanceUnit;
 
 import java.util.Objects;
 
 public class CalibrateActivity extends AppCompatActivity {
     private EditText atmosphericTemperature;
     private EditText reflectiveTemperature;
-    private  EditText externalOpticsTemperature;
+    private EditText externalOpticsTemperature;
+    private Spinner distanceUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +29,20 @@ public class CalibrateActivity extends AppCompatActivity {
         atmosphericTemperature = findViewById(R.id.atmospheric_temperature_value);
         reflectiveTemperature = findViewById(R.id.reflective_temperature_value);
         externalOpticsTemperature = findViewById(R.id.external_optics_temperature_value);
+        distanceUnit = findViewById(R.id.distance_unit_value);
         atmosphericTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.atmosphericTemperature)), TextView.BufferType.EDITABLE);
         reflectiveTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.reflectiveTemperature)), TextView.BufferType.EDITABLE);
         externalOpticsTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.externalOpticsTemperature)), TextView.BufferType.EDITABLE);
+        distanceUnit.setSelection(getIndex(distanceUnit, CalibrationHandler.distanceUnit.name()));
+    }
+
+    private int getIndex(Spinner spinner, String myString){
+        for (int i = 0; i < spinner.getCount(); i++){
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -35,11 +51,11 @@ public class CalibrateActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-    // TODO: implement
     public void saveAll(MenuItem item) {
         CalibrationHandler.setAtmosphericTemperature(Double.parseDouble(atmosphericTemperature.getText().toString()));
         CalibrationHandler.setReflectiveTemperature(Double.parseDouble(reflectiveTemperature.getText().toString()));
         CalibrationHandler.setExternalOpticsTemperature(Double.parseDouble(externalOpticsTemperature.getText().toString()));
+        CalibrationHandler.setDistanceUnit(DistanceUnit.valueOf(distanceUnit.getItemAtPosition(distanceUnit.getSelectedItemPosition()).toString()));
     }
 
     @Override
