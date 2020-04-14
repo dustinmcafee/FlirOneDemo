@@ -17,7 +17,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Atmospheric Temperature (°C): " >
+            android:text="@string/atmospheric_temperature_c" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/atmospheric_temperature_value"
-            android:hint="Degrees Celsius"
+            android:hint="@string/degrees_celsius"
             android:autofillHints="Degrees Celsius"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -38,7 +38,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Reflective Temperature (°C): " >
+            android:text="@string/reflective_temperature_c" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -46,7 +46,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/reflective_temperature_value"
-            android:hint="Degrees Celsius"
+            android:hint="@string/degrees_celsius"
             android:autofillHints="Degrees Celsius"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -59,7 +59,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="External Optics Temperature (°C): " >
+            android:text="@string/external_optics_temperature_c" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -67,7 +67,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/external_optics_temperature_value"
-            android:hint="Degrees Celsius"
+            android:hint="@string/degrees_celsius"
             android:autofillHints="Degrees Celsius"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -80,7 +80,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Distance Unit: " >
+            android:text="@string/distance_unit" >
         </TextView>
         <Spinner
             android:layout_width="match_parent"
@@ -100,7 +100,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Color Palette: " >
+            android:text="@string/color_palette" >
         </TextView>
         <Spinner
             android:layout_width="match_parent"
@@ -120,7 +120,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Distance: " >
+            android:text="@string/distance" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -128,7 +128,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/distance_value"
-            android:hint="Distance"
+            android:hint="@string/distance"
             android:autofillHints="Distance"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -141,7 +141,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Distance: " >
+            android:text="@string/distance" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -149,7 +149,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/emissivity_value"
-            android:hint="Emisivity"
+            android:hint="@string/emissivity"
             android:autofillHints="Emissivity"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -162,7 +162,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="External Optics Transmission: " >
+            android:text="@string/external_optics_transmission" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -170,7 +170,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/external_optics_transmission_value"
-            android:hint="External Optics Transmission"
+            android:hint="@string/external_optics_transmission"
             android:autofillHints="External Optics Transmission"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -183,7 +183,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Relative Humidity: " >
+            android:text="@string/relative_humidity" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -191,7 +191,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/relative_humidity_value"
-            android:hint="Relative Humidity"
+            android:hint="@string/relative_humidity"
             android:autofillHints="Relative Humidity"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -204,7 +204,7 @@ android:background="?attr/bgColor">
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="?attr/textColor"
-            android:text="Transmission: " >
+            android:text="@string/transmission" >
         </TextView>
         <EditText
             android:layout_width="wrap_content"
@@ -212,7 +212,7 @@ android:background="?attr/bgColor">
             android:textColor="?attr/textColor"
             android:background="?attr/textBgColor"
             android:id="@+id/transmission_value"
-            android:hint="Transmission"
+            android:hint="@string/transmission"
             android:autofillHints="Transmission"
             android:inputType="numberDecimal" />
     </LinearLayout>
