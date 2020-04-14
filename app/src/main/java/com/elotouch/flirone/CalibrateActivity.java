@@ -20,6 +20,11 @@ public class CalibrateActivity extends AppCompatActivity {
     private EditText externalOpticsTemperature;
     private Spinner distanceUnit;
     private Spinner palette;
+    private EditText distance;
+    private EditText emissivity;
+    private EditText externalOpticsTransmission;
+    private EditText relativeHumidity;
+    private EditText transmission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +37,21 @@ public class CalibrateActivity extends AppCompatActivity {
         externalOpticsTemperature = findViewById(R.id.external_optics_temperature_value);
         distanceUnit = findViewById(R.id.distance_unit_value);
         palette = findViewById(R.id.palette_value);
+        distance = findViewById(R.id.distance_value);
+        emissivity = findViewById(R.id.emissivity_value);
+        externalOpticsTransmission = findViewById(R.id.external_optics_transmission_value);
+        relativeHumidity = findViewById(R.id.relative_humidity_value);
+        transmission = findViewById(R.id.transmission_value);
         atmosphericTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.atmosphericTemperature)), TextView.BufferType.EDITABLE);
         reflectiveTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.reflectiveTemperature)), TextView.BufferType.EDITABLE);
         externalOpticsTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.externalOpticsTemperature)), TextView.BufferType.EDITABLE);
         distanceUnit.setSelection(getIndex(distanceUnit, CalibrationHandler.distanceUnit.name()));
         palette.setSelection(getIndex(palette, CalibrationHandler.palette.name));
+        distance.setText(String.valueOf(CalibrationHandler.distance), TextView.BufferType.EDITABLE);
+        emissivity.setText(String.valueOf(CalibrationHandler.emissivity), TextView.BufferType.EDITABLE);
+        externalOpticsTransmission.setText(String.valueOf(CalibrationHandler.externalOpticsTransmission), TextView.BufferType.EDITABLE);
+        relativeHumidity.setText(String.valueOf(CalibrationHandler.relativeHumidity), TextView.BufferType.EDITABLE);
+        transmission.setText(String.valueOf(CalibrationHandler.transmission), TextView.BufferType.EDITABLE);
     }
 
     private int getIndex(Spinner spinner, String myString){
@@ -60,6 +75,11 @@ public class CalibrateActivity extends AppCompatActivity {
         CalibrationHandler.setExternalOpticsTemperature(Double.parseDouble(externalOpticsTemperature.getText().toString()));
         CalibrationHandler.setDistanceUnit(DistanceUnit.valueOf(distanceUnit.getItemAtPosition(distanceUnit.getSelectedItemPosition()).toString()));
         CalibrationHandler.setPalette(palette.getItemAtPosition(palette.getSelectedItemPosition()).toString());
+        CalibrationHandler.setDistance(Double.parseDouble(distance.getText().toString()));
+        CalibrationHandler.setEmissivity(Double.parseDouble(emissivity.getText().toString()));
+        CalibrationHandler.setExternalOpticsTransmission(Double.parseDouble(externalOpticsTransmission.getText().toString()));
+        CalibrationHandler.setRelativeHumidity(Double.parseDouble(relativeHumidity.getText().toString()));
+        CalibrationHandler.setTransmission(Double.parseDouble(transmission.getText().toString()));
     }
 
     @Override

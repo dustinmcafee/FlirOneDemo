@@ -111,5 +111,111 @@ android:background="?attr/bgColor">
             android:entries="@array/palettes" >
         </Spinner>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/distance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Distance: " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/distance_value"
+            android:hint="Distance"
+            android:autofillHints="Distance"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/emissivity_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Distance: " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/emissivity_value"
+            android:hint="Emisivity"
+            android:autofillHints="Emissivity"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/external_optics_transmission_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="External Optics Transmission: " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/external_optics_transmission_value"
+            android:hint="External Optics Transmission"
+            android:autofillHints="External Optics Transmission"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/relative_humidity_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Relative Humidity: " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/relative_humidity_value"
+            android:hint="Relative Humidity"
+            android:autofillHints="Relative Humidity"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/transmission_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Transmission: " >
+        </TextView>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:background="?attr/textBgColor"
+            android:id="@+id/transmission_value"
+            android:hint="Transmission"
+            android:autofillHints="Transmission"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
 </LinearLayout>
 </ScrollView>
