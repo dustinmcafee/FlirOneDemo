@@ -63,31 +63,31 @@ public class CalibrationHandler {
     static void setAtmosphericTemperature(double temp){
         atmosphericTemperature = cToK(temp);
     }
-    public static void setDistance(double dist){
+    static void setDistance(double dist){
         distance = dist;
     }
-    public static void setEmissivity(double emiss){
+    static void setEmissivity(double emiss){
         emissivity = emiss;
     }
-    public static void setExternalOpticsTemperature(double temp){
+    static void setExternalOpticsTemperature(double temp){
         externalOpticsTemperature = cToK(temp);
     }
-    public static void setExternalOpticsTransmission(double transmission){
+    static void setExternalOpticsTransmission(double transmission){
         externalOpticsTransmission = transmission;
     }
     static void setReflectiveTemperature(double temp){
         reflectiveTemperature = cToK(temp);
     }
-    public static void setRelativeHumidity(double humidity){
+    static void setRelativeHumidity(double humidity){
         relativeHumidity = humidity;
     }
-    public static void setTransmission(double trans){
+    static void setTransmission(double trans){
         transmission = trans;
     }
-    public static void setDistanceUnit(DistanceUnit unit){
+    static void setDistanceUnit(DistanceUnit unit){
         distanceUnit = unit;
     }
-    static void setDefaults(ThermalImage img){
+    private static void setDefaults(ThermalImage img){
         if(palette == null){
             palette = img.getPalette();
         }
@@ -124,22 +124,22 @@ public class CalibrationHandler {
         }
     }
 
-    static double kToF(double k){
+    private static double kToF(double k){
         return ((k - 273.15) * 9/5) + 32;
     }
-    static double fToK(double f){
+    private static double fToK(double f){
         return ((f - 32) * 5/9) + 273.15;
     }
     static double kToC(double k){
         return k - 273.15;
     }
-    static double cToK(double c){
+    private static double cToK(double c){
         return c + 273.15;
     }
-    static double cToF(double c){
+    private static double cToF(double c){
         return (c * 9/5) + 32;
     }
-    static double fToC(double f){
+    private static double fToC(double f){
         return (f - 32) * 5/9;
     }
 }
