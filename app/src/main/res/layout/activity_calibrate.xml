@@ -91,5 +91,25 @@ android:background="?attr/bgColor">
             android:entries="@array/distance_units" >
         </Spinner>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/palette_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textColor"
+            android:text="Color Palette: " >
+        </TextView>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/textBgColor"
+            android:textColor="?attr/textColor"
+            android:id="@+id/palette_value"
+            android:entries="@array/palettes" >
+        </Spinner>
+    </LinearLayout>
 </LinearLayout>
 </ScrollView>

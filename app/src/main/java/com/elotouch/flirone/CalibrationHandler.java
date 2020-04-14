@@ -2,6 +2,7 @@ package com.elotouch.flirone;
 
 import com.flir.thermalsdk.image.DistanceUnit;
 import com.flir.thermalsdk.image.ThermalImage;
+import com.flir.thermalsdk.image.palettes.Palette;
 import com.flir.thermalsdk.image.palettes.PaletteManager;
 
 import java.util.Arrays;
@@ -33,6 +34,7 @@ public class CalibrationHandler {
     static double relativeHumidity = -1;
     static double transmission = -1;
     static DistanceUnit distanceUnit = DistanceUnit.METER;
+    static Palette palette;
     private static final String[] palettes = {"iron", "Arctic", "blackhot", "bw", "Coldest", "ColorWheel_Redhot", "ColorWheel6", "ColorWheel12", "DoubleRainbow2", "lava", "rainbow", "rainHC", "whitehot", "Hottest"};
     public CalibrationHandler(){}
 
@@ -47,6 +49,11 @@ public class CalibrationHandler {
         img.getImageParameters().setRelativeHumidity(relativeHumidity);
         img.getImageParameters().setTransmission(transmission);
         img.setDistanceUnit(distanceUnit);
+
+        List<String> arr = Arrays.asList(palettes);
+        if(arr.contains(palette.name)){
+            img.setPalette(PaletteManager.getDefaultPalettes().get(arr.indexOf(palette.name)));
+        }
     }
 
     /**
@@ -81,7 +88,9 @@ public class CalibrationHandler {
         distanceUnit = unit;
     }
     static void setDefaults(ThermalImage img){
-        setPalette(img, "rainbow");
+        if(palette == null){
+            palette = img.getPalette();
+        }
         if(atmosphericTemperature == -1){
             atmosphericTemperature = img.getImageParameters().getAtmosphericTemperature();
         }
@@ -108,16 +117,12 @@ public class CalibrationHandler {
         }
     }
 
-    static void setPalette(ThermalImage img, int i){
-        img.setPalette(PaletteManager.getDefaultPalettes().get(i));
-    }
-    static void setPalette(ThermalImage img, String name){
+    static void setPalette(String name){
         List<String> arr = Arrays.asList(palettes);
         if(arr.contains(name)){
-            setPalette(img, arr.indexOf(name));
+            palette = PaletteManager.getDefaultPalettes().get(arr.indexOf(name));
         }
     }
-
 
     static double kToF(double k){
         return ((k - 273.15) * 9/5) + 32;

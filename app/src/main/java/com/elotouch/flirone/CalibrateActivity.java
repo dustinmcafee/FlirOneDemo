@@ -19,6 +19,7 @@ public class CalibrateActivity extends AppCompatActivity {
     private EditText reflectiveTemperature;
     private EditText externalOpticsTemperature;
     private Spinner distanceUnit;
+    private Spinner palette;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +31,12 @@ public class CalibrateActivity extends AppCompatActivity {
         reflectiveTemperature = findViewById(R.id.reflective_temperature_value);
         externalOpticsTemperature = findViewById(R.id.external_optics_temperature_value);
         distanceUnit = findViewById(R.id.distance_unit_value);
+        palette = findViewById(R.id.palette_value);
         atmosphericTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.atmosphericTemperature)), TextView.BufferType.EDITABLE);
         reflectiveTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.reflectiveTemperature)), TextView.BufferType.EDITABLE);
         externalOpticsTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.externalOpticsTemperature)), TextView.BufferType.EDITABLE);
         distanceUnit.setSelection(getIndex(distanceUnit, CalibrationHandler.distanceUnit.name()));
+        palette.setSelection(getIndex(palette, CalibrationHandler.palette.name));
     }
 
     private int getIndex(Spinner spinner, String myString){
@@ -56,6 +59,7 @@ public class CalibrateActivity extends AppCompatActivity {
         CalibrationHandler.setReflectiveTemperature(Double.parseDouble(reflectiveTemperature.getText().toString()));
         CalibrationHandler.setExternalOpticsTemperature(Double.parseDouble(externalOpticsTemperature.getText().toString()));
         CalibrationHandler.setDistanceUnit(DistanceUnit.valueOf(distanceUnit.getItemAtPosition(distanceUnit.getSelectedItemPosition()).toString()));
+        CalibrationHandler.setPalette(palette.getItemAtPosition(palette.getSelectedItemPosition()).toString());
     }
 
     @Override

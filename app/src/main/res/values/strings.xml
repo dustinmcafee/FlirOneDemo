@@ -25,4 +25,22 @@
         <item>FEET</item>
         <item>METER</item>
     </string-array>
+
+    <string-array name="palettes">
+        <item>iron</item>
+        <item>Arctic</item>
+        <item>blackhot</item>
+        <item>bw</item>
+        <item>Coldest</item>
+        <item>ColorWheel_Redhot</item>
+        <item>ColorWheel6</item>
+        <item>ColorWheel12</item>
+        <item>DoubleRainbow2</item>
+        <item>lava</item>
+        <item>rainbow</item>
+        <item>rainHC</item>
+        <item>whitehot</item>
+        <item>Hottest</item>
+    </string-array>
+
 </resources>
