@@ -202,8 +202,8 @@ class CameraHandler {
         return temperatureUnit;
     }
 
-    public static double thermal_width;
-    public static double thermal_height;
+    public static double thermal_width = -1;
+    public static double thermal_height = -1;
 
     /**
      * Function to process a Thermal Image and update UI

@@ -34,7 +34,11 @@ import static com.elotouch.flirone.FlirCameraApplication.cameraHandler;
 import static com.elotouch.flirone.FlirCameraApplication.connectedCameraIdentity;
 
 public class FlirCameraActivity extends AppCompatActivity {
+    public static final String CONNECTING = "CONNECTING";
     private static final String TAG = "FlirCameraActivity";
+    public static final String CONNECTED = "CONNECTED";
+    public static final String DISCONNECTED = "DISCONNECTED";
+    public static final String DISCONNECTING = "DISCONNECTING";
 
     public MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirCameraActivity.this, message, Toast.LENGTH_SHORT).show();
 
@@ -112,9 +116,11 @@ public class FlirCameraActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.calibrate:
-                Intent intent = new Intent(getApplicationContext(), CalibrateActivity.class);
-                intent.setAction(MainActivity.ACTION_START_CALIBRATION);
-                startActivity(intent);
+                if(connectionStatus.getText().toString().contains(CONNECTED)){
+                    Intent intent = new Intent(getApplicationContext(), CalibrateActivity.class);
+                    intent.setAction(MainActivity.ACTION_START_CALIBRATION);
+                    startActivity(intent);
+                }
             case R.id.toolbar_reset:
                 if(msxImage != null && photoImage != null){
                     width = CameraHandler.thermal_width/2.0;
@@ -136,7 +142,7 @@ public class FlirCameraActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(msxImage != null){
+        if(msxImage != null && CameraHandler.thermal_width != -1 && CameraHandler.thermal_height != -1){
             int[] viewCoords = new int[2];
             msxImage.getLocationInWindow(viewCoords);
             int imageX = (int)(event.getX() - viewCoords[0]);
@@ -145,37 +151,22 @@ public class FlirCameraActivity extends AppCompatActivity {
             float ratiow = (float) CameraHandler.thermal_width / msxImage.getWidth();
             float ratioh = (float) CameraHandler.thermal_height / msxImage.getHeight();
 
-            Log.e("ANDREI", imageX + "  " + imageY);
-            Log.e("ANDREI", ratiow + "  " + ratioh);
-
             if(event.getX() - (width / 2)/ratiow > viewCoords[0]){
                 if(event.getX() + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
-//                    Log.e("ANDREI", "HERE 1");
-
                     left = imageX * ratiow - width/2;
                 } else{
-//                    Log.e("ANDREI", "HERE 2");
-
                     left = CameraHandler.thermal_width - width;
                 }
             } else{
-//                Log.e("ANDREI", "HERE 3");
-
                 left = 0;
             }
             if(event.getY() - (height / 2)/ratioh >viewCoords[1]){
                 if(event.getY() + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
-//                    Log.e("ANDREI", "HERE 4");
-
                     top = imageY * ratioh - height/2;
                 } else{
-//                    Log.e("ANDREI", "HERE 5");
-
                     top = CameraHandler.thermal_height - height;
                 }
             } else{
-//                Log.e("ANDREI", "HERE 6");
-
                 top = 0;
             }
         }
@@ -187,7 +178,7 @@ public class FlirCameraActivity extends AppCompatActivity {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
-            if(msxImage != null && photoImage!=null){
+            if(msxImage != null && photoImage!=null && CameraHandler.thermal_width != -1 && CameraHandler.thermal_height != -1){
                 double pos_w = width * scaleGestureDetector.getScaleFactor();
                 double pos_h = height * scaleGestureDetector.getScaleFactor();
 
@@ -254,12 +245,12 @@ public class FlirCameraActivity extends AppCompatActivity {
      * Disconnect to a camera
      */
     private void disconnectCamera() {
-        updateConnectionText(connectedCameraIdentity, "DISCONNECTING");
+        updateConnectionText(connectedCameraIdentity, DISCONNECTING);
         connectedCameraIdentity = null;
         Log.d(TAG, "disconnect: Called with: connectedCameraIdentity = [" + connectedCameraIdentity + "]");
         new Thread(() -> {
             cameraHandler.disconnectCamera();
-            runOnUiThread(() -> updateConnectionText(null, "DISCONNECTED"));
+            runOnUiThread(() -> updateConnectionText(null, DISCONNECTED));
         }).start();
     }
 
@@ -280,7 +271,7 @@ public class FlirCameraActivity extends AppCompatActivity {
 
         connectedCameraIdentity = identity;
 
-        updateConnectionText(identity, "CONNECTING");
+        updateConnectionText(identity, CONNECTING);
         // IF your using "USB_DEVICE_ATTACHED" and "usb-device vendor-id" in the Android Manifest
         // you don't need to request permission, see documentation for more information
         if (UsbPermissionHandler.isFlirOne(identity)) {
@@ -297,16 +288,17 @@ public class FlirCameraActivity extends AppCompatActivity {
      */
     private void connectDevice(Identity identity) {
         new Thread(() -> {
+
             try {
                 cameraHandler.connectCamera(identity, connectionStatusListener);
                 runOnUiThread(() -> {
-                    updateConnectionText(identity, "CONNECTED");
+                    updateConnectionText(identity, CONNECTED);
                     cameraHandler.startStream(streamDataListener);
                 });
             } catch (IOException e) {
                 runOnUiThread(() -> {
                     Log.d(TAG, "Could not connect: " + e);
-                    updateConnectionText(identity, "DISCONNECTED");
+                    updateConnectionText(identity, DISCONNECTED);
                 });
             }
         }).start();
@@ -328,7 +320,7 @@ public class FlirCameraActivity extends AppCompatActivity {
      */
     public ConnectionStatusListener connectionStatusListener = errorCode -> {
         Log.d(TAG, "onDisconnected: errorCode:" + errorCode);
-        runOnUiThread(() -> updateConnectionText(connectedCameraIdentity, "DISCONNECTED"));
+        runOnUiThread(() -> updateConnectionText(connectedCameraIdentity, DISCONNECTED));
     };
 
 
