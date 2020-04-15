@@ -52,7 +52,6 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     private ImageView msxImage;
     private ImageView photoImage;
-    private static MenuItem calibrateMenuButton;
     private static Menu menu;
 
     ScaleGestureDetector mScaleGestureDetector;
@@ -71,7 +70,6 @@ public class FlirCameraActivity extends AppCompatActivity {
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
-        calibrateMenuButton = findViewById(R.id.calibrate);
 
         width = 200;
         height = 200;
@@ -215,13 +213,13 @@ public class FlirCameraActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                calibrateMenuButton = menu.findItem(R.id.calibrate);
-                if(calibrateMenuButton != null) {
-                    if (calibrateMenuButton.isVisible()) {
-                        calibrateMenuButton.setVisible(false);
+                MenuItem item = menu.findItem(R.id.calibrate);
+                if(item != null) {
+                    if (item.isVisible()) {
+                        item.setVisible(false);
                         CalibrationHandler.calibrationButtonHidden = true;
                     } else {
-                        calibrateMenuButton.setVisible(true);
+                        item.setVisible(true);
                         CalibrationHandler.calibrationButtonHidden = false;
                     }
                 }
