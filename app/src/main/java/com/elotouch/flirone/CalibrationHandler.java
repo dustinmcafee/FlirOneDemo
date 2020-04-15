@@ -1,7 +1,9 @@
 package com.elotouch.flirone;
 
+import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.image.DistanceUnit;
 import com.flir.thermalsdk.image.ThermalImage;
+import com.flir.thermalsdk.image.ThermalValue;
 import com.flir.thermalsdk.image.palettes.Palette;
 import com.flir.thermalsdk.image.palettes.PaletteManager;
 
@@ -36,6 +38,7 @@ public class CalibrationHandler {
     static DistanceUnit distanceUnit = DistanceUnit.METER;
     static Palette palette = null;
     private static final String[] palettes = {"iron", "Arctic", "blackhot", "bw", "Coldest", "ColorWheel_Redhot", "ColorWheel6", "ColorWheel12", "DoubleRainbow2", "lava", "rainbow", "rainHC", "whitehot", "Hottest"};
+    public static boolean calibrationButtonHidden = true;
     public CalibrationHandler(){}
 
     static void calibrate(ThermalImage img){
@@ -114,6 +117,9 @@ public class CalibrationHandler {
         }
         if(transmission == -1){
             transmission = img.getImageParameters().getTransmission();
+        }
+        if(calibrationButtonHidden){
+            FlirCameraActivity.getInstance().toggleCalibrationButton();
         }
     }
 

@@ -7,6 +7,7 @@
         android:icon="@drawable/ic_toolbar_calibrate"
         android:title="@string/calibrate"
         app:showAsAction="always"
+        android:visible="false"
         tools:ignore="AlwaysShowAction" />
     <item
         android:id="@+id/toolbar_temperature"

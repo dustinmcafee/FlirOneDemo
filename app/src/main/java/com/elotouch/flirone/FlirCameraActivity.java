@@ -1,5 +1,6 @@
 package com.elotouch.flirone;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -51,6 +52,8 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     private ImageView msxImage;
     private ImageView photoImage;
+    private static MenuItem calibrateMenuButton;
+    private static Menu menu;
 
     ScaleGestureDetector mScaleGestureDetector;
 
@@ -59,6 +62,8 @@ public class FlirCameraActivity extends AppCompatActivity {
     public static double width;
     public static double height;
 
+    private static FlirCameraActivity instance;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +71,7 @@ public class FlirCameraActivity extends AppCompatActivity {
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
+        calibrateMenuButton = findViewById(R.id.calibrate);
 
         width = 200;
         height = 200;
@@ -75,6 +81,7 @@ public class FlirCameraActivity extends AppCompatActivity {
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
+        instance = this;
 
         // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
         switch (getIntent().getAction()) {
@@ -91,7 +98,18 @@ public class FlirCameraActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        CalibrationHandler.calibrationButtonHidden = true;
+    }
+
+    public static FlirCameraActivity getInstance(){
+        return instance;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        FlirCameraActivity.menu = menu;
         getMenuInflater().inflate(R.menu.toolbar1, menu);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -191,6 +209,24 @@ public class FlirCameraActivity extends AppCompatActivity {
             }
             return true;
         }
+    }
+
+    public void toggleCalibrationButton(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                calibrateMenuButton = menu.findItem(R.id.calibrate);
+                if(calibrateMenuButton != null) {
+                    if (calibrateMenuButton.isVisible()) {
+                        calibrateMenuButton.setVisible(false);
+                        CalibrationHandler.calibrationButtonHidden = true;
+                    } else {
+                        calibrateMenuButton.setVisible(true);
+                        CalibrationHandler.calibrationButtonHidden = false;
+                    }
+                }
+            }
+        });
     }
 
     @Override
