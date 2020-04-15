@@ -54,6 +54,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -93,6 +94,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -132,6 +134,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -159,7 +162,7 @@
                 <Spinner
                     android:id="@+id/distance_unit_value"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:entries="@array/distance_units" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -167,6 +170,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -194,19 +198,21 @@
                 <Spinner
                     android:id="@+id/palette_value"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:entries="@array/palettes" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/cardview_dark_background">
+            app:cardBackgroundColor="@color/cardview_dark_background"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -241,6 +247,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -280,6 +287,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -319,6 +327,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"
@@ -358,6 +367,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
             android:layout_margin="5dp"
             android:clickable="true"
             android:focusable="true"

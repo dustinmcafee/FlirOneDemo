@@ -37,6 +37,7 @@
     <string name="switch_mode">Switch Mode</string>
     <string name="save_calibration">Save Calibration</string>
     <string name="discover">Discover</string>
+    <string name="toggle_keyboard">Toggle Keyboard</string>
 
     <string-array name="distance_units">
         <item>FEET</item>

@@ -2,9 +2,12 @@ package com.elotouch.flirone;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -25,6 +28,7 @@ public class CalibrateActivity extends AppCompatActivity {
     private EditText externalOpticsTransmission;
     private EditText relativeHumidity;
     private EditText transmission;
+    private InputMethodManager imm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,8 @@ public class CalibrateActivity extends AppCompatActivity {
         externalOpticsTransmission.setText(String.valueOf(CalibrationHandler.externalOpticsTransmission), TextView.BufferType.EDITABLE);
         relativeHumidity.setText(String.valueOf(CalibrationHandler.relativeHumidity), TextView.BufferType.EDITABLE);
         transmission.setText(String.valueOf(CalibrationHandler.transmission), TextView.BufferType.EDITABLE);
+
+        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
     }
 
     private int getIndex(Spinner spinner, String myString){
@@ -92,5 +98,11 @@ public class CalibrateActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void toggleKeyboard(MenuItem item) {
+        if (imm != null) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
     }
 }
