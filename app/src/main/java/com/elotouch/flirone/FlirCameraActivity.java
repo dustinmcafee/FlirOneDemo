@@ -54,6 +54,11 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     ScaleGestureDetector mScaleGestureDetector;
 
+    public static double left = 0;
+    public static double top = 0;
+    public static double width;
+    public static double height;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +67,8 @@ public class FlirCameraActivity extends AppCompatActivity {
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
 
+        width = 200;
+        height = 200;
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         // Show Thermal Android SDK version
@@ -133,11 +140,6 @@ public class FlirCameraActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public static double left = 0;
-    public static double top = 0;
-    public static double width = 200;
-    public static double height = 200;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

@@ -46,7 +46,9 @@ public class CalibrateActivity extends AppCompatActivity {
         reflectiveTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.reflectiveTemperature)), TextView.BufferType.EDITABLE);
         externalOpticsTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.externalOpticsTemperature)), TextView.BufferType.EDITABLE);
         distanceUnit.setSelection(getIndex(distanceUnit, CalibrationHandler.distanceUnit.name()));
-        palette.setSelection(getIndex(palette, CalibrationHandler.palette.name));
+        if(CalibrationHandler.palette != null){
+            palette.setSelection(getIndex(palette, CalibrationHandler.palette.name));
+        }
         distance.setText(String.valueOf(CalibrationHandler.distance), TextView.BufferType.EDITABLE);
         emissivity.setText(String.valueOf(CalibrationHandler.emissivity), TextView.BufferType.EDITABLE);
         externalOpticsTransmission.setText(String.valueOf(CalibrationHandler.externalOpticsTransmission), TextView.BufferType.EDITABLE);

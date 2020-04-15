@@ -34,7 +34,7 @@ public class CalibrationHandler {
     static double relativeHumidity = -1;
     static double transmission = -1;
     static DistanceUnit distanceUnit = DistanceUnit.METER;
-    static Palette palette;
+    static Palette palette = null;
     private static final String[] palettes = {"iron", "Arctic", "blackhot", "bw", "Coldest", "ColorWheel_Redhot", "ColorWheel6", "ColorWheel12", "DoubleRainbow2", "lava", "rainbow", "rainHC", "whitehot", "Hottest"};
     public CalibrationHandler(){}
 
