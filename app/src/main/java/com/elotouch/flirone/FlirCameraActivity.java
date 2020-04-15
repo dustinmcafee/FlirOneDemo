@@ -157,21 +157,33 @@ public class FlirCameraActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    int touchx = -1;
+    int touchy = -1;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
+        mScaleGestureDetector.onTouchEvent(event);
+
         if(msxImage != null && CameraHandler.thermal_width != -1 && CameraHandler.thermal_height != -1){
+
+            int evx = (int)event.getX();
+            int evy = (int)event.getY();
+            if(touchx != -1)
+                evx = touchx;
+            if(touchy != -1)
+                evy = touchy;
+
             int[] viewCoords = new int[2];
             msxImage.getLocationInWindow(viewCoords);
-            int imageX = (int)(event.getX() - viewCoords[0]);
-            int imageY = (int)(event.getY() - viewCoords[1]);
+            int imageX = (evx - viewCoords[0]);
+            int imageY = (evy - viewCoords[1]);
 
             float ratiow = (float) CameraHandler.thermal_width / msxImage.getWidth();
             float ratioh = (float) CameraHandler.thermal_height / msxImage.getHeight();
 
-            if(event.getX() - (width / 2)/ratiow > viewCoords[0]){
-                if(event.getX() + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
+            if(evx - (width / 2)/ratiow > viewCoords[0]){
+                if(evx + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
                     left = imageX * ratiow - width/2;
                 } else{
                     left = CameraHandler.thermal_width - width;
@@ -179,8 +191,8 @@ public class FlirCameraActivity extends AppCompatActivity {
             } else{
                 left = 0;
             }
-            if(event.getY() - (height / 2)/ratioh >viewCoords[1]){
-                if(event.getY() + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
+            if(evy - (height / 2)/ratioh >viewCoords[1]){
+                if(evy + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
                     top = imageY * ratioh - height/2;
                 } else{
                     top = CameraHandler.thermal_height - height;
@@ -189,8 +201,9 @@ public class FlirCameraActivity extends AppCompatActivity {
                 top = 0;
             }
         }
+        touchx = -1;
+        touchy = -1;
 
-        mScaleGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 
@@ -200,6 +213,9 @@ public class FlirCameraActivity extends AppCompatActivity {
             if(msxImage != null && photoImage!=null && CameraHandler.thermal_width != -1 && CameraHandler.thermal_height != -1){
                 double pos_w = width * scaleGestureDetector.getScaleFactor();
                 double pos_h = height * scaleGestureDetector.getScaleFactor();
+
+                touchx = (int)(scaleGestureDetector.getFocusX());
+                touchy = (int)(scaleGestureDetector.getFocusY());
 
                 if(pos_w > 0 && pos_h > 0 && left+pos_w < CameraHandler.thermal_width && top + pos_h < CameraHandler.thermal_height){
                     width = pos_w;
