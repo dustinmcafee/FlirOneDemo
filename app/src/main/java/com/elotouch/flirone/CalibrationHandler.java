@@ -92,7 +92,8 @@ public class CalibrationHandler {
     }
     private static void setDefaults(ThermalImage img){
         if(palette == null){
-            palette = img.getPalette();
+            palette = PaletteManager.getDefaultPalettes().get(0);
+            img.setPalette(palette);
         }
         if(atmosphericTemperature == -1){
             atmosphericTemperature = img.getImageParameters().getAtmosphericTemperature();
