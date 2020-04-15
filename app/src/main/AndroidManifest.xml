@@ -11,8 +11,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_icon_elo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".CalibrateActivity"></activity>
+        android:theme="@style/DarkTheme">
+        <activity android:name=".CalibrateActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FlirCameraActivity"></activity>
+        <activity android:name=".FlirCameraActivity" />
     </application>
 
 </manifest>

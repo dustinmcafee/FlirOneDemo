@@ -1,221 +1,398 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:forceDarkAllowed="true"
-android:background="?attr/bgColor">
-<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_height="match_parent"
+    android:background="?attr/bgColor"
+    android:forceDarkAllowed="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/atmospheric_temperature_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/atmospheric_temperature_c" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/atmospheric_temperature_value"
-            android:hint="@string/degrees_celsius"
-            android:autofillHints="Degrees Celsius"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/reflective_temperature_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/reflective_temperature_c" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/reflective_temperature_value"
-            android:hint="@string/degrees_celsius"
-            android:autofillHints="Degrees Celsius"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/external_optics_temperature_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/external_optics_temperature_c" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/external_optics_temperature_value"
-            android:hint="@string/degrees_celsius"
-            android:autofillHints="Degrees Celsius"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/distance_unit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/distance_unit" >
-        </TextView>
-        <Spinner
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/textBgColor"
-            android:textColor="?attr/textColor"
-            android:id="@+id/distance_unit_value"
-            android:entries="@array/distance_units" >
-        </Spinner>
-    </LinearLayout>
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/palette_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/color_palette" >
-        </TextView>
-        <Spinner
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/atmospheric_temperature_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/atmospheric_temperature_c"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/atmospheric_temperature_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/degrees_celsius"
+                    android:hint="@string/degrees_celsius"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/textBgColor"
-            android:textColor="?attr/textColor"
-            android:id="@+id/palette_value"
-            android:entries="@array/palettes" >
-        </Spinner>
-    </LinearLayout>
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/distance_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/distance" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/distance_value"
-            android:hint="@string/distance"
-            android:autofillHints="Distance"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/emissivity_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/distance" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/emissivity_value"
-            android:hint="@string/emissivity"
-            android:autofillHints="Emissivity"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/reflective_temperature_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/reflective_temperature_c"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/external_optics_transmission_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/external_optics_transmission" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/external_optics_transmission_value"
-            android:hint="@string/external_optics_transmission"
-            android:autofillHints="External Optics Transmission"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/reflective_temperature_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/degrees_celsius"
+                    android:hint="@string/degrees_celsius"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/relative_humidity_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/relative_humidity" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/relative_humidity_value"
-            android:hint="@string/relative_humidity"
-            android:autofillHints="Relative Humidity"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <TextView
-            android:id="@+id/transmission_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:text="@string/transmission" >
-        </TextView>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="?attr/textColor"
-            android:background="?attr/textBgColor"
-            android:id="@+id/transmission_value"
-            android:hint="@string/transmission"
-            android:autofillHints="Transmission"
-            android:inputType="numberDecimal" />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
 
-</LinearLayout>
+                <TextView
+                    android:id="@+id/external_optics_temperature_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/external_optics_temperature_c"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/external_optics_temperature_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/degrees_celsius"
+                    android:hint="@string/degrees_celsius"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/distance_unit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/distance_unit"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/distance_unit_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/distance_units" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/palette_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/color_palette"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/palette_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/palettes" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/distance_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/distance"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/distance_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="Distance"
+                    android:hint="@string/distance"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/emissivity_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/emissivity"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/emissivity_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/emissivity"
+                    android:hint="@string/emissivity"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/external_optics_transmission_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/external_optics_transmission"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/external_optics_transmission_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/external_optics_transmission"
+                    android:hint="@string/external_optics_transmission"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/relative_humidity_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/relative_humidity"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/relative_humidity_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/relative_humidity"
+                    android:hint="@string/relative_humidity"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/cardview_dark_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <TextView
+                    android:id="@+id/transmission_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:text="@string/transmission"
+                    android:textColor="?attr/textColor"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/transmission_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/transmission"
+                    android:hint="@string/transmission"
+                    android:inputType="numberDecimal"
+                    android:textColor="?attr/textColor"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
 </ScrollView>

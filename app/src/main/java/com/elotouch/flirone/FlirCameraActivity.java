@@ -53,7 +53,6 @@ public class FlirCameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.DarkTheme);
         setContentView(R.layout.flir_emulator_main);
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);

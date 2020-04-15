@@ -29,7 +29,6 @@ public class CalibrateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.DarkTheme);
         setContentView(R.layout.activity_calibrate);
 
         atmosphericTemperature = findViewById(R.id.atmospheric_temperature_value);
@@ -42,6 +41,7 @@ public class CalibrateActivity extends AppCompatActivity {
         externalOpticsTransmission = findViewById(R.id.external_optics_transmission_value);
         relativeHumidity = findViewById(R.id.relative_humidity_value);
         transmission = findViewById(R.id.transmission_value);
+
         atmosphericTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.atmosphericTemperature)), TextView.BufferType.EDITABLE);
         reflectiveTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.reflectiveTemperature)), TextView.BufferType.EDITABLE);
         externalOpticsTemperature.setText(String.valueOf(CalibrationHandler.kToC(CalibrationHandler.externalOpticsTemperature)), TextView.BufferType.EDITABLE);

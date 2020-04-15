@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:forceDarkAllowed="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/bgColor"
     tools:context=".MainActivity"
     android:orientation="vertical">
@@ -18,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
-            android:text="FlirOne Camera"
+            android:text="@string/title_flirone_camera"
             android:textSize="40sp"
             android:gravity="center"
             android:textStyle="bold"
