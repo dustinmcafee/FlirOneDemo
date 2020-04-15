@@ -1,6 +1,6 @@
 package com.elotouch.flirone;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -61,6 +61,7 @@ public class FlirCameraActivity extends AppCompatActivity {
     public static double width;
     public static double height;
 
+    @SuppressLint("StaticFieldLeak")
     private static FlirCameraActivity instance;
 
     @Override
@@ -210,18 +211,15 @@ public class FlirCameraActivity extends AppCompatActivity {
     }
 
     public void toggleCalibrationButton(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                MenuItem item = menu.findItem(R.id.calibrate);
-                if(item != null) {
-                    if (item.isVisible()) {
-                        item.setVisible(false);
-                        CalibrationHandler.calibrationButtonHidden = true;
-                    } else {
-                        item.setVisible(true);
-                        CalibrationHandler.calibrationButtonHidden = false;
-                    }
+        runOnUiThread(() -> {
+            MenuItem item = menu.findItem(R.id.calibrate);
+            if(item != null) {
+                if (item.isVisible()) {
+                    item.setVisible(false);
+                    CalibrationHandler.calibrationButtonHidden = true;
+                } else {
+                    item.setVisible(true);
+                    CalibrationHandler.calibrationButtonHidden = false;
                 }
             }
         });
