@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/save_calibration"
+        android:icon="@drawable/ic_toolbar_save"
+        android:title="@string/save_calibration"
+        android:onClick="saveAll"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/toggle_keyboard"
+        android:icon="@drawable/ic_toolbar_hide_keyboard"
+        android:title="@string/toggle_keyboard"
+        android:onClick="toggleKeyboard"
+        app:showAsAction="always" />
+</menu>

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:forceDarkAllowed="true"
     android:background="?attr/bgColor"
-    tools:context=".FlirCameraActivity"
-    android:orientation="vertical" >
+    android:forceDarkAllowed="true"
+    android:orientation="vertical"
+    tools:context=".FlirCameraActivity">
 
     <!-- Title  -->
 
@@ -16,22 +16,22 @@
 
         <ImageView
             android:id="@+id/msx_image"
-            android:layout_height="match_parent"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/msx_image_desc" />
+            android:contentDescription="@string/msx_image_desc"
+            android:scaleType="fitCenter" />
 
         <ImageView
             android:id="@+id/photo_image"
-            android:layout_height="match_parent"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:visibility="invisible"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/photo_image_desc"
             android:scaleType="fitCenter"
-            android:contentDescription="@string/photo_image_desc" />
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
@@ -47,18 +47,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="?attr/textColor"
             android:text="@string/sdk_version_text"
+            android:textColor="?attr/textColor"
             android:textSize="12sp" />
 
         <TextView
             android:id="@+id/connection_status_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?attr/textColor"
-            android:text="@string/connection_status_text"
             android:gravity="center"
-            android:textSize="18sp"/>
+            android:text="@string/connection_status_text"
+            android:textColor="?attr/textColor"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </RelativeLayout>

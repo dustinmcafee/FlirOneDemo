@@ -1,5 +1,7 @@
 package com.elotouch.flirone;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +35,11 @@ import static com.elotouch.flirone.FlirCameraApplication.cameraHandler;
 import static com.elotouch.flirone.FlirCameraApplication.connectedCameraIdentity;
 
 public class FlirCameraActivity extends AppCompatActivity {
+    public static final String CONNECTING = "CONNECTING";
     private static final String TAG = "FlirCameraActivity";
+    public static final String CONNECTED = "CONNECTED";
+    public static final String DISCONNECTED = "DISCONNECTED";
+    public static final String DISCONNECTING = "DISCONNECTING";
 
     public MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirCameraActivity.this, message, Toast.LENGTH_SHORT).show();
 
@@ -46,24 +52,35 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     private ImageView msxImage;
     private ImageView photoImage;
+    private static Menu menu;
 
     ScaleGestureDetector mScaleGestureDetector;
+
+    public static double left = 0;
+    public static double top = 0;
+    public static double width;
+    public static double height;
+
+    @SuppressLint("StaticFieldLeak")
+    private static FlirCameraActivity instance;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.DarkTheme);
         setContentView(R.layout.flir_emulator_main);
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
         connectionStatus = findViewById(R.id.connection_status_text);
 
+        width = 200;
+        height = 200;
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
         // Show Thermal Android SDK version
         TextView sdkVersionTextView = findViewById(R.id.sdk_version);
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
+        instance = this;
 
         // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
         switch (getIntent().getAction()) {
@@ -80,7 +97,18 @@ public class FlirCameraActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        CalibrationHandler.calibrationButtonHidden = true;
+    }
+
+    public static FlirCameraActivity getInstance(){
+        return instance;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        FlirCameraActivity.menu = menu;
         getMenuInflater().inflate(R.menu.toolbar1, menu);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -111,6 +139,12 @@ public class FlirCameraActivity extends AppCompatActivity {
                     CameraHandler.setTemperatureUnit(TemperatureUnit.KELVIN);
                 }
                 break;
+            case R.id.calibrate:
+                if(connectionStatus.getText().toString().contains(CONNECTED)){
+                    Intent intent = new Intent(getApplicationContext(), CalibrateActivity.class);
+                    intent.setAction(MainActivity.ACTION_START_CALIBRATION);
+                    startActivity(intent);
+                }
             case R.id.toolbar_reset:
                 if(msxImage != null && photoImage != null){
                     width = CameraHandler.thermal_width/2.0;
@@ -119,75 +153,70 @@ public class FlirCameraActivity extends AppCompatActivity {
                     top = CameraHandler.thermal_height/2 - height/2;
                 }
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
 
-
-    public static double left = 0;
-    public static double top = 0;
-    public static double width = 200;
-    public static double height = 200;
+    int touchx = -1;
+    int touchy = -1;
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(msxImage != null){
+        mScaleGestureDetector.onTouchEvent(event);
+
+        if(msxImage != null && CameraHandler.thermal_width != -1 && CameraHandler.thermal_height != -1){
+
+            int evx = (int)event.getX();
+            int evy = (int)event.getY();
+            if(touchx != -1)
+                evx = touchx;
+            if(touchy != -1)
+                evy = touchy;
+
             int[] viewCoords = new int[2];
             msxImage.getLocationInWindow(viewCoords);
-            int imageX = (int)(event.getX() - viewCoords[0]);
-            int imageY = (int)(event.getY() - viewCoords[1]);
+            int imageX = (evx - viewCoords[0]);
+            int imageY = (evy - viewCoords[1]);
 
             float ratiow = (float) CameraHandler.thermal_width / msxImage.getWidth();
             float ratioh = (float) CameraHandler.thermal_height / msxImage.getHeight();
 
-            Log.e("ANDREI", imageX + "  " + imageY);
-            Log.e("ANDREI", ratiow + "  " + ratioh);
-
-            if(event.getX() - (width / 2)/ratiow > viewCoords[0]){
-                if(event.getX() + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
-                    Log.e("ANDREI", "HERE 1");
-
+            if(evx - (width / 2)/ratiow > viewCoords[0]){
+                if(evx + (width/2)/ratiow < viewCoords[0] + msxImage.getWidth()){
                     left = imageX * ratiow - width/2;
                 } else{
-                    Log.e("ANDREI", "HERE 2");
-
                     left = CameraHandler.thermal_width - width;
                 }
             } else{
-                Log.e("ANDREI", "HERE 3");
-
                 left = 0;
             }
-            if(event.getY() - (height / 2)/ratioh >viewCoords[1]){
-                if(event.getY() + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
-                    Log.e("ANDREI", "HERE 4");
-
+            if(evy - (height / 2)/ratioh >viewCoords[1]){
+                if(evy + (height/2)/ratioh < viewCoords[1] + msxImage.getHeight()){
                     top = imageY * ratioh - height/2;
                 } else{
-                    Log.e("ANDREI", "HERE 5");
-
                     top = CameraHandler.thermal_height - height;
                 }
             } else{
-                Log.e("ANDREI", "HERE 6");
-
                 top = 0;
             }
         }
+        touchx = -1;
+        touchy = -1;
 
-        mScaleGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
-            if(msxImage != null && photoImage!=null){
+            if(msxImage != null && photoImage!=null && CameraHandler.thermal_width != -1 && CameraHandler.thermal_height != -1){
                 double pos_w = width * scaleGestureDetector.getScaleFactor();
                 double pos_h = height * scaleGestureDetector.getScaleFactor();
+
+                touchx = (int)(scaleGestureDetector.getFocusX());
+                touchy = (int)(scaleGestureDetector.getFocusY());
 
                 if(pos_w > 0 && pos_h > 0 && left+pos_w < CameraHandler.thermal_width && top + pos_h < CameraHandler.thermal_height){
                     width = pos_w;
@@ -196,6 +225,21 @@ public class FlirCameraActivity extends AppCompatActivity {
             }
             return true;
         }
+    }
+
+    public void toggleCalibrationButton(){
+        runOnUiThread(() -> {
+            MenuItem item = menu.findItem(R.id.calibrate);
+            if(item != null) {
+                if (item.isVisible()) {
+                    item.setVisible(false);
+                    CalibrationHandler.calibrationButtonHidden = true;
+                } else {
+                    item.setVisible(true);
+                    CalibrationHandler.calibrationButtonHidden = false;
+                }
+            }
+        });
     }
 
     @Override
@@ -252,12 +296,12 @@ public class FlirCameraActivity extends AppCompatActivity {
      * Disconnect to a camera
      */
     private void disconnectCamera() {
-        updateConnectionText(connectedCameraIdentity, "DISCONNECTING");
+        updateConnectionText(connectedCameraIdentity, DISCONNECTING);
         connectedCameraIdentity = null;
         Log.d(TAG, "disconnect: Called with: connectedCameraIdentity = [" + connectedCameraIdentity + "]");
         new Thread(() -> {
             cameraHandler.disconnectCamera();
-            runOnUiThread(() -> updateConnectionText(null, "DISCONNECTED"));
+            runOnUiThread(() -> updateConnectionText(null, DISCONNECTED));
         }).start();
     }
 
@@ -278,7 +322,7 @@ public class FlirCameraActivity extends AppCompatActivity {
 
         connectedCameraIdentity = identity;
 
-        updateConnectionText(identity, "CONNECTING");
+        updateConnectionText(identity, CONNECTING);
         // IF your using "USB_DEVICE_ATTACHED" and "usb-device vendor-id" in the Android Manifest
         // you don't need to request permission, see documentation for more information
         if (UsbPermissionHandler.isFlirOne(identity)) {
@@ -295,16 +339,17 @@ public class FlirCameraActivity extends AppCompatActivity {
      */
     private void connectDevice(Identity identity) {
         new Thread(() -> {
+
             try {
                 cameraHandler.connectCamera(identity, connectionStatusListener);
                 runOnUiThread(() -> {
-                    updateConnectionText(identity, "CONNECTED");
+                    updateConnectionText(identity, CONNECTED);
                     cameraHandler.startStream(streamDataListener);
                 });
             } catch (IOException e) {
                 runOnUiThread(() -> {
                     Log.d(TAG, "Could not connect: " + e);
-                    updateConnectionText(identity, "DISCONNECTED");
+                    updateConnectionText(identity, DISCONNECTED);
                 });
             }
         }).start();
@@ -326,7 +371,7 @@ public class FlirCameraActivity extends AppCompatActivity {
      */
     public ConnectionStatusListener connectionStatusListener = errorCode -> {
         Log.d(TAG, "onDisconnected: errorCode:" + errorCode);
-        runOnUiThread(() -> updateConnectionText(connectedCameraIdentity, "DISCONNECTED"));
+        runOnUiThread(() -> updateConnectionText(connectedCameraIdentity, DISCONNECTED));
     };
 
 

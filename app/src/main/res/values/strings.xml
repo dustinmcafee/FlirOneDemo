@@ -11,12 +11,54 @@
     <string name="msx_image_desc">image with IR and visual data mixed</string>
     <string name="photo_image_desc">image with only visual image</string>
 
-    <string name="switch_filter">Switch Filter</string>
-
     <string name="connect_f1_text">Connect\nFLIR ONE</string>
     <string name="connect_sim1_text">Connect\nSimulator 1</string>
     <string name="connect_sim2_text">Connect\nSimulator 2</string>
     <string name="connect_f1_text_desc">Connect to a physical FlirOne Camera</string>
     <string name="connect_sim1_text_desc">Connect to a the FlirOne C++ Emulator</string>
     <string name="connect_sim2_text_desc">Connect to the FlirOne Emulator</string>
+    <string name="transmission">Transmission: </string>
+    <string name="atmospheric_temperature_c">Atmospheric Temperature (°C): </string>
+    <string name="degrees_celsius">Degrees Celsius</string>
+    <string name="reflective_temperature_c">Reflective Temperature (°C): </string>
+    <string name="external_optics_temperature_c">External Optics Temperature (°C): </string>
+    <string name="distance_unit">Distance Unit: </string>
+    <string name="color_palette">Color Palette: </string>
+    <string name="distance">Distance: </string>
+    <string name="emissivity">Emissivity: </string>
+    <string name="external_optics_transmission">External Optics Transmission: </string>
+    <string name="relative_humidity">Relative Humidity: </string>
+    <string name="title_flirone_camera">FlirOne Camera Demo</string>
+
+    <string name="calibrate">Calibrate</string>
+    <string name="switch_temperature">Switch Temperature</string>
+    <string name="reset_positioning">Reset Positioning</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="switch_mode">Switch Mode</string>
+    <string name="save_calibration">Save Calibration</string>
+    <string name="discover">Discover</string>
+    <string name="toggle_keyboard">Toggle Keyboard</string>
+
+    <string-array name="distance_units">
+        <item>FEET</item>
+        <item>METER</item>
+    </string-array>
+
+    <string-array name="palettes">
+        <item>iron</item>
+        <item>Arctic</item>
+        <item>blackhot</item>
+        <item>bw</item>
+        <item>Coldest</item>
+        <item>ColorWheel_Redhot</item>
+        <item>ColorWheel6</item>
+        <item>ColorWheel12</item>
+        <item>DoubleRainbow2</item>
+        <item>lava</item>
+        <item>rainbow</item>
+        <item>rainHC</item>
+        <item>whitehot</item>
+        <item>Hottest</item>
+    </string-array>
+
 </resources>

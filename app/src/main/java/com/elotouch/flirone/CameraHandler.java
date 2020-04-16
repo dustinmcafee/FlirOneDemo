@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.util.Log;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
@@ -204,8 +202,8 @@ class CameraHandler {
         return temperatureUnit;
     }
 
-    public static double thermal_width;
-    public static double thermal_height;
+    public static double thermal_width = -1;
+    public static double thermal_height = -1;
 
     /**
      * Function to process a Thermal Image and update UI
@@ -215,6 +213,7 @@ class CameraHandler {
         @Override
         public void accept(ThermalImage thermalImage) {
             Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
+            CalibrationHandler.calibrate(thermalImage);
 
             thermal_width = thermalImage.getWidth();
             thermal_height = thermalImage.getHeight();
@@ -240,48 +239,45 @@ class CameraHandler {
             // define a width and a height for the rectangle we are about to draw based on the ThermalImage sizes
             int width = (int)FlirCameraActivity.width;
             int height = (int)FlirCameraActivity.height;
+            if (width > 0 && height > 0) {
+                try {
+                    // calculate left and top positioning coordinates to display the rectangle in the middle
+                    float left = (float)FlirCameraActivity.left;
+                    float top = (float)FlirCameraActivity.top;
+                    // Create a rectangle based off those measurements in order to poll the data for statistics
+                    Rectangle rect = new Rectangle((int) left, (int) top, width, height);
+                    if (left + width > thermalImage.getWidth() || top + height > thermalImage.getHeight()) {
+                        throw new IndexOutOfBoundsException();
+                    }
+                    // Set up Canvas
+                    Canvas canvas = new Canvas(msxBitmap);
+                    // Draw Rectangle to the high resolution image
+                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setColor(Color.GREEN);
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeWidth(2 * ratiow);
+                    canvas.drawRect(left * ratiow, top * ratioh, (left+rect.width)*ratiow, (top+rect.height)*ratioh, paint);
 
-            try {
-                // calculate left and top positioning coordinates to display the rectangle in the middle
-//                float left = (float) (thermalImage.getWidth() / 2.0 - (width) / 2);
-//                float top = (float) (thermalImage.getHeight() / 2.0 - (height) / 2);
-                float left = (float)FlirCameraActivity.left;
-                float top = (float)FlirCameraActivity.top;
-                // Create a rectangle based off those measurements in order to poll the data for statistics
-                Rectangle rect = new Rectangle((int) left, (int) top, width, height);
-                if (left + width > thermalImage.getWidth() || top + height > thermalImage.getHeight()) {
-                    throw new IndexOutOfBoundsException();
+                    // Get statistic points and calculate them.
+                    thermalImage.getMeasurements().clear();
+                    thermalImage.getMeasurements().addRectangle(rect.x, rect.y, rect.width, rect.height);
+                    MeasurementRectangle mRect = thermalImage.getMeasurements().getRectangles().get(0);
+                    mRect.setColdSpotMarkerVisible(true);
+                    mRect.setHotSpotMarkerVisible(true);
+
+                    // Draw min/max temperature points
+                    paint.setTextSize(20 * ratiow);
+                    paint.setStyle(Paint.Style.FILL);
+                    paint.setColor(Color.RED);
+                    canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * ratiow, paint);
+                    canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
+                    paint.setColor(Color.BLUE);
+                    canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
+                    canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
+
+                } catch (IndexOutOfBoundsException | MeasurementException e){
+                    e.printStackTrace();
                 }
-                // Set up Canvas
-                Canvas canvas = new Canvas(msxBitmap);
-                // Draw Rectangle to the high resolution image
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setColor(Color.GREEN);
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth(2 * ratiow);
-                canvas.drawRect(left * ratiow, top * ratioh, (left+rect.width)*ratiow, (top+rect.height)*ratioh, paint);
-
-                // Get statistic points and calculate them.
-                thermalImage.getMeasurements().clear();
-                thermalImage.getMeasurements().addRectangle(rect.x, rect.y, rect.width, rect.height);
-                MeasurementRectangle mRect = thermalImage.getMeasurements().getRectangles().get(0);
-                mRect.setColdSpotMarkerVisible(true);
-                mRect.setHotSpotMarkerVisible(true);
-
-                // Draw min/max temperature points
-                paint.setTextSize(20 * ratiow);
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(Color.RED);
-                canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * ratiow, paint);
-                canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
-                paint.setColor(Color.BLUE);
-                canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
-                canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
-
-            } catch (IndexOutOfBoundsException e){
-                e.printStackTrace();
-            } catch (MeasurementException e){
-                e.printStackTrace();
             }
 
             Log.d(TAG, "adding images to cache");

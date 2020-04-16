@@ -16,6 +16,7 @@
         <item name="metaTextColor">#606060</item>
         <item name="bgColor">#ffffff</item>
         <item name="btnColor">#00B0FF</item>
+        <item name="textBgColor">#ffffff</item>
         <item name="actionbarColor">#ffffff</item>
     </style>
 
@@ -27,6 +28,7 @@
         <item name="metaTextColor">#aeaeae</item>
         <item name="bgColor">#000000</item>
         <item name="btnColor">#005090</item>
+        <item name="textBgColor">#606060</item>
         <item name="actionbarColor">#1E1E1E</item>
     </style>
 
