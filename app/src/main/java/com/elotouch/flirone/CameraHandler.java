@@ -339,10 +339,11 @@ class CameraHandler {
             Date d = new Date(System.currentTimeMillis());
             String filename = d.toString();
             if(shouldAppend){
-                DateFormat dateFormat2 = new SimpleDateFormat("MM-dd-yyyy");
-                filename = dateFormat2.format(d);
+                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+                filename = formatter.format(d);
             } else{
-                filename = filename.replace(":","").replace(" ","");
+                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy-HH:mm:ss");
+                filename = formatter.format(d);
             }
             String path = ctx.getExternalFilesDir("logs").getAbsolutePath();
             out = new FileWriter(new File(path, filename),shouldAppend);
