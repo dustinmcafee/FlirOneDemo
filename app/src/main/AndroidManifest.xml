@@ -4,6 +4,8 @@
     <!-- some hw might not support Usb Host mode so it's recommended to add this -->
     <uses-feature android:name="android.hardware.usb.host" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".FlirCameraApplication"
         android:allowBackup="true"
@@ -12,6 +14,7 @@
         android:roundIcon="@mipmap/ic_icon_elo_round"
         android:supportsRtl="true"
         android:theme="@style/DarkTheme">
+
         <activity android:name=".CalibrateActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -23,6 +23,7 @@ import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -41,7 +42,7 @@ class CameraHandler {
 
     private StreamDataListener streamDataListener;
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
-    public static String tempLog = "";
+    public static ArrayList<String> tempLog = new ArrayList<>();
 
     public interface StreamDataListener {
         void images(BitmapFrameBuffer dataHolder);
@@ -269,8 +270,11 @@ class CameraHandler {
 
                     double min = (Math.round(mRect.getMin().value * 100.0) / 100.0);
                     double max = (Math.round(mRect.getMax().value * 100.0) / 100.0);
-                    double avg = (Math.round(((mRect.getMax().value + mRect.getMin().value)/2) * 100.0) / 100.0);
-                    tempLog += new Date(System.currentTimeMillis()) + "\n ==> Min: " + min + "; Max: " + max + "; Avg: " + avg + "\n";
+                    double avg = (Math.round((mRect.getAverage().value) * 100.0) / 100.0);
+                    if(tempLog.size() > 5000){
+                        tempLog.clear();
+                    }
+                    tempLog.add(new Date(System.currentTimeMillis()) + "\n ==> Min: " + min + "; Max: " + max + "; Avg: " + avg + "\n");
 
                     paint.setTextSize(20 * ratiow);
                     paint.setStyle(Paint.Style.FILL);

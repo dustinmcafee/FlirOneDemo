@@ -44,20 +44,9 @@
                     android:text="View"
                     android:textSize="20sp"
                     android:onClick="viewLog"
-                    android:background="@android:color/background_dark"
+                    android:background="@color/colorPrimary"
                     android:textColor="?attr/textColor"
                     android:layout_margin="5dp">
-                </Button>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="resetLog"
-                    android:text="Reset"
-                    android:textSize="20sp"
-                    android:background="@android:color/background_dark"
-                    android:layout_margin="5dp"
-                    android:textColor="?attr/textColor">
-
                 </Button>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

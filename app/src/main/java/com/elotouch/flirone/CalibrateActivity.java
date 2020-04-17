@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,9 +16,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flir.thermalsdk.image.DistanceUnit;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Date;
 import java.util.Objects;
 
 public class CalibrateActivity extends AppCompatActivity {
@@ -108,11 +116,36 @@ public class CalibrateActivity extends AppCompatActivity {
         }
     }
 
-    public void viewLog(View view) {
-        new AlertDialog.Builder(getWindow().getContext()).setTitle("Temp Log").setMessage(CameraHandler.tempLog).show();
+    public void viewLog(View v) {
+        if (CameraHandler.tempLog != null) {
+            StringBuilder msg = new StringBuilder();
+            for(int i = CameraHandler.tempLog.size() - 1; i > 0; i--){
+                msg.append(CameraHandler.tempLog.get(i));
+            }
+            String title = CameraHandler.tempLog.size() + " Readings:";
+            new AlertDialog.Builder(getWindow().getContext()).setTitle(title).setMessage(msg.toString()).setPositiveButton("Close", null).setNegativeButton("Reset", (dialog, which) -> {
+                resetLog();
+                viewLog(v);
+            }).setNeutralButton("Save", (dialog, which) -> {
+                saveLog(new Date(System.currentTimeMillis()), msg.toString());
+            }).show();
+        }
     }
 
-    public void resetLog(View view) {
-        CameraHandler.tempLog = "";
+    public void saveLog(Date d, String s){
+        FileWriter out = null;
+        try {
+            String filename = d.toString().replace(":","").replace(" ","");
+            String path = getApplicationContext().getExternalFilesDir("logs").getAbsolutePath();
+            out = new FileWriter(new File(path, filename));
+            Toast.makeText(getApplicationContext(), "File written to " + path + "/" + filename,Toast.LENGTH_SHORT).show();
+            out.write(s);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void resetLog() {
+        CameraHandler.tempLog.clear();
     }
 }
