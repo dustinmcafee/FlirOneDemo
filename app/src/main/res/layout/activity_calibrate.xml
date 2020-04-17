@@ -45,7 +45,8 @@
                     android:textSize="20sp"
                     android:onClick="viewLog"
                     android:background="@android:color/background_dark"
-                    android:textColor="?attr/textColor">
+                    android:textColor="?attr/textColor"
+                    android:layout_margin="5dp">
                 </Button>
                 <Button
                     android:layout_width="wrap_content"
@@ -54,6 +55,7 @@
                     android:text="Reset"
                     android:textSize="20sp"
                     android:background="@android:color/background_dark"
+                    android:layout_margin="5dp"
                     android:textColor="?attr/textColor">
 
                 </Button>
