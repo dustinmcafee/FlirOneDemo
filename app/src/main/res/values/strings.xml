@@ -38,7 +38,7 @@
     <string name="save_calibration">Save Calibration</string>
     <string name="discover">Discover</string>
     <string name="toggle_keyboard">Toggle Keyboard</string>
-    <string name="temperature_logs">Temperature Logs</string>
+    <string name="temperature_logs">Current 5-min Temp Log</string>
     <string name="view">View</string>
 
     <string-array name="distance_units">

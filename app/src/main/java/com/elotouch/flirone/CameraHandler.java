@@ -1,10 +1,12 @@
 package com.elotouch.flirone;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
 import com.flir.thermalsdk.image.Rectangle;
@@ -22,10 +24,16 @@ import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -42,7 +50,8 @@ class CameraHandler {
 
     private StreamDataListener streamDataListener;
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
-    public static ArrayList<String> tempLog = new ArrayList<>();
+    public static HashMap<Long,String> tempLog = new HashMap<>();
+    Long currentReadingStartMillis;
 
     public interface StreamDataListener {
         void images(BitmapFrameBuffer dataHolder);
@@ -271,10 +280,22 @@ class CameraHandler {
                     double min = (Math.round(mRect.getMin().value * 100.0) / 100.0);
                     double max = (Math.round(mRect.getMax().value * 100.0) / 100.0);
                     double avg = (Math.round((mRect.getAverage().value) * 100.0) / 100.0);
-                    if(tempLog.size() > 5000){
-                        tempLog.clear();
+
+                    long curr_time = System.currentTimeMillis();
+                    if(tempLog == null || tempLog.size() == 0){
+//                        Log.e("ANDREI", "reset time");
+                        currentReadingStartMillis = curr_time;
                     }
-                    tempLog.add(new Date(System.currentTimeMillis()) + "\n ==> Min: " + min + "; Max: " + max + "; Avg: " + avg + "\n");
+
+                        if((curr_time- currentReadingStartMillis )/1000 > 15){
+                            Log.e("ANDREI", "Saving current log and clearning log queue");
+                            saveLog(FlirCameraActivity.getInstance(),true);
+                            tempLog.clear();
+                        } else{
+                            tempLog.put(curr_time, "Min: " + min + "; Max: " + max + "; Avg: " + avg);
+                        }
+
+
 
                     paint.setTextSize(20 * ratiow);
                     paint.setStyle(Paint.Style.FILL);
@@ -298,4 +319,42 @@ class CameraHandler {
             streamDataListener.images(msxBitmap, dcBitmap);
         }
     };
+
+
+    public static void saveLog(Context ctx,boolean shouldAppend) {
+        StringBuilder msgLog = new StringBuilder();
+        Date date;
+
+        if (CameraHandler.tempLog.size() != 0) {
+            for (Map.Entry<Long, String> entry : CameraHandler.tempLog.entrySet()) {
+                date = new Date(entry.getKey());
+                msgLog.append(date.toString()).append(": \t ").append(entry.getValue()).append("\n");
+            }
+        } else {
+            msgLog.append("There are no logs recorded.");
+        }
+
+        FileWriter out = null;
+        try {
+            Date d = new Date(System.currentTimeMillis());
+            String filename = d.toString();
+            if(shouldAppend){
+                DateFormat dateFormat2 = new SimpleDateFormat("MM-dd-yyyy");
+                filename = dateFormat2.format(d);
+            } else{
+                filename = filename.replace(":","").replace(" ","");
+            }
+            String path = ctx.getExternalFilesDir("logs").getAbsolutePath();
+            out = new FileWriter(new File(path, filename),shouldAppend);
+            out.write(msgLog.toString());
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void resetLog() {
+        CameraHandler.tempLog.clear();
+    }
+
 }
