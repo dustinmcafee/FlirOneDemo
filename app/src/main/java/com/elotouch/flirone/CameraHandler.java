@@ -270,7 +270,7 @@ class CameraHandler {
                     double min = (Math.round(mRect.getMin().value * 100.0) / 100.0);
                     double max = (Math.round(mRect.getMax().value * 100.0) / 100.0);
                     double avg = (Math.round(((mRect.getMax().value + mRect.getMin().value)/2) * 100.0) / 100.0);
-                    tempLog += new Date(System.currentTimeMillis()) + " -> Min: " + min + "; Max: " + max + "; Avg: " + avg + "\n";
+                    tempLog += new Date(System.currentTimeMillis()) + "\n ==> Min: " + min + "; Max: " + max + "; Avg: " + avg + "\n";
 
                     paint.setTextSize(20 * ratiow);
                     paint.setStyle(Paint.Style.FILL);
