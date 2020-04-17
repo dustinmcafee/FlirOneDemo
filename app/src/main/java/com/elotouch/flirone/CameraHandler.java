@@ -23,6 +23,7 @@ import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -40,6 +41,7 @@ class CameraHandler {
 
     private StreamDataListener streamDataListener;
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
+    public static String tempLog = "";
 
     public interface StreamDataListener {
         void images(BitmapFrameBuffer dataHolder);
@@ -265,15 +267,23 @@ class CameraHandler {
                     mRect.setColdSpotMarkerVisible(true);
                     mRect.setHotSpotMarkerVisible(true);
 
-                    // Draw min/max temperature points
+                    double min = (Math.round(mRect.getMin().value * 100.0) / 100.0);
+                    double max = (Math.round(mRect.getMax().value * 100.0) / 100.0);
+                    double avg = (Math.round(((mRect.getMax().value + mRect.getMin().value)/2) * 100.0) / 100.0);
+                    tempLog += new Date(System.currentTimeMillis()) + " -> Min: " + min + "; Max: " + max + "; Avg: " + avg + "\n";
+
                     paint.setTextSize(20 * ratiow);
                     paint.setStyle(Paint.Style.FILL);
+                    // Draw avg temp text
+                    canvas.drawText("Avg: " + avg + " " + thermalImage.getTemperatureUnit().toString().charAt(0), left,top -5,paint);
+
+                    // Draw min/max temperature points
                     paint.setColor(Color.RED);
                     canvas.drawCircle((int)(mRect.getHotSpot().x*ratiow), (int)(mRect.getHotSpot().y*ratioh), 5 * ratiow, paint);
-                    canvas.drawText((Math.round(mRect.getMax().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
+                    canvas.drawText(max + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getHotSpot().x * ratiow, (mRect.getHotSpot().y + 20)*ratioh, paint);
                     paint.setColor(Color.BLUE);
                     canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
-                    canvas.drawText((Math.round(mRect.getMin().value * 100.0) / 100.0) + " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
+                    canvas.drawText(min+ " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
 
                 } catch (IndexOutOfBoundsException | MeasurementException e){
                     e.printStackTrace();

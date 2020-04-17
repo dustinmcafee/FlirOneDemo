@@ -110,10 +110,10 @@ public class FlirCameraActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         FlirCameraActivity.menu = menu;
         getMenuInflater().inflate(R.menu.toolbar1, menu);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
-
+        updateTitle();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -126,6 +126,7 @@ public class FlirCameraActivity extends AppCompatActivity {
             case R.id.toolbar_shuffle:
                 if(msxImage.getVisibility() == View.VISIBLE){
                     switchFilter();
+                    updateTitle();
                 } else{
                     Toast.makeText(getApplicationContext(),"In normal camera mode! Switch camera mode first.",Toast.LENGTH_SHORT).show();
                 }
@@ -138,6 +139,7 @@ public class FlirCameraActivity extends AppCompatActivity {
                 } else if(CameraHandler.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT){
                     CameraHandler.setTemperatureUnit(TemperatureUnit.KELVIN);
                 }
+                updateTitle();
                 break;
             case R.id.calibrate:
                 if(connectionStatus.getText().toString().contains(CONNECTED)){
@@ -267,29 +269,60 @@ public class FlirCameraActivity extends AppCompatActivity {
         switch (curr_fusion_mode) {
             case THERMAL_ONLY:
                 curr_fusion_mode = FusionMode.BLENDING;
-                Toast.makeText(getApplicationContext(),"Mode: BLENDING",Toast.LENGTH_SHORT).show();
                 break;
             case BLENDING:
                 curr_fusion_mode = FusionMode.MSX;
-                Toast.makeText(getApplicationContext(),"Mode: MSX",Toast.LENGTH_SHORT).show();
                 break;
             case MSX:
                 curr_fusion_mode = FusionMode.THERMAL_FUSION;
-                Toast.makeText(getApplicationContext(),"Mode: THERMAL_FUSION",Toast.LENGTH_SHORT).show();
                 break;
             case THERMAL_FUSION:
                 curr_fusion_mode = FusionMode.PICTURE_IN_PICTURE;
-                Toast.makeText(getApplicationContext(),"Mode: PICTURE_IN_PICTURE",Toast.LENGTH_SHORT).show();
                 break;
             case PICTURE_IN_PICTURE:
                 curr_fusion_mode = FusionMode.COLOR_NIGHT_VISION;
-                Toast.makeText(getApplicationContext(),"Mode: COLOR_NIGHT_VISION",Toast.LENGTH_SHORT).show();
                 break;
             case COLOR_NIGHT_VISION:
                 curr_fusion_mode = FusionMode.THERMAL_ONLY;
-                Toast.makeText(getApplicationContext(),"Mode: THERMAL_ONLY",Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    public void updateTitle(){
+        String title = "";
+
+        switch (curr_fusion_mode) {
+            case THERMAL_ONLY:
+                title = "Thermal Only";
+                break;
+            case BLENDING:
+                title = "Blending";
+                break;
+            case MSX:
+                title = "MSX";
+                break;
+            case THERMAL_FUSION:
+                title = "Thermal Fusion";
+                break;
+            case PICTURE_IN_PICTURE:
+                title = "Picture in Picture";
+                break;
+            case COLOR_NIGHT_VISION:
+                title = "Night Vision";
+                break;
+        }
+
+        title += " | ";
+
+        if(CameraHandler.getTemperatureUnit() == TemperatureUnit.KELVIN) {
+            title += "K";
+        } else if(CameraHandler.getTemperatureUnit() == TemperatureUnit.CELSIUS){
+            title += "C";
+        } else if(CameraHandler.getTemperatureUnit() == TemperatureUnit.FAHRENHEIT){
+            title += "F";
+        }
+
+        getSupportActionBar().setTitle(title);
     }
 
     /**

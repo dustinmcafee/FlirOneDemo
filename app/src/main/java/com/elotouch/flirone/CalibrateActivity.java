@@ -3,6 +3,8 @@ package com.elotouch.flirone;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -104,5 +106,13 @@ public class CalibrateActivity extends AppCompatActivity {
         if (imm != null) {
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
+    }
+
+    public void viewLog(View view) {
+        new AlertDialog.Builder(getWindow().getContext()).setTitle("Temp Log").setMessage(CameraHandler.tempLog).show();
+    }
+
+    public void resetLog(View view) {
+        CameraHandler.tempLog = "";
     }
 }
