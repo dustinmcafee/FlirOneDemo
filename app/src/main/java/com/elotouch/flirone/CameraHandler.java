@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
 import com.flir.thermalsdk.image.Rectangle;
@@ -29,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -287,6 +285,7 @@ class CameraHandler {
                         currentReadingStartMillis = curr_time;
                     }
 
+                    // TODO - change this to 5 min instead of 15 sec
                         if((curr_time- currentReadingStartMillis )/1000 > 15){
                             Log.e("ANDREI", "Saving current log and clearning log queue");
                             saveLog(FlirCameraActivity.getInstance(),true);
@@ -341,9 +340,11 @@ class CameraHandler {
             if(shouldAppend){
                 DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
                 filename = formatter.format(d);
+                filename+="-FULL";
             } else{
                 DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy-HH:mm:ss");
                 filename = formatter.format(d);
+                filename+="-SHORT";
             }
             String path = ctx.getExternalFilesDir("logs").getAbsolutePath();
             out = new FileWriter(new File(path, filename),shouldAppend);
