@@ -34,14 +34,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:padding="5dp"
-                    android:text="Temperature Log"
+                    android:text="@string/temperature_logs"
                     android:textColor="?attr/textColor"
                     android:textSize="20sp" />
 
                 <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                    android:text="View"
+                    android:text="@string/view"
                     android:textSize="20sp"
                     android:onClick="viewLog"
                     android:background="@color/colorPrimary"
