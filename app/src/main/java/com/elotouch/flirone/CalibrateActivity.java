@@ -119,7 +119,7 @@ public class CalibrateActivity extends AppCompatActivity {
             if (CameraHandler.tempLog.size() != 0) {
                 for (Map.Entry<Long, String> entry : CameraHandler.tempLog.entrySet()) {
                     Date date = new Date(entry.getKey());
-                    msgDialog.append(date.toString()).append(":\n==>").append(entry.getValue());
+                    msgDialog.append(date.toString()).append(":\n==>").append(entry.getValue()).append("\n");
                 }
             } else {
                 msgDialog.append("There are no logs recorded.");
