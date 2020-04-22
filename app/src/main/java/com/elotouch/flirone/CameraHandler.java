@@ -244,11 +244,11 @@ class CameraHandler {
             // Set Temperature Unit
             thermalImage.setTemperatureUnit(temperatureUnit);
 
-            // Set up Canvas
+            // Set up Canvas & Paint
             Canvas canvas = new Canvas(msxBitmap);
-            // Draw Rectangle to the high resolution image
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+            // Draw Rectangles
             drawGuideRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
             drawFaceRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
 
