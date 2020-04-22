@@ -267,7 +267,7 @@ class CameraHandler {
             return;
         }
 
-            // calculate left and top positioning coordinates to display the rectangle in the middle
+        // calculate left and top positioning coordinates to display the rectangle in the middle
         float left = (float)FlirCameraActivity.left;
         float top = (float)FlirCameraActivity.top;
 
