@@ -244,9 +244,6 @@ class CameraHandler {
 
             // FaceDetector -------------------------------
 
-//            FaceDetector faceDetector = new FaceDetector(msxBitmap.getWidth(), msxBitmap.getHeight(), 1);
-//            FaceDetector.Face[] faces = new FaceDetector.Face[1];
-//            int facesFound = faceDetector.findFaces(msxBitmap, faces);
             Bitmap mFaceBitmap = dcBitmap.copy(Bitmap.Config.RGB_565, true);
             FaceDetector faceDetector = new FaceDetector(mFaceBitmap.getWidth(), mFaceBitmap.getHeight(), 1);
             FaceDetector.Face[] faces = new FaceDetector.Face[1];
@@ -260,8 +257,6 @@ class CameraHandler {
             // calculate ratios for width and height based off the output image (which can be higher resolution) compared to the thermal image (which is lower resolutioN)
             float ratiow = (float) msxBitmap.getWidth() / (float) thermal_width;
             float ratioh = (float) msxBitmap.getHeight() / (float) thermal_height;
-//            float ratiow2 = (float) dcBitmap.getWidth() / (float) thermal_width;
-//            float ratioh2 = (float) dcBitmap.getHeight() / (float) thermal_height;
             float ratiow2 = (float) dcBitmap.getWidth() / (float) msxBitmap.getWidth();
             float ratioh2 = (float) dcBitmap.getHeight() / (float) msxBitmap.getHeight();
 
@@ -335,38 +330,38 @@ class CameraHandler {
                         paint.setStyle(Paint.Style.STROKE);
                         PointF midPoint = new PointF();
                         faces[0].getMidPoint(midPoint);
-//                        float confidence = faces[0].confidence();
-//                        if(confidence >= 80) {
-                        float eyeDistance = faces[0].eyesDistance();
-                        float left2 = (midPoint.x - eyeDistance)/ratiow2;
-                        if(left2 < 0){
-                            left2 = 0.0f;
+                        float confidence = faces[0].confidence();
+                        if(confidence >= 0.51) {      // At least 51% confidence that this is indeed a face
+                            float eyeDistance = faces[0].eyesDistance();
+                            float left2 = (midPoint.x - eyeDistance) / ratiow2;
+                            if (left2 < 0) {
+                                left2 = 0.0f;
+                            }
+                            float top2 = (midPoint.y - eyeDistance) / ratioh2;
+                            if (top2 < 0) {
+                                top2 = 0.0f;
+                            }
+                            float right2 = (midPoint.x + eyeDistance) / ratiow2;
+                            if (right2 > canvas.getWidth()) {
+                                right2 = canvas.getWidth();
+                            }
+                            float bottom2 = (midPoint.y + eyeDistance) / ratioh2;
+                            if (bottom2 > canvas.getHeight()) {
+                                bottom2 = canvas.getHeight();
+                            }
+                            canvas.drawRect(left2, top2, right2, bottom2, paint);
+                            try {
+                                thermalImage.getMeasurements().addRectangle((int) (left2 / ratiow), (int) (top2 / ratioh), (int) ((right2 - left2) / ratiow), (int) ((bottom2 - top2) / ratioh));
+                                MeasurementRectangle mRect2 = thermalImage.getMeasurements().getRectangles().get(1);
+                                double avg2 = (Math.round((mRect2.getAverage().value) * 100.0) / 100.0);
+                                paint.setTextSize(20 * ratiow);
+                                paint.setStyle(Paint.Style.FILL);
+                                canvas.drawText("Avg: " + avg2 + " " + thermalImage.getTemperatureUnit().toString().charAt(0), left2, (top2 - 5), paint);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Could not calculate square in Thermal Image");
+                                e.printStackTrace();
+                            }
                         }
-                        float top2 = (midPoint.y - eyeDistance)/ratioh2;
-                        if(top2 < 0){
-                            top2 = 0.0f;
-                        }
-                        float right2 = (midPoint.x + eyeDistance)/ratiow2;
-                        if(right2 > canvas.getWidth()){
-                            right2 = canvas.getWidth();
-                        }
-                        float bottom2 = (midPoint.y + eyeDistance)/ratioh2;
-                        if(bottom2 > canvas.getHeight()){
-                            bottom2 = canvas.getHeight();
-                        }
-                        canvas.drawRect(left2, top2, right2, bottom2, paint);
-                        try {
-                            thermalImage.getMeasurements().addRectangle((int) (left2/ratiow), (int) (top2/ratioh), (int) ((right2 - left2)/ratiow), (int) ((bottom2 - top2)/ratioh));
-                            MeasurementRectangle mRect2 = thermalImage.getMeasurements().getRectangles().get(1);
-                            double avg2 = (Math.round((mRect2.getAverage().value) * 100.0) / 100.0);
-                            paint.setTextSize(20 * ratiow);
-                            paint.setStyle(Paint.Style.FILL);
-                            canvas.drawText("Avg: " + avg2 + " " + thermalImage.getTemperatureUnit().toString().charAt(0), left2, (top2 - 5), paint);
-                        } catch (Exception e){
-                            Log.e(TAG, "ASDFASDFASDF");
-                            e.printStackTrace();
-                        }
-//                        }
                     }
 
                     // --------------------------------
