@@ -246,9 +246,10 @@ class CameraHandler {
 //            FaceDetector faceDetector = new FaceDetector(msxBitmap.getWidth(), msxBitmap.getHeight(), 1);
 //            FaceDetector.Face[] faces = new FaceDetector.Face[1];
 //            int facesFound = faceDetector.findFaces(msxBitmap, faces);
-            FaceDetector faceDetector = new FaceDetector(dcBitmap.getWidth(), dcBitmap.getHeight(), 1);
+            Bitmap mFaceBitmap = dcBitmap.copy(Bitmap.Config.RGB_565, true);
+            FaceDetector faceDetector = new FaceDetector(mFaceBitmap.getWidth(), mFaceBitmap.getHeight(), 1);
             FaceDetector.Face[] faces = new FaceDetector.Face[1];
-            int facesFound = faceDetector.findFaces(dcBitmap, faces);
+            int facesFound = faceDetector.findFaces(mFaceBitmap, faces);
 
             // --------------------------------------------
 
@@ -332,12 +333,8 @@ class CameraHandler {
                         PointF midPoint = new PointF();
                         faces[0].getMidPoint(midPoint);
                         float confidence = faces[0].confidence();
-                        if(confidence >= 80) {
+//                        if(confidence >= 80) {
                             float eyeDistance = faces[0].eyesDistance();
-//                            float left2 = (midPoint.x / ratiow2) - eyeDistance;
-//                            float top2 = (midPoint.y / ratioh2) - eyeDistance;
-//                            float right2 = (midPoint.x / ratiow2) + eyeDistance;
-//                            float bottom2 = (midPoint.y / ratioh2) + eyeDistance;
                             float left2 = (midPoint.x - eyeDistance)/ratiow2;
                             float top2 = (midPoint.y - eyeDistance)/ratioh2;
                             float right2 = (midPoint.x + eyeDistance)/ratiow2;
@@ -345,7 +342,7 @@ class CameraHandler {
                             float canvaswidth = canvas.getWidth();
                             float canvasHeight = canvas.getHeight();
                             canvas.drawRect(left2, top2, right2, bottom2, paint);
-                        }
+//                        }
                     }
 
                     // --------------------------------
