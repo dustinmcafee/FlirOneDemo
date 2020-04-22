@@ -252,7 +252,6 @@ class CameraHandler {
             drawGuideRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
             drawFaceRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
 
-
             Log.d(TAG, "adding images to cache");
             streamDataListener.images(msxBitmap, dcBitmap);
         }
