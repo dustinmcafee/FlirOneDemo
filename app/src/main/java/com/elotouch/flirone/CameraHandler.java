@@ -312,7 +312,7 @@ class CameraHandler {
                     paint.setTextSize(20 * ratiow);
                     paint.setStyle(Paint.Style.FILL);
                     // Draw avg temp text
-                    canvas.drawText("Avg: " + avg + " " + thermalImage.getTemperatureUnit().toString().charAt(0), left,top -5,paint);
+                    canvas.drawText("Avg: " + avg + " " + thermalImage.getTemperatureUnit().toString().charAt(0), left * ratiow,(top -5) * ratioh,paint);
 
                     // Draw min/max temperature points
                     paint.setColor(Color.RED);
