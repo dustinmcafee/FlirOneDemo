@@ -1,7 +1,6 @@
 package com.elotouch.flirone;
 
 import android.content.Intent;
-import android.media.FaceDetector;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -29,9 +28,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_START_SIMULATOR_ONE = "ACTION_START_SIMULATOR_ONE";
     public static final String ACTION_START_SIMULATOR_TWO = "ACTION_START_SIMULATOR_TWO";
     public static final String ACTION_START_CALIBRATION = "ACTION_START_CALIBRATION";
-
-    //Handles Android permission for eg Network
-//    public PermissionHandler permissionHandler;
 
     private TextView discoveryStatus;
 
@@ -118,10 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.toolbar_discover:
-                startDiscovery();
-                break;
+        if (item.getItemId() == R.id.toolbar_discover) {
+            startDiscovery();
         }
         return super.onOptionsItemSelected(item);
     }

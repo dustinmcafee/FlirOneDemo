@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.channels.ScatteringByteChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,8 +50,8 @@ class CameraHandler {
 
     private StreamDataListener streamDataListener;
     private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
-    public static HashMap<Long,String> tempLog = new HashMap<>();
-    Long currentReadingStartMillis;
+    static HashMap<Long,String> tempLog = new HashMap<>();
+    private Long currentReadingStartMillis;
 
     public interface StreamDataListener {
         void images(BitmapFrameBuffer dataHolder);
@@ -215,8 +214,8 @@ class CameraHandler {
         return temperatureUnit;
     }
 
-    public static double thermal_width = -1;
-    public static double thermal_height = -1;
+    static double thermal_width = -1;
+    static double thermal_height = -1;
 
     /**
      * Function to process a Thermal Image and update UI
@@ -249,7 +248,7 @@ class CameraHandler {
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
             // Draw Rectangles
-            drawGuideRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
+            drawGuideRectangle(canvas, paint, thermalImage, msxBitmap);
             drawFaceRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
 
             Log.d(TAG, "adding images to cache");
@@ -257,7 +256,7 @@ class CameraHandler {
         }
     };
 
-    private void drawGuideRectangle(Canvas canvas, Paint paint, ThermalImage thermalImage, Bitmap dcBitmap, Bitmap msxBitmap){
+    private void drawGuideRectangle(Canvas canvas, Paint paint, ThermalImage thermalImage, Bitmap msxBitmap){
         // Get Ratios
         float ratiow = (float) msxBitmap.getWidth() / (float) thermalImage.getWidth();
         float ratioh = (float) msxBitmap.getHeight() / (float) thermalImage.getHeight();
@@ -316,7 +315,12 @@ class CameraHandler {
             saveLog(FlirCameraActivity.getInstance(),true);
             tempLog.clear();
         } else{
-            tempLog.put(curr_time, "Min: " + min + "; Max: " + max + "; Avg: " + avg);
+            try {
+                assert tempLog != null;
+                tempLog.put(curr_time, "Min: " + min + "; Max: " + max + "; Avg: " + avg);
+            } catch (AssertionError e){
+                e.printStackTrace();
+            }
         }
 
         // Draw statistics to canvas
@@ -390,7 +394,7 @@ class CameraHandler {
     }
 
 
-    public static void saveLog(Context ctx,boolean shouldAppend) {
+    static void saveLog(Context ctx, boolean shouldAppend) {
         StringBuilder msgLog = new StringBuilder();
         Date date;
 
@@ -403,10 +407,10 @@ class CameraHandler {
             msgLog.append("There are no logs recorded.");
         }
 
-        FileWriter out = null;
+        FileWriter out;
         try {
             Date d = new Date(System.currentTimeMillis());
-            String filename = d.toString();
+            String filename;
             if(shouldAppend){
                 DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
                 filename = formatter.format(d);
@@ -416,16 +420,16 @@ class CameraHandler {
                 filename = formatter.format(d);
                 filename+="-SHORT";
             }
-            String path = ctx.getExternalFilesDir("logs").getAbsolutePath();
+            String path = Objects.requireNonNull(ctx.getExternalFilesDir("logs")).getAbsolutePath();
             out = new FileWriter(new File(path, filename),shouldAppend);
             out.write(msgLog.toString());
             out.close();
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }
 
-    public static void resetLog() {
+    static void resetLog() {
         CameraHandler.tempLog.clear();
     }
 

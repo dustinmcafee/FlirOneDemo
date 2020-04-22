@@ -27,11 +27,7 @@ import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -87,7 +83,7 @@ public class FlirCameraActivity extends AppCompatActivity {
         instance = this;
 
         // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
-        switch (getIntent().getAction()) {
+        switch (Objects.requireNonNull(getIntent().getAction())) {
             case MainActivity.ACTION_START_FLIR_ONE:
                 connectCamera(cameraHandler.getFlirOne());
                 break;
@@ -165,35 +161,6 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     int touchx = -1;
     int touchy = -1;
-
-
-    public void saveLog() {
-        StringBuilder msgLog = new StringBuilder();
-        Date date;
-
-        if (CameraHandler.tempLog.size() != 0) {
-            for (Map.Entry<Long, String> entry : CameraHandler.tempLog.entrySet()) {
-                date = new Date(entry.getKey());
-                msgLog.append(date.toString()).append(": \t ").append(entry.getValue());
-            }
-
-        } else {
-            msgLog.append("There are no logs recorded.");
-        }
-
-        FileWriter out = null;
-        try {
-            Date d = new Date(System.currentTimeMillis());
-            String filename = d.toString().replace(":","").replace(" ","");
-            String path = getApplicationContext().getExternalFilesDir("logs").getAbsolutePath();
-            out = new FileWriter(new File(path, filename));
-            Toast.makeText(getApplicationContext(), "File written to " + path + "/" + filename,Toast.LENGTH_SHORT).show();
-            out.write(msgLog.toString());
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -354,7 +321,9 @@ public class FlirCameraActivity extends AppCompatActivity {
             title += "F";
         }
 
-        getSupportActionBar().setTitle(title);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     /**
