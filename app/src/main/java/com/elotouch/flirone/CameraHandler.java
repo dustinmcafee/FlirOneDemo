@@ -330,7 +330,7 @@ class CameraHandler {
                         PointF midPoint = new PointF();
                         faces[0].getMidPoint(midPoint);
                         float eyeDistance = faces[0].eyesDistance();
-                        canvas.drawRect(midPoint.x - eyeDistance, midPoint.y - eyeDistance, midPoint.x + eyeDistance, midPoint.y + eyeDistance, paint);
+                        canvas.drawRect((midPoint.x - eyeDistance)*ratiow, (midPoint.y - eyeDistance)*ratioh, (midPoint.x + eyeDistance)*ratiow, (midPoint.y + eyeDistance)*ratioh, paint);
                     }
 
                     // --------------------------------
