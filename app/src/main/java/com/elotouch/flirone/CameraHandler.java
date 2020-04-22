@@ -256,8 +256,10 @@ class CameraHandler {
             thermalImage.setTemperatureUnit(temperatureUnit);
 
             // calculate ratios for width and height based off the output image (which can be higher resolution) compared to the thermal image (which is lower resolutioN)
-            float ratiow = (float) msxBitmap.getWidth() / thermalImage.getWidth();
-            float ratioh = (float) msxBitmap.getHeight() / thermalImage.getHeight() ;
+            float ratiow = (float) msxBitmap.getWidth() / (float) thermal_width;
+            float ratioh = (float) msxBitmap.getHeight() / (float) thermal_height;
+            float ratiow2 = (float) dcBitmap.getWidth() / (float) thermal_width;
+            float ratioh2 = (float) dcBitmap.getHeight() / (float) thermal_height;
 
             // define a width and a height for the rectangle we are about to draw based on the ThermalImage sizes
             int width = (int)FlirCameraActivity.width;
@@ -329,8 +331,21 @@ class CameraHandler {
                         paint.setStyle(Paint.Style.STROKE);
                         PointF midPoint = new PointF();
                         faces[0].getMidPoint(midPoint);
-                        float eyeDistance = faces[0].eyesDistance();
-                        canvas.drawRect((midPoint.x - eyeDistance)*ratiow, (midPoint.y - eyeDistance)*ratioh, (midPoint.x + eyeDistance)*ratiow, (midPoint.y + eyeDistance)*ratioh, paint);
+                        float confidence = faces[0].confidence();
+                        if(confidence >= 80) {
+                            float eyeDistance = faces[0].eyesDistance();
+//                            float left2 = (midPoint.x / ratiow2) - eyeDistance;
+//                            float top2 = (midPoint.y / ratioh2) - eyeDistance;
+//                            float right2 = (midPoint.x / ratiow2) + eyeDistance;
+//                            float bottom2 = (midPoint.y / ratioh2) + eyeDistance;
+                            float left2 = (midPoint.x - eyeDistance)/ratiow2;
+                            float top2 = (midPoint.y - eyeDistance)/ratioh2;
+                            float right2 = (midPoint.x + eyeDistance)/ratiow2;
+                            float bottom2 = (midPoint.y + eyeDistance)/ratioh2;
+                            float canvaswidth = canvas.getWidth();
+                            float canvasHeight = canvas.getHeight();
+                            canvas.drawRect(left2, top2, right2, bottom2, paint);
+                        }
                     }
 
                     // --------------------------------
