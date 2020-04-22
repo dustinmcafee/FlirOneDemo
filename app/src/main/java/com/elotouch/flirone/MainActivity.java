@@ -1,6 +1,7 @@
 package com.elotouch.flirone;
 
 import android.content.Intent;
+import android.media.FaceDetector;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,15 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.flir.thermalsdk.ErrorCode;
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
-import com.flir.thermalsdk.image.ThermalImage;
-import com.flir.thermalsdk.image.fusion.ThermalFusion;
 import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;
 import com.flir.thermalsdk.log.ThermalLog;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         // Show Thermal Android SDK version
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
-
     }
 
     public void startDiscovery() {

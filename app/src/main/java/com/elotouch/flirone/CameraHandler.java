@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.media.FaceDetector;
 import android.util.Log;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
@@ -239,6 +241,17 @@ class CameraHandler {
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
             Bitmap dcBitmap = BitmapAndroid.createBitmap(Objects.requireNonNull(thermalImage.getFusion().getPhoto())).getBitMap();
 
+            // FaceDetector -------------------------------
+
+//            FaceDetector faceDetector = new FaceDetector(msxBitmap.getWidth(), msxBitmap.getHeight(), 1);
+//            FaceDetector.Face[] faces = new FaceDetector.Face[1];
+//            int facesFound = faceDetector.findFaces(msxBitmap, faces);
+            FaceDetector faceDetector = new FaceDetector(dcBitmap.getWidth(), dcBitmap.getHeight(), 1);
+            FaceDetector.Face[] faces = new FaceDetector.Face[1];
+            int facesFound = faceDetector.findFaces(dcBitmap, faces);
+
+            // --------------------------------------------
+
             // Set Temperature Unit
             thermalImage.setTemperatureUnit(temperatureUnit);
 
@@ -308,6 +321,20 @@ class CameraHandler {
                     paint.setColor(Color.BLUE);
                     canvas.drawCircle(mRect.getColdSpot().x*ratiow, mRect.getColdSpot().y*ratioh, 5 * ratiow, paint);
                     canvas.drawText(min+ " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
+
+                    // Face Detection ----------------
+
+                    if(facesFound > 0) {
+                        paint.setColor(Color.MAGENTA);
+                        paint.setStyle(Paint.Style.STROKE);
+                        PointF midPoint = new PointF();
+                        faces[0].getMidPoint(midPoint);
+                        float eyeDistance = faces[0].eyesDistance();
+                        canvas.drawRect(midPoint.x - eyeDistance, midPoint.y - eyeDistance, midPoint.x + eyeDistance, midPoint.y + eyeDistance, paint);
+                    }
+
+                    // --------------------------------
+
 
                 } catch (IndexOutOfBoundsException | MeasurementException e){
                     e.printStackTrace();
