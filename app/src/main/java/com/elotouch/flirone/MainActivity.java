@@ -10,10 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.flir.thermalsdk.ErrorCode;
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
+import com.flir.thermalsdk.image.ThermalImage;
+import com.flir.thermalsdk.image.fusion.ThermalFusion;
 import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;
 import com.flir.thermalsdk.log.ThermalLog;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_START_SIMULATOR_ONE = "ACTION_START_SIMULATOR_ONE";
     public static final String ACTION_START_SIMULATOR_TWO = "ACTION_START_SIMULATOR_TWO";
     public static final String ACTION_START_CALIBRATION = "ACTION_START_CALIBRATION";
+
+    //Handles Android permission for eg Network
+//    public PermissionHandler permissionHandler;
 
     private TextView discoveryStatus;
 
@@ -48,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
 
         // Initialize Camera Handler
-        cameraHandler = new CameraHandler();
+        cameraHandler = new CameraHandler(getApplicationContext());
 
         // Initialize TextViews
         discoveryStatus = findViewById(R.id.discovery_status);
@@ -57,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         // Show Thermal Android SDK version
         String sdkVersionText = getString(R.string.sdk_version_text, ThermalSdkAndroid.getVersion());
         sdkVersionTextView.setText(sdkVersionText);
+
     }
 
     public void startDiscovery() {
@@ -114,8 +123,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.toolbar_discover) {
-            startDiscovery();
+        switch (item.getItemId()){
+            case R.id.toolbar_discover:
+                startDiscovery();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

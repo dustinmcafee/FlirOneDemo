@@ -30,6 +30,7 @@
     <string name="relative_humidity">Relative Humidity: </string>
     <string name="title_flirone_camera">FlirOne Camera Demo</string>
 
+    <string name="save_image">Save Image</string>
     <string name="calibrate">Calibrate</string>
     <string name="switch_temperature">Switch Temperature</string>
     <string name="reset_positioning">Reset Positioning</string>

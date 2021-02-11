@@ -1,9 +1,14 @@
 package com.elotouch.flirone;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,8 +22,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
+import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
 import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
 import com.flir.thermalsdk.image.TemperatureUnit;
 import com.flir.thermalsdk.image.fusion.FusionMode;
@@ -27,7 +34,16 @@ import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -50,7 +66,9 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     private TextView connectionStatus;
 
+    private Bitmap msxImageBitmap;
     private ImageView msxImage;
+    private Bitmap photoImageBitmap;
     private ImageView photoImage;
     private static Menu menu;
 
@@ -83,7 +101,7 @@ public class FlirCameraActivity extends AppCompatActivity {
         instance = this;
 
         // TODO: Set default behavior if getIntent == null: Log error. (not that it ever should, but it will fix the lint error)
-        switch (Objects.requireNonNull(getIntent().getAction())) {
+        switch (getIntent().getAction()) {
             case MainActivity.ACTION_START_FLIR_ONE:
                 connectCamera(cameraHandler.getFlirOne());
                 break;
@@ -155,12 +173,38 @@ public class FlirCameraActivity extends AppCompatActivity {
                     top = CameraHandler.thermal_height/2 - height/2;
                 }
                 break;
+            case R.id.toolbar_save_image:
+                saveImage();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     int touchx = -1;
     int touchy = -1;
+
+    public void saveImage(){
+
+        File storage = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if(!storage.exists()){
+            storage.mkdir();
+        }
+
+        Date d = new Date(System.currentTimeMillis());
+        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy-HH:mm:ss");
+        String filename = formatter.format(d);
+
+        File image = null;
+        try {
+            image = new File(storage,filename+"-thermal.png");
+            msxImageBitmap.compress(Bitmap.CompressFormat.PNG,100,new FileOutputStream(image));
+            image = new File(storage,filename+"-original.png");
+            photoImageBitmap.compress(Bitmap.CompressFormat.PNG,100,new FileOutputStream(image));
+            Toast.makeText(this,"Saved to: " + image.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -321,9 +365,7 @@ public class FlirCameraActivity extends AppCompatActivity {
             title += "F";
         }
 
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-        }
+        getSupportActionBar().setTitle(title);
     }
 
     /**
@@ -433,6 +475,8 @@ public class FlirCameraActivity extends AppCompatActivity {
                 Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                 BitmapFrameBuffer poll = framesBuffer.poll();
                 if (poll != null) {
+                    msxImageBitmap = msxBitmap;
+                    photoImageBitmap = dcBitmap;
                     msxImage.setImageBitmap(poll.msxBitmap);
                     photoImage.setImageBitmap(poll.dcBitmap);
                 }

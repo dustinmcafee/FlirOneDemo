@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/toolbar_save_image"
+        android:icon="@drawable/ic_toolbar_save"
+        android:title="@string/save_image"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+    <item
         android:id="@+id/calibrate"
         android:icon="@drawable/ic_toolbar_calibrate"
         android:title="@string/calibrate"
