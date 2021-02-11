@@ -1,4 +1,4 @@
-package com.elotouch.flirone;
+package com.example.flirone;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.elotouch.flirone.FlirCameraApplication.cameraHandler;
+import static com.example.flirone.FlirCameraApplication.cameraHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
 
         // Initialize Camera Handler
-        cameraHandler = new CameraHandler();
+        cameraHandler = new com.example.flirone.CameraHandler();
 
         // Initialize TextViews
         discoveryStatus = findViewById(R.id.discovery_status);
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view the button pressed
      */
     public void connectFlirOne(@Nullable View view) {
-        Intent intent = new Intent(getApplicationContext(), FlirCameraActivity.class);
+        Intent intent = new Intent(getApplicationContext(), com.example.flirone.FlirCameraActivity.class);
         intent.setAction(ACTION_START_FLIR_ONE);
         startActivity(intent);
     }
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view the button pressed
      */
     public void connectSimulatorOne(@Nullable View view) {
-        Intent intent = new Intent(getApplicationContext(), FlirCameraActivity.class);
+        Intent intent = new Intent(getApplicationContext(), com.example.flirone.FlirCameraActivity.class);
         intent.setAction(ACTION_START_SIMULATOR_ONE);
         startActivity(intent);
     }
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view the button pressed
      */
     public void connectSimulatorTwo(@Nullable View view) {
-        Intent intent = new Intent(getApplicationContext(), FlirCameraActivity.class);
+        Intent intent = new Intent(getApplicationContext(), com.example.flirone.FlirCameraActivity.class);
         intent.setAction(ACTION_START_SIMULATOR_TWO);
         startActivity(intent);
     }
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_icon_elo_round);
+            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher_example_round);
         } else {
             Log.e(TAG, "onCreateOptionsMenu: getSupportActionBar returned null");
         }
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Callback for discovery status, using it to update UI
      */
-    public CameraHandler.DiscoveryStatus discoveryStatusListener = new CameraHandler.DiscoveryStatus() {
+    public com.example.flirone.CameraHandler.DiscoveryStatus discoveryStatusListener = new com.example.flirone.CameraHandler.DiscoveryStatus() {
         @Override
         public void started() {
             discoveryStatus.setText(R.string.discovery_status_discovering);

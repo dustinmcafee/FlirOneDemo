@@ -1,4 +1,4 @@
-package com.elotouch.flirone;
+package com.example.flirone;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.elotouch.flirone.FlirCameraApplication.cameraHandler;
-import static com.elotouch.flirone.FlirCameraApplication.connectedCameraIdentity;
+import static com.example.flirone.FlirCameraApplication.cameraHandler;
+import static com.example.flirone.FlirCameraApplication.connectedCameraIdentity;
 
 public class FlirCameraActivity extends AppCompatActivity {
     public static final String CONNECTING = "CONNECTING";

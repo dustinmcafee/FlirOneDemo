@@ -1,4 +1,4 @@
-package com.elotouch.flirone;
+package com.example.flirone;
 
 import android.content.Context;
 
