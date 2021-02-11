@@ -1,4 +1,4 @@
-package com.elotouch.flirone;
+package com.example.flirone;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
