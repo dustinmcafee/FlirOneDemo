@@ -2,6 +2,7 @@ package com.elotouch.flirone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.renderscript.RenderScript;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,10 @@ import com.flir.thermalsdk.live.CommunicationInterface;
 import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;
 import com.flir.thermalsdk.log.ThermalLog;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView discoveryStatus;
 
+    public static FirebaseVisionFaceDetector detector;
+    private RenderScript rs;
+
     /**
      * Show message on the screen
      */
@@ -42,13 +50,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(getApplicationContext());
         setContentView(R.layout.activity_main);
 
         // Initialize Thermal SDK
         ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
 
+        // Initialize Firebase FaceDetector
+        rs = RenderScript.create(this);
+        FirebaseVisionFaceDetectorOptions options =
+                new FirebaseVisionFaceDetectorOptions.Builder()
+                        .setPerformanceMode(FirebaseVisionFaceDetectorOptions.FAST)
+                        .setClassificationMode(FirebaseVisionFaceDetectorOptions.NO_CLASSIFICATIONS)
+                        .setLandmarkMode(FirebaseVisionFaceDetectorOptions.NO_LANDMARKS)
+                        .build();
+
+        detector = FirebaseVision.getInstance().getVisionFaceDetector(options);
+
+
         // Initialize Camera Handler
-        cameraHandler = new CameraHandler();
+        cameraHandler = new CameraHandler(getApplicationContext(), this, rs);
 
         // Initialize TextViews
         discoveryStatus = findViewById(R.id.discovery_status);
@@ -61,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void startDiscovery() {
         cameraHandler.startDiscovery(cameraDiscoveryListener, discoveryStatusListener);
+    }
+
+    public CameraHandler getCameraHandler(){
+        return cameraHandler;
     }
 
     public void stopDiscovery() {

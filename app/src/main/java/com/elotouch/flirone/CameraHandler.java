@@ -1,13 +1,23 @@
 package com.elotouch.flirone;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
-import android.media.FaceDetector;
+import android.graphics.Rect;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+import android.os.Build;
+
+import androidx.renderscript.RenderScript;
 import android.util.Log;
+import android.util.SparseIntArray;
+import android.view.Surface;
+
+import androidx.annotation.RequiresApi;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
 import com.flir.thermalsdk.image.Rectangle;
@@ -22,19 +32,30 @@ import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 import com.flir.thermalsdk.live.discovery.DiscoveryEventListener;
 import com.flir.thermalsdk.live.discovery.DiscoveryFactory;
 import com.flir.thermalsdk.live.streaming.ThermalImageStreamListener;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
+import com.google.firebase.ml.vision.face.FirebaseVisionFace;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import io.github.silvaren.easyrs.tools.Nv21Image;
+
+import static android.content.Context.CAMERA_SERVICE;
 
 /**
  * EHandle a FLIR ONE camera or built in emulator: Discovery, connecting and start receiving images.
@@ -49,7 +70,7 @@ class CameraHandler {
     private static final String TAG = "CameraHandler";
 
     private StreamDataListener streamDataListener;
-    private static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
+    public static TemperatureUnit temperatureUnit = TemperatureUnit.CELSIUS;
     static HashMap<Long,String> tempLog = new HashMap<>();
     private Long currentReadingStartMillis;
 
@@ -65,13 +86,21 @@ class CameraHandler {
     // A FLIR Camera
     private Camera camera;
 
+    private Context mContext;
+    private Context mActivityContext;
+    RenderScript rs;
+    public LinkedBlockingQueue<BitmapFrameBuffer> framesBuffer = new LinkedBlockingQueue<>(21);
+
     public interface DiscoveryStatus {
         void started();
 
         void stopped();
     }
 
-    CameraHandler() {
+    CameraHandler(Context context, Context activityContext, RenderScript rs) {
+        this.mContext = context;
+        this.mActivityContext = activityContext;
+        this.rs = rs;
     }
 
     /**
@@ -223,40 +252,65 @@ class CameraHandler {
     private final Camera.Consumer<ThermalImage> receiveCameraImage = new Camera.Consumer<ThermalImage>() {
 
         @Override
-        public void accept(ThermalImage thermalImage) {
-            Log.d(TAG, "accept() called with: thermalImage = [" + thermalImage.getDescription() + "]");
-            CalibrationHandler.calibrate(thermalImage);
+        public void accept(ThermalImage newThermalImage) {
+            Log.d(TAG, "accept() called with: thermalImage = [" + newThermalImage.getDescription() + "]");
+            try {
+                thermal_width = newThermalImage.getWidth();
+                thermal_height = newThermalImage.getHeight();
+                if (framesBuffer.isEmpty()) {
+                    Bitmap msxBitmap = BitmapAndroid.createBitmap(newThermalImage.getImage()).getBitMap();
+                    drawGuideRectangle(newThermalImage, msxBitmap);
 
-            // Set static variables for FlirCameraActivity
-            thermal_width = thermalImage.getWidth();
-            thermal_height = thermalImage.getHeight();
+                    // Firebase Face Detection takes time, so drawFaceRectangle will push Bitmaps and Face Rectangle into stacks.
+                    Bitmap dcBitmap = null;
+                    if(newThermalImage.getFusion() != null && newThermalImage.getFusion().getPhoto() != null) {
+                        // Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
+                        dcBitmap = BitmapAndroid.createBitmap(newThermalImage.getFusion().getPhoto()).getBitMap();
+                        drawFaceRectangle(dcBitmap, msxBitmap);
+                    } else {
+                        framesBuffer.put(new BitmapFrameBuffer(msxBitmap, dcBitmap, null));
+                    }
+                    return;
+                }
+                BitmapFrameBuffer frame = framesBuffer.poll();
+                if(frame == null){
+                    Log.e(TAG, "FRAME IS NULL");
+                    return;
+                }
+                Bitmap msxBitmap = frame.msxBitmap;
+                Bitmap dcBitmap = frame.dcBitmap;
+                Rect msxFaceRect = frame.faceRect;
+                Log.d(TAG, "adding images to cache");
+                streamDataListener.images(msxBitmap, dcBitmap);
 
-            // Get Bitmaps
-            if (thermalImage.getFusion() != null) {
-                thermalImage.getFusion().setFusionMode(FlirCameraActivity.curr_fusion_mode);
+                // Set up Canvas & Paint
+                Canvas canvas = new Canvas(msxBitmap);
+                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+                // Draw Face Rectangle
+                if(msxFaceRect != null) {
+                    paint.setStrokeWidth(4);
+                    paint.setColor(Color.MAGENTA);
+                    paint.setStyle(Paint.Style.STROKE);
+                    try {
+                        canvas.drawRect(msxFaceRect, paint);
+                    } catch (Exception e) {
+                        Log.e("ASDF", "ASDFSADFSADF");
+                        e.printStackTrace();
+                    }
+                }
+
+            } catch (Exception e){
+                Log.e(TAG, "BAD!!!!!");
+                e.printStackTrace();
             }
-            //Get a bitmap with only IR data
-            Bitmap msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
-            //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
-            Bitmap dcBitmap = BitmapAndroid.createBitmap(Objects.requireNonNull(thermalImage.getFusion().getPhoto())).getBitMap();
-
-            // Set Temperature Unit
-            thermalImage.setTemperatureUnit(temperatureUnit);
-
-            // Set up Canvas & Paint
-            Canvas canvas = new Canvas(msxBitmap);
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-            // Draw Rectangles
-            drawGuideRectangle(canvas, paint, thermalImage, msxBitmap);
-            drawFaceRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
-
-            Log.d(TAG, "adding images to cache");
-            streamDataListener.images(msxBitmap, dcBitmap);
         }
     };
 
-    private void drawGuideRectangle(Canvas canvas, Paint paint, ThermalImage thermalImage, Bitmap msxBitmap){
+    private void drawGuideRectangle(ThermalImage thermalImage, Bitmap msxBitmap){
+        CalibrationHandler.calibrate(thermalImage);
+        Canvas canvas = new Canvas(msxBitmap);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         // Get Ratios
         float ratiow = (float) msxBitmap.getWidth() / (float) thermalImage.getWidth();
         float ratioh = (float) msxBitmap.getHeight() / (float) thermalImage.getHeight();
@@ -335,20 +389,29 @@ class CameraHandler {
         canvas.drawText(min+ " " + thermalImage.getTemperatureUnit().toString().charAt(0), mRect.getColdSpot().x * ratiow, (mRect.getColdSpot().y + 20)*ratioh, paint);
     }
 
-    private void drawFaceRectangle(Canvas canvas, Paint paint, ThermalImage thermalImage, Bitmap dcBitmap, Bitmap msxBitmap){
-        // Calculate Ratios
+    private void drawFaceRectangle(Bitmap dcBitmap, Bitmap msxBitmap){
+        // Firebase FaceDetection
+        Nv21Image mdcBitmapNv21Image = Nv21Image.bitmapToNV21(rs, dcBitmap);
+        try {
+            detectFaces(MainActivity.detector, msxBitmap, dcBitmap, imageFromBuffer(dcBitmap, ByteBuffer.wrap(mdcBitmapNv21Image.nv21ByteArray), getRotationCompensation("0", (MainActivity)mActivityContext, mContext)));
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+
+/*
+        // Native Face Detection
+        // Convert Bitmap
+        Bitmap mFaceBitmap = dcBitmap.copy(Bitmap.Config.RGB_565, true);
+        FaceDetector faceDetector = new FaceDetector(mFaceBitmap.getWidth(), mFaceBitmap.getHeight(), 1);
+        FaceDetector.Face[] faces = new FaceDetector.Face[1];
+        int facesFound = faceDetector.findFaces(mFaceBitmap, faces);
+                // Calculate Ratios
         float ratiow = (float) msxBitmap.getWidth() / (float) thermalImage.getWidth();
         float ratioh = (float) msxBitmap.getHeight() / (float) thermalImage.getHeight();
         float ratiow2 = (float) dcBitmap.getWidth() / (float) msxBitmap.getWidth();
         float ratioh2 = (float) dcBitmap.getHeight() / (float) msxBitmap.getHeight();
 
-        // Convert Bitmap
-        Bitmap mFaceBitmap = dcBitmap.copy(Bitmap.Config.RGB_565, true);
-        FaceDetector faceDetector = new FaceDetector(mFaceBitmap.getWidth(), mFaceBitmap.getHeight(), 1);
-        FaceDetector.Face[] faces = new FaceDetector.Face[1];
-
-        // Find Faces
-        int facesFound = faceDetector.findFaces(mFaceBitmap, faces);
         if(facesFound > 0) {
             PointF midPoint = new PointF();
             faces[0].getMidPoint(midPoint);
@@ -391,8 +454,45 @@ class CameraHandler {
                 }
             }
         }
+*/
     }
 
+    private void detectFaces(FirebaseVisionFaceDetector detector, Bitmap msxBitmap, Bitmap dcBitmap, FirebaseVisionImage image) {
+        detector.detectInImage(image)
+                .addOnSuccessListener(
+                        faces -> {
+                            try {
+                                Log.d(TAG, "detectFaces: Face Detected length: " + faces.size());
+                                if (faces.isEmpty()) {
+                                    framesBuffer.put(new BitmapFrameBuffer(msxBitmap, dcBitmap, null));
+                                }
+                                for (FirebaseVisionFace face : faces) {
+                                    Rect bounds = face.getBoundingBox();
+                                    Log.e("ASDF", "Face Bounds: " + bounds);
+                                    final float rath = (float) image.getBitmap().getHeight() / (float) msxBitmap.getHeight();
+                                    final float ratw = (float) image.getBitmap().getWidth() / (float) msxBitmap.getWidth();
+                                    Rect rectangle = new Rect(
+                                            (int) (bounds.left / ratw), // Left
+                                            (int) (bounds.top / rath), // Top
+                                            (int) (bounds.right / ratw), // Right
+                                            (int) (bounds.bottom / rath) // Bottom
+                                    );
+                                    Log.e("ASDF", "Rect bounds: " + rectangle);
+
+                                    framesBuffer.put(new BitmapFrameBuffer(msxBitmap, dcBitmap, rectangle));
+                                    Log.d(TAG, "detectFaces: Face Detected: " + bounds.toString());
+                                }
+                            } catch (Exception e){
+                                Log.e(TAG, "Could not detect face");
+                                e.printStackTrace();
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Log.e(TAG, "Face Detection Error: " + e.getMessage());
+                            e.printStackTrace();
+                        });
+    }
 
     static void saveLog(Context ctx, boolean shouldAppend) {
         StringBuilder msgLog = new StringBuilder();
@@ -412,11 +512,11 @@ class CameraHandler {
             Date d = new Date(System.currentTimeMillis());
             String filename;
             if(shouldAppend){
-                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
                 filename = formatter.format(d);
                 filename+="-FULL";
             } else{
-                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy-HH:mm:ss");
+                DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy-HH:mm:ss", Locale.US);
                 filename = formatter.format(d);
                 filename+="-SHORT";
             }
@@ -431,6 +531,76 @@ class CameraHandler {
 
     static void resetLog() {
         CameraHandler.tempLog.clear();
+    }
+
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+    }
+    /**
+     * Get the angle by which an image must be rotated given the device's current
+     * orientation.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static int getRotationCompensation(String cameraId, Activity activity, Context context)
+            throws CameraAccessException {
+        // Get the device's current rotation relative to its "native" orientation.
+        // Then, from the ORIENTATIONS table, look up the angle the image must be
+        // rotated to compensate for the device's rotation.
+        int deviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        int rotationCompensation = ORIENTATIONS.get(deviceRotation);
+
+        // On most devices, the sensor orientation is 90 degrees, but for some
+        // devices it is 270 degrees. For devices with a sensor orientation of
+        // 270, rotate the image an additional 180 ((270 + 270) % 360) degrees.
+        CameraManager cameraManager = (CameraManager) context.getSystemService(CAMERA_SERVICE);
+        int sensorOrientation;
+        try {
+            sensorOrientation = cameraManager
+                    .getCameraCharacteristics(cameraId)
+                    .get(CameraCharacteristics.SENSOR_ORIENTATION);
+            rotationCompensation = (rotationCompensation + sensorOrientation + 270) % 360;
+        } catch (NullPointerException ignored){
+            return FirebaseVisionImageMetadata.ROTATION_0;
+        }
+
+        // Return the corresponding FirebaseVisionImageMetadata rotation value.
+        int result;
+        switch (rotationCompensation) {
+            case 0:
+                result = FirebaseVisionImageMetadata.ROTATION_0;
+                break;
+            case 90:
+                result = FirebaseVisionImageMetadata.ROTATION_90;
+                break;
+            case 180:
+                result = FirebaseVisionImageMetadata.ROTATION_180;
+                break;
+            case 270:
+                result = FirebaseVisionImageMetadata.ROTATION_270;
+                break;
+            default:
+                result = FirebaseVisionImageMetadata.ROTATION_0;
+                Log.e(TAG, "Bad rotation value: " + rotationCompensation);
+        }
+        return result;
+    }
+
+    public static FirebaseVisionImage imageFromBuffer(Bitmap dcBitmap, ByteBuffer buffer, int rotation) {
+        // [START set_metadata]
+        FirebaseVisionImageMetadata metadata = new FirebaseVisionImageMetadata.Builder()
+                .setWidth(dcBitmap.getWidth())   // 480x360 is typically sufficient for
+                .setHeight(dcBitmap.getHeight())  // image recognition
+                .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
+                .setRotation(rotation)
+                .build();
+        // [END set_metadata]
+        // [START image_from_buffer]
+        // [END image_from_buffer]
+        return FirebaseVisionImage.fromByteBuffer(buffer, metadata);
     }
 
 }

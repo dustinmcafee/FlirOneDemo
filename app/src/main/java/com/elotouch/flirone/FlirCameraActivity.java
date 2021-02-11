@@ -44,7 +44,6 @@ public class FlirCameraActivity extends AppCompatActivity {
     public MainActivity.ShowMessage showMessage = message -> Toast.makeText(FlirCameraActivity.this, message, Toast.LENGTH_SHORT).show();
 
     public UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
-    public LinkedBlockingQueue<BitmapFrameBuffer> framesBuffer = new LinkedBlockingQueue<>(21);
 
     public static FusionMode curr_fusion_mode = FusionMode.THERMAL_ONLY;
 
@@ -412,32 +411,19 @@ public class FlirCameraActivity extends AppCompatActivity {
     public final CameraHandler.StreamDataListener streamDataListener = new CameraHandler.StreamDataListener() {
         @Override
         public void images(BitmapFrameBuffer dataHolder) {
-
-            runOnUiThread(() -> {
-                msxImage.setImageBitmap(dataHolder.msxBitmap);
-                photoImage.setImageBitmap(dataHolder.dcBitmap);
-            });
+            this.images(dataHolder.msxBitmap, dataHolder.dcBitmap);
         }
 
         @Override
         public void images(Bitmap msxBitmap, Bitmap dcBitmap) {
-
-            try {
-                framesBuffer.put(new BitmapFrameBuffer(msxBitmap, dcBitmap));
-            } catch (InterruptedException e) {
-                //if interrupted while waiting for adding a new item in the queue
-                Log.e(TAG, "images(), unable to add incoming images to frames buffer, exception:" + e);
-            }
-
             runOnUiThread(() -> {
-                Log.d(TAG, "framebuffer size:" + framesBuffer.size());
-                BitmapFrameBuffer poll = framesBuffer.poll();
-                if (poll != null) {
-                    msxImage.setImageBitmap(poll.msxBitmap);
-                    photoImage.setImageBitmap(poll.dcBitmap);
+                if(msxBitmap != null) {
+                    msxImage.setImageBitmap(msxBitmap);
+                }
+                if(dcBitmap != null) {
+                    photoImage.setImageBitmap(dcBitmap);
                 }
             });
-
         }
     };
 

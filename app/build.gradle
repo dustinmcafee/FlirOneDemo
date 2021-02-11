@@ -10,7 +10,12 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        renderscriptTargetApi 16
+        renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters 'armeabi-v7a', 'x86', 'armeabi'
+        }
     }
     buildTypes {
         release {
@@ -38,5 +43,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.google.firebase:firebase-core:17.4.2'
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
+    implementation 'com.google.firebase:firebase-ml-vision-face-model:20.0.1'
+    implementation 'io.github.silvaren:easyrs:0.5.3'
+
 }
 
+apply plugin: 'com.google.gms.google-services'

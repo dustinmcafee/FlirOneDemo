@@ -42,6 +42,11 @@ public class CalibrationHandler {
     public CalibrationHandler(){}
 
     static void calibrate(ThermalImage img){
+        if (img.getFusion() != null) {
+            img.getFusion().setFusionMode(FlirCameraActivity.curr_fusion_mode);
+        }
+        img.setTemperatureUnit(CameraHandler.temperatureUnit);
+
         setDefaults(img);
         img.getImageParameters().setAtmosphericTemperature(atmosphericTemperature);
         img.getImageParameters().setDistance(distance);
